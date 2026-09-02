@@ -100,7 +100,7 @@ export default function Home() {
           <div className="hidden md:grid grid-cols-2 gap-3 w-64">
             {[
               { label: 'Products', value: '500+' },
-              { label: 'Categories', value: categories.length.toString() },
+              { label: 'Categories', value: (categories?.length ?? 0).toString() },
               { label: 'Avg. delivery', value: '< 30s' },
               { label: 'Uptime', value: '99.9%' },
             ].map((s, i) => (
@@ -128,7 +128,7 @@ export default function Home() {
           </div>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
-          {categories.map((cat, i) => (
+          {(categories ?? []).map((cat, i) => (
             <motion.div key={cat.id} {...stagger(i)}>
               <Link
                 to={`/category/${cat.slug}`}
@@ -162,7 +162,7 @@ export default function Home() {
           </Link>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {featured.map((p, i) => (
+          {(featured ?? []).map((p, i) => (
             <motion.div key={p.id} {...stagger(i)}>
               <Link
                 to={`/product/${p.slug}`}
@@ -171,6 +171,7 @@ export default function Home() {
                 <ProductImage
                   name={p.name}
                   category={p.category?.name}
+                  imageBase64={p.image_base64}
                   className="h-40 mb-4"
                 />
                 <div className="px-4 pb-4">
