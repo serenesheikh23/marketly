@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import { adminCategoryApi } from '@/api/client';
 import toast from 'react-hot-toast';
+import Button from '@/components/Button';
+import PageTransition from '@/components/PageTransition';
 
 export default function AdminCategories() {
   const [categories, setCategories] = useState<any[]>([]);
@@ -10,7 +13,10 @@ export default function AdminCategories() {
 
   const fetch = () => {
     setLoading(true);
-    adminCategoryApi.list().then((r) => setCategories(r.data.categories ?? [])).catch(console.error).finally(() => setLoading(false));
+    adminCategoryApi.list()
+      .then((r) => setCategories(r.data.categories ?? []))
+      .catch(console.error)
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => { fetch(); }, []);
@@ -37,31 +43,70 @@ export default function AdminCategories() {
   };
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">Categories</h1>
-
-      <form onSubmit={handleCreate} className="card max-w-lg space-y-4">
-        <h2 className="font-bold">New Category</h2>
-        <input className="input" placeholder="Name" value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} required />
-        <select className="input" value={form.type} onChange={(e) => setForm((p) => ({ ...p, type: e.target.value }))}>
-          <option value="auto">Automatic</option>
-          <option value="manual">Manual</option>
-        </select>
-        <textarea className="input" rows={2} placeholder="Description" value={form.description} onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))} />
-        <button type="submit" disabled={saving} className="btn-primary">{saving ? 'Saving…' : 'Create'}</button>
-      </form>
-
-      <div className="space-y-3">
-        {categories.map((c) => (
-          <div key={c.id} className="card flex justify-between items-center">
-            <div>
-              <p className="font-medium">{c.name}</p>
-              <p className="text-xs text-gray-500">{c.slug} • {c.type}</p>
-            </div>
-            <button onClick={() => deleteCat(c.id)} className="text-xs text-red-600">Delete</button>
-          </div>
-        ))}
+    <PageTransition className="space-y-8">
+      <div>
+        <p className="eyebrow mb-1">Taxonomy</p>
+        <h1 className="text-h1 text-ink-900">Categories</h1>
       </div>
-    </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <form onSubmit={handleCreate} className="card-pad space-y-4">
+          <h2 className="text-h3 text-ink-900">New category</h2>
+          <div>
+            <label className="label">Name</label>
+            <input className="input" placeholder="e.g. Streaming Accounts" value={form.name}
+              onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} required />
+          </div>
+          <div>
+            <label className="label">Type</label>
+            <select className="input" value={form.type}
+              onChange={(e) => setForm((p) => ({ ...p, type: e.target.value }))}>
+              <option value="auto">Automatic</option>
+              <option value="manual">Manual</option>
+            </select>
+          </div>
+          <div>
+            <label className="label">Description</label>
+            <textarea className="input" rows={2} placeholder="Optional" value={form.description}
+              onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))} />
+          </div>
+          <div>
+            <label className="label">Icon key</label>
+            <input className="input" placeholder="gamepad, wallet, monitor…" value={form.icon}
+              onChange={(e) => setForm((p) => ({ ...p, icon: e.target.value }))} />
+          </div>
+          <Button type="submit" variant="accent" className="w-full" loading={saving}>
+            Create
+          </Button>
+        </form>
+
+        <div className="lg:col-span-2 space-y-3">
+          {categories.map((c, i) => (
+            <motion.div key={c.id}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.04, duration: 0.3 }}
+              className="card-pad flex items-center justify-between"
+            >
+              <div>
+                <p className="text-sm font-semibold text-ink-900">{c.name}</p>
+                <p className="text-micro text-ink-500 mt-0.5">
+                  {c.slug} · <span className="text-ink-600">{c.type}</span>
+                </p>
+              </div>
+              <button
+                onClick={() => deleteCat(c.id)}
+                className="text-small font-medium text-status-rejected hover:text-status-rejected/80"
+              >
+                Delete
+              </button>
+            </motion.div>
+          ))}
+          {categories.length === 0 && !loading && (
+            <p className="text-center text-ink-500 py-8">No categories yet.</p>
+          )}
+        </div>
+      </div>
+    </PageTransition>
   );
 }

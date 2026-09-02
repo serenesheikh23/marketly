@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { adminWithdrawalApi } from '@/api/client';
 import toast from 'react-hot-toast';
+import Button from '@/components/Button';
+import PageTransition from '@/components/PageTransition';
 
 export default function AdminWithdrawals() {
   const [withdrawals, setWithdrawals] = useState<any[]>([]);
@@ -8,7 +10,10 @@ export default function AdminWithdrawals() {
 
   const fetch = () => {
     setLoading(true);
-    adminWithdrawalApi.list().then((r) => setWithdrawals(r.data.data ?? [])).catch(console.error).finally(() => setLoading(false));
+    adminWithdrawalApi.list()
+      .then((r) => setWithdrawals(r.data.data ?? []))
+      .catch(console.error)
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => { fetch(); }, []);
@@ -32,45 +37,56 @@ export default function AdminWithdrawals() {
   };
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-bold text-gray-900">Withdrawals</h1>
-      <div className="overflow-x-auto bg-white rounded-lg shadow">
-        <table className="w-full text-sm">
-          <thead className="bg-gray-50">
-            <tr className="text-left text-gray-500">
-              <th className="px-4 py-3">#</th>
-              <th className="px-4 py-3">User</th>
-              <th className="px-4 py-3">Amount</th>
-              <th className="px-4 py-3">Fee</th>
-              <th className="px-4 py-3">Method</th>
-              <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3">Date</th>
-              <th className="px-4 py-3">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {withdrawals.map((w) => (
-              <tr key={w.id} className="border-t">
-                <td className="px-4 py-3">{w.id}</td>
-                <td className="px-4 py-3">{w.user?.name ?? '—'}</td>
-                <td className="px-4 py-3 font-medium text-red-600">${Number(w.amount).toFixed(2)}</td>
-                <td className="px-4 py-3 text-gray-500">${Number(w.fee).toFixed(2)}</td>
-                <td className="px-4 py-3">{w.method}</td>
-                <td className="px-4 py-3"><span className={`badge-${w.status}`}>{w.status}</span></td>
-                <td className="px-4 py-3 text-gray-400">{new Date(w.created_at).toLocaleDateString()}</td>
-                <td className="px-4 py-3">
-                  {w.status === 'pending' && (
-                    <div className="flex gap-2">
-                      <button onClick={() => approve(w.id)} className="text-xs text-green-600 font-medium">Approve</button>
-                      <button onClick={() => reject(w.id)} className="text-xs text-red-600 font-medium">Reject</button>
-                    </div>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+    <PageTransition className="space-y-6">
+      <div>
+        <p className="eyebrow mb-1">Finance</p>
+        <h1 className="text-h1 text-ink-900">Withdrawals</h1>
       </div>
-    </div>
+
+      <div className="card overflow-hidden p-0">
+        <div className="overflow-x-auto">
+          <table className="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>User</th>
+                <th>Amount</th>
+                <th>Fee</th>
+                <th>Method</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {withdrawals.map((w) => (
+                <tr key={w.id}>
+                  <td className="font-medium text-ink-900">#{w.id}</td>
+                  <td>{w.user?.name ?? '—'}</td>
+                  <td className="font-medium tabular-nums text-status-rejected">
+                    ${Number(w.amount).toFixed(2)}
+                  </td>
+                  <td className="text-ink-500 tabular-nums">${Number(w.fee).toFixed(2)}</td>
+                  <td>{w.method}</td>
+                  <td><span className={`badge-${w.status}`}>{w.status}</span></td>
+                  <td className="text-ink-500">{new Date(w.created_at).toLocaleDateString()}</td>
+                  <td>
+                    {w.status === 'pending' ? (
+                      <div className="flex gap-2">
+                        <Button size="sm" variant="success" onClick={() => approve(w.id)}>Approve</Button>
+                        <Button size="sm" variant="danger" onClick={() => reject(w.id)}>Reject</Button>
+                      </div>
+                    ) : null}
+                  </td>
+                </tr>
+              ))}
+              {withdrawals.length === 0 && !loading && (
+                <tr><td colSpan={8} className="text-center text-ink-500 py-8">No withdrawals yet.</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </PageTransition>
   );
 }

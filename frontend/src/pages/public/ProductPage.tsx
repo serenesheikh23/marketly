@@ -1,15 +1,17 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { productApi } from '@/api/client';
 import { useAppDispatch, addToCart } from '@/store';
-import { categoryApi } from '@/api/client';
+import Button from '@/components/Button';
+import ProductImage from '@/components/ProductImage';
+import PageTransition from '@/components/PageTransition';
 
 export default function ProductPage() {
   const { slug } = useParams();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [product, setProduct] = useState<any>(null);
-  const [fields, setFields] = useState<any[]>([]);
   const [quantity, setQuantity] = useState(1);
   const [payload, setPayload] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
@@ -18,82 +20,178 @@ export default function ProductPage() {
     if (!slug) return;
     productApi.show(slug).then((res) => {
       setProduct(res.data.product);
-      if (res.data.product.category_id) {
-        // optional: load manual fields
-      }
       setLoading(false);
-    });
+    }).catch(() => setLoading(false));
   }, [slug]);
 
-  if (loading) return <div className="text-center py-12 text-gray-500">Loading…</div>;
-  if (!product) return <div>Not found.</div>;
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-24">
+        <span className="w-8 h-8 rounded-full border-2 border-accent-500 border-t-transparent animate-spin" />
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <PageTransition className="text-center py-24">
+        <p className="text-h3 text-ink-600 mb-4">Product not found.</p>
+        <Link to="/" className="btn-accent">Back to home</Link>
+      </PageTransition>
+    );
+  }
 
   const isManual = product.type === 'manual';
 
   const handleAddToCart = () => {
-    dispatch(addToCart({
-      product_id: product.id,
-      name: product.name,
-      price: Number(product.price),
-      quantity,
-      payload: isManual ? payload : undefined,
-    }));
+    dispatch(
+      addToCart({
+        product_id: product.id,
+        name: product.name,
+        price: Number(product.price),
+        quantity,
+        payload: isManual ? payload : undefined,
+      }),
+    );
     navigate('/cart');
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">{product.name}</h1>
-        <div className="flex gap-2 mb-4">
-          {product.external_store_id && (
-            <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">External Store</span>
-          )}
-          <span className={`text-xs px-2 py-1 rounded ${isManual ? 'bg-orange-100 text-orange-800' : 'bg-green-100 text-green-800'}`}>
-            {isManual ? 'Manual Service' : 'Auto Delivery'}
-          </span>
-        </div>
-        <p className="text-gray-600 mb-6 whitespace-pre-line">{product.description}</p>
-        <div className="text-sm text-gray-500">Category: {product.category?.name}</div>
-        <div className="text-sm text-gray-500">In stock: {product.stock}</div>
-      </div>
+    <PageTransition className="max-w-5xl mx-auto">
+      {/* Breadcrumb */}
+      <p className="eyebrow mb-6">
+        <Link to="/" className="hover:text-accent-300 transition-colors">Home</Link>
+        {' / '}
+        <Link
+          to={`/category/${product.category?.slug}`}
+          className="hover:text-accent-300 transition-colors"
+        >
+          {product.category?.name}
+        </Link>
+        {' / '}
+        {product.name}
+      </p>
 
-      <div className="card">
-        <div className="text-3xl font-bold text-primary-600 mb-6">${Number(product.price).toFixed(2)}</div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        {/* Left: product visual */}
+        <motion.div
+          initial={{ opacity: 0, x: -16 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <ProductImage
+            name={product.name}
+            category={product.category?.name}
+            className="w-full h-80 rounded-2xl"
+          />
+        </motion.div>
 
-        {!isManual && (
-          <div className="mb-4">
-            <label className="label">Quantity</label>
-            <input
-              type="number"
-              min="1"
-              className="input"
-              value={quantity}
-              onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-            />
+        {/* Right: details + purchase */}
+        <motion.div
+          className="space-y-6"
+          initial={{ opacity: 0, x: 16 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.1, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <div>
+            <div className="flex flex-wrap gap-2 mb-4">
+              {product.external_store_id && (
+                <span className="badge-neutral">External Store</span>
+              )}
+              <span className={`badge ${isManual ? 'badge-pending' : 'badge-completed'}`}>
+                {isManual ? 'Manual Service' : 'Auto Delivery'}
+              </span>
+            </div>
+            <h1 className="text-h1 text-ink-900 mb-2">{product.name}</h1>
+            <div className="text-small text-ink-500">
+              <span>Category: <Link to={`/category/${product.category?.slug}`} className="text-accent-400 hover:underline">{product.category?.name}</Link></span>
+              <span className="mx-2">·</span>
+              <span>In stock: <strong className="text-ink-700">{product.stock}</strong></span>
+            </div>
           </div>
-        )}
 
-        {isManual && (
-          <div className="space-y-3 mb-4">
-            <p className="text-sm text-gray-600">Fill out the details for this manual service:</p>
-            {['Link / Username', 'Quantity', 'Notes'].map((label) => (
-              <div key={label}>
-                <label className="label">{label}</label>
-                <input
-                  className="input"
-                  value={payload[label] ?? ''}
-                  onChange={(e) => setPayload((p) => ({ ...p, [label]: e.target.value }))}
-                />
+          <p className="text-body text-ink-600 whitespace-pre-line leading-relaxed">
+            {product.description}
+          </p>
+
+          {/* Purchase card */}
+          <div className="card-pad space-y-5">
+            <div className="flex items-baseline gap-3">
+              <span className="text-display-1 text-accent-400 font-bold">
+                ${Number(product.price).toFixed(2)}
+              </span>
+              <span className="text-body text-ink-500">per unit</span>
+            </div>
+
+            {!isManual && (
+              <div>
+                <label className="label">Quantity</label>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                    className="btn-secondary btn-sm"
+                  >
+                    −
+                  </button>
+                  <input
+                    type="number"
+                    min="1"
+                    max={product.stock}
+                    className="input w-20 text-center"
+                    value={quantity}
+                    onChange={(e) =>
+                      setQuantity(Math.max(1, parseInt(e.target.value) || 1))
+                    }
+                  />
+                  <button
+                    onClick={() => setQuantity((q) => Math.min(product.stock, q + 1))}
+                    className="btn-secondary btn-sm"
+                  >
+                    +
+                  </button>
+                </div>
               </div>
-            ))}
-          </div>
-        )}
+            )}
 
-        <button onClick={handleAddToCart} className="btn-primary w-full">
-          Add to Cart — ${(Number(product.price) * quantity).toFixed(2)}
-        </button>
+            {isManual && (
+              <div className="space-y-3">
+                <p className="text-micro text-ink-500 uppercase tracking-wide">
+                  Service details
+                </p>
+                {['Link / Username', 'Quantity', 'Notes (optional)'].map((label) => (
+                  <div key={label}>
+                    <label className="label">{label}</label>
+                    <input
+                      className="input"
+                      placeholder={label}
+                      value={payload[label] ?? ''}
+                      onChange={(e) =>
+                        setPayload((p) => ({ ...p, [label]: e.target.value }))
+                      }
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div className="flex items-center justify-between">
+              <span className="text-body text-ink-600">
+                Total:{' '}
+                <strong className="text-ink-900">
+                  ${(Number(product.price) * quantity).toFixed(2)}
+                </strong>
+              </span>
+              <Button
+                variant="accent"
+                size="lg"
+                onClick={handleAddToCart}
+              >
+                Add to cart
+              </Button>
+            </div>
+          </div>
+        </motion.div>
       </div>
-    </div>
+    </PageTransition>
   );
 }

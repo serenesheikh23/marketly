@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { adminUserApi } from '@/api/client';
 import toast from 'react-hot-toast';
+import PageTransition from '@/components/PageTransition';
 
 export default function AdminUsers() {
   const [users, setUsers] = useState<any[]>([]);
@@ -38,54 +39,82 @@ export default function AdminUsers() {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900">Users</h1>
-        <input type="search" placeholder="Search users…" className="input w-64" value={search} onChange={(e) => setSearch(e.target.value)} />
+    <PageTransition className="space-y-6">
+      <div className="flex items-end justify-between gap-4 flex-wrap">
+        <div>
+          <p className="eyebrow mb-1">Users</p>
+          <h1 className="text-h1 text-ink-900">All users</h1>
+        </div>
+        <div className="relative w-72 max-w-full">
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+          <input
+            type="search"
+            placeholder="Search users…"
+            className="input pl-10"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm bg-white rounded-lg shadow">
-          <thead className="bg-gray-50">
-            <tr className="text-left text-gray-500">
-              <th className="px-4 py-3">Name</th>
-              <th className="px-4 py-3">Email</th>
-              <th className="px-4 py-3">VIP</th>
-              <th className="px-4 py-3">Balance</th>
-              <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((u) => (
-              <tr key={u.id} className="border-t">
-                <td className="px-4 py-3">{u.name}</td>
-                <td className="px-4 py-3 text-gray-500">{u.email}</td>
-                <td className="px-4 py-3">
-                  <select
-                    className="input py-1 text-xs w-28"
-                    value={u.vip_level}
-                    onChange={(e) => changeVip(u, e.target.value)}
-                  >
-                    <option value="none">Regular</option>
-                    <option value="vip1">VIP1</option>
-                    <option value="vip2">VIP2</option>
-                  </select>
-                </td>
-                <td className="px-4 py-3 font-medium">${Number(u.balance).toFixed(2)}</td>
-                <td className="px-4 py-3">
-                  {u.banned_at ? <span className="badge-rejected">Banned</span> : <span className="badge-completed">Active</span>}
-                </td>
-                <td className="px-4 py-3">
-                  <button onClick={() => toggleBan(u)} className={`text-xs ${u.banned_at ? 'text-green-600' : 'text-red-600'}`}>
-                    {u.banned_at ? 'Unban' : 'Ban'}
-                  </button>
-                </td>
+      <div className="card overflow-hidden p-0">
+        <div className="overflow-x-auto">
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>VIP</th>
+                <th>Balance</th>
+                <th>Status</th>
+                <th>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {users.map((u) => (
+                <tr key={u.id}>
+                  <td className="font-medium text-ink-900">{u.name}</td>
+                  <td className="text-ink-500">{u.email}</td>
+                  <td>
+                    <select
+                      className="input py-1 text-xs w-28"
+                      value={u.vip_level}
+                      onChange={(e) => changeVip(u, e.target.value)}
+                    >
+                      <option value="none">Regular</option>
+                      <option value="vip1">VIP1</option>
+                      <option value="vip2">VIP2</option>
+                    </select>
+                  </td>
+                  <td className="font-medium tabular-nums">${Number(u.balance).toFixed(2)}</td>
+                  <td>
+                    {u.banned_at
+                      ? <span className="badge-rejected">Banned</span>
+                      : <span className="badge-completed">Active</span>}
+                  </td>
+                  <td>
+                    <button
+                      onClick={() => toggleBan(u)}
+                      className={`text-small font-medium ${
+                        u.banned_at
+                          ? 'text-accent-400 hover:text-accent-300'
+                          : 'text-status-rejected hover:text-status-rejected/80'
+                      }`}
+                    >
+                      {u.banned_at ? 'Unban' : 'Ban'}
+                    </button>
+                  </td>
+                </tr>
+              ))}
+              {users.length === 0 && !loading && (
+                <tr><td colSpan={6} className="text-center text-ink-500 py-8">No users found.</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
+    </PageTransition>
   );
 }

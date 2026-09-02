@@ -1,6 +1,9 @@
 import { Outlet, Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useAppSelector, useAppDispatch, logout } from '@/store';
 import { authApi } from '@/api/client';
+import Logo from './Logo';
+import PageTransition from './PageTransition';
 
 export default function Layout() {
   const { user, isAuthenticated } = useAppSelector((s) => s.auth);
@@ -15,36 +18,73 @@ export default function Layout() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
-            <Link to="/" className="text-xl font-bold text-primary-600">Marketplace</Link>
-            <nav className="flex items-center gap-4">
-              {isAuthenticated ? (
-                <>
-                  <Link to="/dashboard" className="text-sm text-gray-600 hover:text-primary-600">Dashboard</Link>
-                  {roles.includes('admin') || roles.includes('moderator') ? (
-                    <Link to="/admin" className="text-sm text-gray-600 hover:text-primary-600">Admin</Link>
-                  ) : null}
-                  <span className="text-sm text-gray-500">${Number(user?.balance ?? 0).toFixed(2)}</span>
-                  <button onClick={handleLogout} className="text-sm text-gray-600 hover:text-red-600">Logout</button>
-                </>
-              ) : (
-                <>
-                  <Link to="/login" className="text-sm text-gray-600 hover:text-primary-600">Login</Link>
-                  <Link to="/register" className="btn-primary text-sm py-1.5">Sign Up</Link>
-                </>
-              )}
-            </nav>
-          </div>
+    <div className="min-h-screen bg-ink-0 flex flex-col">
+      {/* ── Header ─────────────────────────────────────────── */}
+      <header className="sticky top-0 z-50 border-b border-ink-200 bg-ink-0/80 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-2.5">
+            <Logo size="sm" showText />
+          </Link>
+
+          {/* Nav */}
+          <nav className="flex items-center gap-1">
+            {isAuthenticated ? (
+              <>
+                <Link to="/dashboard" className="nav-link text-sm">
+                  Dashboard
+                </Link>
+                {(roles.includes('admin') || roles.includes('moderator')) && (
+                  <Link to="/admin" className="nav-link text-sm text-accent-400">
+                    Admin
+                  </Link>
+                )}
+                <div className="mx-3 w-px h-5 bg-ink-200" />
+                <span className="text-sm text-ink-600 font-medium tabular-nums">
+                  ${Number(user?.balance ?? 0).toFixed(2)}
+                </span>
+                <button
+                  onClick={handleLogout}
+                  className="nav-link text-sm ml-1 text-status-rejected/80 hover:text-status-rejected hover:bg-status-rejected/10"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/login" className="nav-link text-sm">Sign in</Link>
+                <Link
+                  to="/register"
+                  className="btn-accent btn-sm ml-2"
+                >
+                  Get started
+                </Link>
+              </>
+            )}
+          </nav>
         </div>
       </header>
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Outlet />
+
+      {/* ── Main ───────────────────────────────────────────── */}
+      <main className="flex-1">
+        <PageTransition className="max-w-7xl mx-auto px-6 py-10">
+          <Outlet />
+        </PageTransition>
       </main>
-      <footer className="border-t border-gray-200 py-6 text-center text-sm text-gray-500">
-        &copy; {new Date().getFullYear()} Digital Marketplace. All rights reserved.
+
+      {/* ── Footer ─────────────────────────────────────────── */}
+      <footer className="border-t border-ink-200 py-8 mt-auto">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <Logo size="sm" showText={false} />
+            <span className="text-micro text-ink-500">
+              &copy; {new Date().getFullYear()} marketly
+            </span>
+          </div>
+          <p className="text-micro text-ink-500">
+            All products delivered instantly. Secure payments via Binance Pay &amp; USDT.
+          </p>
+        </div>
       </footer>
     </div>
   );

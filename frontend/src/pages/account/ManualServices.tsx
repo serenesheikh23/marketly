@@ -1,6 +1,15 @@
 import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import { categoryApi, orderApi } from '@/api/client';
 import toast from 'react-hot-toast';
+import Button from '@/components/Button';
+import PageTransition from '@/components/PageTransition';
+
+const CATEGORY_ICON: Record<string, string> = {
+  gamepad: '🎮', message: '💬', 'credit-card': '💳', wallet: '💰',
+  design: '🎨', monitor: '📺', server: '🛡️', 'check-circle': '✅',
+  cpu: '🤖', handshake: '🤝', share: '🔗',
+};
 
 export default function ManualServices() {
   const [categories, setCategories] = useState<any[]>([]);
@@ -11,10 +20,9 @@ export default function ManualServices() {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    categoryApi.list().then((r) => {
-      const manual = (r.data.categories ?? []).filter((c: any) => c.type === 'manual');
-      setCategories(manual);
-    }).catch(console.error);
+    categoryApi.list()
+      .then((r) => setCategories((r.data.categories ?? []).filter((c: any) => c.type === 'manual')))
+      .catch(console.error);
   }, []);
 
   const selectCategory = async (cat: any) => {
@@ -36,11 +44,7 @@ export default function ManualServices() {
       const products = (selected.products ?? []).filter((p: any) => p.type === 'manual');
       if (products.length === 0) { toast.error('No products in this category.'); return; }
       await orderApi.create({
-        items: [{
-          product_id: products[0].id,
-          quantity,
-          payload: formData,
-        }],
+        items: [{ product_id: products[0].id, quantity, payload: formData }],
         payment_method: 'cash_wallet',
       });
       toast.success('Manual service order submitted!');
@@ -54,78 +58,123 @@ export default function ManualServices() {
   };
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">Manual Services</h1>
+    <PageTransition className="space-y-8">
+      <div>
+        <p className="eyebrow mb-2">Services</p>
+        <h1 className="text-h1 text-ink-900">Manual Services</h1>
+        <p className="text-body text-ink-600 mt-2">
+          Custom services handled by our team. Fill in the details below and we'll get started.
+        </p>
+      </div>
 
       {!selected ? (
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {categories.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => selectCategory(cat)}
-              className="card hover:shadow-md text-left transition"
-            >
-              <h3 className="font-semibold">{cat.name}</h3>
-              <p className="text-sm text-gray-500 mt-1">{cat.description}</p>
-            </button>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {categories.map((cat, i) => (
+            <motion.div key={cat.id} initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.05, duration: 0.3 }}>
+              <button
+                onClick={() => selectCategory(cat)}
+                className="card-hover text-left w-full p-5"
+              >
+                <span className="text-2xl mb-3 block" role="img">
+                  {CATEGORY_ICON[cat.icon] ?? '📦'}
+                </span>
+                <h3 className="text-sm font-semibold text-ink-900">{cat.name}</h3>
+                <p className="text-micro text-ink-500 mt-1 line-clamp-2">{cat.description}</p>
+              </button>
+            </motion.div>
           ))}
         </div>
       ) : (
-        <div>
-          <button onClick={() => setSelected(null)} className="text-sm text-primary-600 mb-4">← Back to categories</button>
-          <h2 className="text-xl font-bold mb-4">{selected.name}</h2>
+        <motion.div
+          initial={{ opacity: 0, x: 16 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.3 }}
+          className="space-y-6"
+        >
+          <button
+            onClick={() => setSelected(null)}
+            className="nav-link text-sm"
+          >
+            ← Back to categories
+          </button>
 
-          {fields.length > 0 ? (
-            <form onSubmit={handleSubmit} className="card space-y-4 max-w-lg">
-              {fields.map((f: any) => (
-                <div key={f.key}>
-                  <label className="label">{f.label}{f.required && ' *'}</label>
-                  {f.type === 'textarea' ? (
-                    <textarea
-                      className="input"
-                      rows={3}
-                      required={f.required}
-                      placeholder={f.placeholder}
-                      value={formData[f.key] ?? ''}
-                      onChange={(e) => setFormData((p) => ({ ...p, [f.key]: e.target.value }))}
-                    />
-                  ) : f.type === 'select' ? (
-                    <select
-                      className="input"
-                      required={f.required}
-                      value={formData[f.key] ?? ''}
-                      onChange={(e) => setFormData((p) => ({ ...p, [f.key]: e.target.value }))}
-                    >
-                      <option value="">Select…</option>
-                      {(f.options ?? []).map((o: string) => (
-                        <option key={o} value={o}>{o}</option>
-                      ))}
-                    </select>
-                  ) : (
-                    <input
-                      type={f.type === 'number' ? 'number' : 'text'}
-                      className="input"
-                      required={f.required}
-                      placeholder={f.placeholder}
-                      value={formData[f.key] ?? ''}
-                      onChange={(e) => setFormData((p) => ({ ...p, [f.key]: e.target.value }))}
-                    />
-                  )}
+          <div className="card-pad max-w-lg space-y-5">
+            <div>
+              <p className="eyebrow mb-1">{selected.name}</p>
+              <h2 className="text-h2 text-ink-900">Service Details</h2>
+              {selected.description && (
+                <p className="text-body text-ink-600 mt-2">{selected.description}</p>
+              )}
+            </div>
+
+            {fields.length > 0 ? (
+              <form onSubmit={handleSubmit} className="space-y-4">
+                {fields.map((f: any) => (
+                  <div key={f.key}>
+                    <label className="label">
+                      {f.label}{f.required ? ' *' : ''}
+                    </label>
+                    {f.type === 'textarea' ? (
+                      <textarea
+                        className="input"
+                        rows={3}
+                        required={f.required}
+                        placeholder={f.placeholder}
+                        value={formData[f.key] ?? ''}
+                        onChange={(e) => setFormData((p) => ({ ...p, [f.key]: e.target.value }))}
+                      />
+                    ) : f.type === 'select' ? (
+                      <select
+                        className="input"
+                        required={f.required}
+                        value={formData[f.key] ?? ''}
+                        onChange={(e) => setFormData((p) => ({ ...p, [f.key]: e.target.value }))}
+                      >
+                        <option value="">Select…</option>
+                        {(f.options ?? []).map((o: string) => (
+                          <option key={o} value={o}>{o}</option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input
+                        type={f.type === 'number' ? 'number' : 'text'}
+                        className="input"
+                        required={f.required}
+                        placeholder={f.placeholder}
+                        value={formData[f.key] ?? ''}
+                        onChange={(e) => setFormData((p) => ({ ...p, [f.key]: e.target.value }))}
+                      />
+                    )}
+                  </div>
+                ))}
+                <div>
+                  <label className="label">Quantity</label>
+                  <input
+                    type="number"
+                    min="1"
+                    className="input w-32"
+                    value={quantity}
+                    onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
+                  />
                 </div>
-              ))}
-              <div>
-                <label className="label">Quantity</label>
-                <input type="number" min="1" className="input" value={quantity} onChange={(e) => setQuantity(parseInt(e.target.value) || 1)} />
-              </div>
-              <button type="submit" disabled={submitting} className="btn-primary w-full">
-                {submitting ? 'Submitting…' : 'Place Order'}
-              </button>
-            </form>
-          ) : (
-            <p className="text-gray-500">No form fields defined for this category.</p>
-          )}
-        </div>
+                <Button
+                  type="submit"
+                  variant="accent"
+                  size="lg"
+                  loading={submitting}
+                  className="w-full"
+                >
+                  Place Order
+                </Button>
+              </form>
+            ) : (
+              <p className="text-body text-ink-500">No form fields defined for this category yet.</p>
+            )}
+          </div>
+        </motion.div>
       )}
-    </div>
+    </PageTransition>
   );
 }

@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { categoryApi, productApi } from '@/api/client';
+import ProductImage from '@/components/ProductImage';
+import PageTransition from '@/components/PageTransition';
 
 export default function CategoryPage() {
   const { slug } = useParams();
@@ -12,7 +15,10 @@ export default function CategoryPage() {
   useEffect(() => {
     if (!slug) return;
     setLoading(true);
-    Promise.all([categoryApi.show(slug), productApi.list({ category: slug, q: search })])
+    Promise.all([
+      categoryApi.show(slug),
+      productApi.list({ category: slug, q: search }),
+    ])
       .then(([catRes, prodRes]) => {
         setCategory(catRes.data.category);
         setProducts(prodRes.data.data ?? []);
@@ -22,42 +28,104 @@ export default function CategoryPage() {
   }, [slug, search]);
 
   if (loading) {
-    return <div className="text-center py-12 text-gray-500">Loading…</div>;
+    return (
+      <div className="flex items-center justify-center py-24">
+        <span className="w-8 h-8 rounded-full border-2 border-accent-500 border-t-transparent animate-spin" />
+      </div>
+    );
   }
 
   return (
-    <div className="space-y-6">
+    <PageTransition className="space-y-8">
+      {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">{category?.name}</h1>
-        {category?.description && <p className="text-gray-500 mt-2">{category.description}</p>}
-        <span className="inline-block mt-2 text-xs px-2 py-1 bg-gray-200 rounded">{category?.type}</span>
+        <p className="eyebrow mb-2">
+          <Link to="/" className="hover:text-accent-300 transition-colors">Home</Link>
+          {' / '}
+          {category?.name}
+        </p>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-h1 text-ink-900 mb-2">{category?.name}</h1>
+            {category?.description && (
+              <p className="text-body text-ink-600">{category.description}</p>
+            )}
+          </div>
+          <span className="badge-neutral mt-1 shrink-0">{category?.type}</span>
+        </div>
       </div>
 
-      <input
-        type="search"
-        placeholder="Search products…"
-        className="input max-w-md"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {products.map((p) => (
-          <Link key={p.id} to={`/product/${p.slug}`} className="card hover:shadow-md transition">
-            <h3 className="font-semibold text-gray-900 mb-2">{p.name}</h3>
-            <p className="text-sm text-gray-500 mb-3 line-clamp-2">{p.description}</p>
-            <div className="flex items-center justify-between">
-              <span className="text-lg font-bold text-primary-600">${Number(p.price).toFixed(2)}</span>
-              {p.external_store_id && (
-                <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">External</span>
-              )}
-            </div>
-          </Link>
-        ))}
-        {products.length === 0 && (
-          <p className="text-gray-500 col-span-full text-center py-8">No products found.</p>
-        )}
+      {/* Search */}
+      <div className="relative max-w-sm">
+        <svg
+          className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-500"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <circle cx="11" cy="11" r="8" />
+          <path d="m21 21-4.35-4.35" />
+        </svg>
+        <input
+          type="search"
+          placeholder="Search products…"
+          className="input pl-10"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
       </div>
-    </div>
+
+      {/* Product grid */}
+      {products.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {products.map((p, i) => (
+            <motion.div
+              key={p.id}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.04, duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <Link
+                to={`/product/${p.slug}`}
+                className="card-hover group block overflow-hidden"
+              >
+                <ProductImage
+                  name={p.name}
+                  category={p.category?.name}
+                  className="h-36 mb-4"
+                />
+                <div className="px-4 pb-4">
+                  <h3 className="text-sm font-semibold text-ink-900 group-hover:text-accent-400 transition-colors line-clamp-2 mb-1">
+                    {p.name}
+                  </h3>
+                  <p className="text-micro text-ink-500 line-clamp-2 mb-3">
+                    {p.description}
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-h3 text-accent-400">
+                      ${Number(p.price).toFixed(2)}
+                    </span>
+                    {p.external_store_id && (
+                      <span className="badge-neutral text-micro">External</span>
+                    )}
+                  </div>
+                </div>
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-20 card-pad">
+          <svg className="w-12 h-12 mx-auto mb-4 text-ink-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <path d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" strokeLinecap="round" />
+          </svg>
+          <p className="text-body text-ink-600">No products found.</p>
+          <p className="text-small text-ink-500 mt-1">Try adjusting your search.</p>
+        </div>
+      )}
+    </PageTransition>
   );
 }

@@ -1,19 +1,41 @@
 import { useEffect, useState } from 'react';
 import { adminSettingsApi } from '@/api/client';
 import toast from 'react-hot-toast';
+import PageTransition from '@/components/PageTransition';
+
+const GROUPS: Record<string, { label: string; keys: string[] }> = {
+  vip: {
+    label: 'VIP & Membership',
+    keys: [
+      'vip1_withdrawal_limit',
+      'vip2_withdrawal_limit',
+      'vip1_fee_percent',
+      'vip2_fee_percent',
+      'regular_fee_percent',
+      'vip1_upgrade_price',
+      'vip2_upgrade_price',
+    ],
+  },
+  payment: {
+    label: 'Payment Providers',
+    keys: ['binance_pay_key', 'binance_pay_secret', 'usdt_wallet_address'],
+  },
+};
 
 export default function AdminSettings() {
   const [settings, setSettings] = useState<Record<string, any>>({});
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    adminSettingsApi.list().then((r) => setSettings(r.data.settings ?? {})).catch(console.error);
+    adminSettingsApi.list()
+      .then((r) => setSettings(r.data.settings ?? {}))
+      .catch(console.error);
   }, []);
 
-  const updateSetting = async (key: string, value: string, type = 'string') => {
+  const updateSetting = async (key: string, value: string) => {
     setSaving(true);
     try {
-      await adminSettingsApi.update({ key, value, type });
+      await adminSettingsApi.update({ key, value, type: 'string' });
       toast.success(`${key} updated.`);
       const r = await adminSettingsApi.list();
       setSettings(r.data.settings ?? {});
@@ -21,45 +43,41 @@ export default function AdminSettings() {
     finally { setSaving(false); }
   };
 
-  const renderSetting = (key: string, value: any) => {
-    if (typeof value === 'string') {
-      return (
-        <div key={key} className="flex items-center gap-3">
-          <div className="flex-1">
-            <p className="text-sm font-medium text-gray-700">{key}</p>
-          </div>
-          <input
-            type="text"
-            className="input w-48"
-            defaultValue={value}
-            onBlur={(e) => updateSetting(key, e.target.value)}
-          />
-        </div>
-      );
-    }
-    return null;
-  };
-
-  const groups: Record<string, string[]> = {
-    vip: ['vip1_withdrawal_limit', 'vip2_withdrawal_limit', 'vip1_fee_percent', 'vip2_fee_percent', 'regular_fee_percent', 'vip1_upgrade_price', 'vip2_upgrade_price'],
-    payment: ['binance_pay_key', 'binance_pay_secret', 'usdt_wallet_address'],
-  };
-
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
+    <PageTransition className="space-y-8">
+      <div>
+        <p className="eyebrow mb-1">System</p>
+        <h1 className="text-h1 text-ink-900">Settings</h1>
+      </div>
 
-      {Object.entries(groups).map(([group, keys]) => (
-        <div key={group} className="card">
-          <h2 className="text-lg font-bold capitalize mb-4">{group} Settings</h2>
-          <div className="space-y-4">
-            {keys.map((key) => {
-              const value = (settings[group] ?? {})[key]?.value ?? '—';
-              return renderSetting(key, value);
-            })}
+      <div className="space-y-6">
+        {Object.entries(GROUPS).map(([group, info]) => (
+          <div key={group} className="card-pad">
+            <h2 className="text-h3 text-ink-900 mb-5">{info.label}</h2>
+            <div className="space-y-4">
+              {info.keys.map((key) => {
+                const value = (settings[group] ?? {})[key]?.value ?? '';
+                return (
+                  <div key={key} className="flex items-center gap-3">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-small font-medium text-ink-800 truncate">{key}</p>
+                    </div>
+                    <input
+                      type="text"
+                      className="input w-64"
+                      defaultValue={value}
+                      disabled={saving}
+                      onBlur={(e) => {
+                        if (e.target.value !== value) updateSetting(key, e.target.value);
+                      }}
+                    />
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
+    </PageTransition>
   );
 }

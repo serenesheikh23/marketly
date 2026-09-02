@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { adminProductApi } from '@/api/client';
 import toast from 'react-hot-toast';
+import Button from '@/components/Button';
+import PageTransition from '@/components/PageTransition';
 
 export default function AdminProducts() {
   const [products, setProducts] = useState<any[]>([]);
@@ -8,7 +10,10 @@ export default function AdminProducts() {
 
   const fetch = () => {
     setLoading(true);
-    adminProductApi.list().then((r) => setProducts(r.data.data ?? [])).catch(console.error).finally(() => setLoading(false));
+    adminProductApi.list()
+      .then((r) => setProducts(r.data.data ?? []))
+      .catch(console.error)
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => { fetch(); }, []);
@@ -31,46 +36,70 @@ export default function AdminProducts() {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900">Products</h1>
-        <button onClick={fetch} className="btn-secondary text-sm">Refresh</button>
+    <PageTransition className="space-y-6">
+      <div className="flex items-end justify-between">
+        <div>
+          <p className="eyebrow mb-1">Catalog</p>
+          <h1 className="text-h1 text-ink-900">Products</h1>
+        </div>
+        <Button variant="secondary" size="sm" onClick={fetch}>Refresh</Button>
       </div>
 
-      <div className="overflow-x-auto bg-white rounded-lg shadow">
-        <table className="w-full text-sm">
-          <thead className="bg-gray-50">
-            <tr className="text-left text-gray-500">
-              <th className="px-4 py-3">Name</th>
-              <th className="px-4 py-3">Category</th>
-              <th className="px-4 py-3">Price</th>
-              <th className="px-4 py-3">Type</th>
-              <th className="px-4 py-3">Stock</th>
-              <th className="px-4 py-3">Active</th>
-              <th className="px-4 py-3">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map((p) => (
-              <tr key={p.id} className="border-t">
-                <td className="px-4 py-3 font-medium">{p.name}</td>
-                <td className="px-4 py-3 text-gray-500">{p.category?.name ?? '—'}</td>
-                <td className="px-4 py-3">${Number(p.price).toFixed(2)}</td>
-                <td className="px-4 py-3"><span className={`badge ${p.type === 'manual' ? 'bg-orange-100 text-orange-800' : 'bg-green-100 text-green-800'}`}>{p.type}</span></td>
-                <td className="px-4 py-3">{p.stock}</td>
-                <td className="px-4 py-3">
-                  <button onClick={() => toggleActive(p)} className={`text-xs ${p.is_active ? 'text-green-600' : 'text-red-600'}`}>
-                    {p.is_active ? 'Active' : 'Inactive'}
-                  </button>
-                </td>
-                <td className="px-4 py-3">
-                  <button onClick={() => deleteProduct(p.id)} className="text-xs text-red-600">Delete</button>
-                </td>
+      <div className="card overflow-hidden p-0">
+        <div className="overflow-x-auto">
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Type</th>
+                <th>Stock</th>
+                <th>Active</th>
+                <th>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {products.map((p) => (
+                <tr key={p.id}>
+                  <td className="font-medium text-ink-900">{p.name}</td>
+                  <td className="text-ink-500">{p.category?.name ?? '—'}</td>
+                  <td className="tabular-nums">${Number(p.price).toFixed(2)}</td>
+                  <td>
+                    <span className={p.type === 'manual' ? 'badge-pending' : 'badge-completed'}>
+                      {p.type}
+                    </span>
+                  </td>
+                  <td className="tabular-nums">{p.stock}</td>
+                  <td>
+                    <button
+                      onClick={() => toggleActive(p)}
+                      className={`text-small font-medium ${
+                        p.is_active
+                          ? 'text-accent-400 hover:text-accent-300'
+                          : 'text-status-rejected hover:text-status-rejected/80'
+                      }`}
+                    >
+                      {p.is_active ? 'Active' : 'Inactive'}
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      onClick={() => deleteProduct(p.id)}
+                      className="text-small font-medium text-status-rejected hover:text-status-rejected/80"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+              {products.length === 0 && !loading && (
+                <tr><td colSpan={7} className="text-center text-ink-500 py-8">No products yet.</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
+    </PageTransition>
   );
 }

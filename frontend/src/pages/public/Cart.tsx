@@ -1,8 +1,17 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useAppSelector, useAppDispatch, updateQuantity, removeFromCart, clearCart } from '@/store';
-import { orderApi, depositApi, withdrawalApi } from '@/api/client';
+import { orderApi } from '@/api/client';
 import toast from 'react-hot-toast';
+import Button from '@/components/Button';
+import PageTransition from '@/components/PageTransition';
+
+const PAYMENT_METHODS = [
+  { value: 'cash_wallet', label: 'Cash Wallet' },
+  { value: 'binance_pay', label: 'Binance Pay' },
+  { value: 'usdt', label: 'USDT (BEP-20)' },
+];
 
 export default function Cart() {
   const { items } = useAppSelector((s) => s.cart);
@@ -37,74 +46,140 @@ export default function Cart() {
 
   if (items.length === 0) {
     return (
-      <div className="text-center py-12">
-        <p className="text-gray-500 mb-4">Your cart is empty.</p>
-        <a href="/" className="btn-primary">Browse Products</a>
-      </div>
+      <PageTransition className="text-center py-24 card-pad max-w-lg mx-auto">
+        <svg className="w-16 h-16 mx-auto mb-6 text-ink-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" strokeLinecap="round" strokeLinejoin="round" />
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <path d="M16 10a4 4 0 0 1-8 0" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+        <h2 className="text-h2 text-ink-900 mb-2">Your cart is empty</h2>
+        <p className="text-body text-ink-600 mb-8">
+          Looks like you haven't added anything yet.
+        </p>
+        <Link to="/" className="btn-accent">Browse products</Link>
+      </PageTransition>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div className="md:col-span-2 space-y-4">
-        <h1 className="text-2xl font-bold text-gray-900">Your Cart</h1>
-        {items.map((item) => (
-          <div key={item.product_id} className="card flex items-center gap-4">
-            <div className="flex-1">
-              <h3 className="font-medium">{item.name}</h3>
-              {item.payload && (
-                <p className="text-xs text-gray-500 mt-1">
-                  {Object.entries(item.payload).map(([k, v]) => `${k}: ${v}`).join(' • ')}
-                </p>
-              )}
-            </div>
-            <input
-              type="number"
-              min="1"
-              value={item.quantity}
-              onChange={(e) => dispatch(updateQuantity({ product_id: item.product_id, quantity: parseInt(e.target.value) || 1 }))}
-              className="input w-20"
-            />
-            <div className="text-lg font-bold text-primary-600 w-24 text-right">${(item.price * item.quantity).toFixed(2)}</div>
-            <button onClick={() => dispatch(removeFromCart(item.product_id))} className="text-red-500 text-sm">Remove</button>
-          </div>
-        ))}
-      </div>
+    <PageTransition>
+      <h1 className="text-h1 text-ink-900 mb-8">Your cart</h1>
 
-      <div className="card">
-        <h2 className="text-lg font-bold mb-4">Checkout</h2>
-        <div className="space-y-3 mb-6">
-          {[
-            { value: 'cash_wallet', label: 'Cash Wallet' },
-            { value: 'binance_pay', label: 'Binance Pay' },
-            { value: 'usdt', label: 'USDT (BEP-20)' },
-          ].map((m) => (
-            <label key={m.value} className="flex items-center gap-2 text-sm">
-              <input
-                type="radio"
-                name="payment_method"
-                value={m.value}
-                checked={paymentMethod === m.value}
-                onChange={(e) => setPaymentMethod(e.target.value)}
-              />
-              {m.label}
-            </label>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Items */}
+        <div className="lg:col-span-2 space-y-3">
+          {items.map((item, i) => (
+            <motion.div
+              key={item.product_id}
+              className="card-pad flex items-center gap-4"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.05, duration: 0.3 }}
+            >
+              <div className="flex-1 min-w-0">
+                <h3 className="text-sm font-semibold text-ink-900 truncate">{item.name}</h3>
+                {item.payload && (
+                  <p className="text-micro text-ink-500 mt-0.5 truncate">
+                    {Object.entries(item.payload).map(([k, v]) => `${k}: ${v}`).join(' · ')}
+                  </p>
+                )}
+              </div>
+
+              {/* Quantity controls */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() =>
+                    dispatch(updateQuantity({ product_id: item.product_id, quantity: Math.max(1, item.quantity - 1) }))
+                  }
+                  className="btn-secondary btn-sm w-7 h-7 p-0 flex items-center justify-center"
+                >
+                  −
+                </button>
+                <span className="text-sm font-medium text-ink-900 w-6 text-center tabular-nums">
+                  {item.quantity}
+                </span>
+                <button
+                  onClick={() =>
+                    dispatch(updateQuantity({ product_id: item.product_id, quantity: item.quantity + 1 }))
+                  }
+                  className="btn-secondary btn-sm w-7 h-7 p-0 flex items-center justify-center"
+                >
+                  +
+                </button>
+              </div>
+
+              <span className="text-h3 text-accent-400 w-24 text-right tabular-nums">
+                ${(item.price * item.quantity).toFixed(2)}
+              </span>
+
+              <button
+                onClick={() => dispatch(removeFromCart(item.product_id))}
+                className="btn-ghost btn-sm text-status-rejected/70 hover:text-status-rejected p-1.5"
+                aria-label="Remove"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <path d="M18 6 6 18M6 6l12 12" />
+                </svg>
+              </button>
+            </motion.div>
           ))}
         </div>
-        <div className="border-t pt-4 mb-4">
-          <div className="flex justify-between text-lg font-bold">
-            <span>Total</span>
-            <span>${total.toFixed(2)}</span>
+
+        {/* Summary */}
+        <div className="lg:col-span-1">
+          <div className="card-pad sticky top-24 space-y-5">
+            <h2 className="text-h3 text-ink-900">Checkout</h2>
+
+            <div className="space-y-2">
+              {PAYMENT_METHODS.map((m) => (
+                <label
+                  key={m.value}
+                  className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all duration-150 ${
+                    paymentMethod === m.value
+                      ? 'border-accent-500 bg-accent-500/5'
+                      : 'border-ink-200 bg-ink-100 hover:border-ink-300'
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="payment_method"
+                    value={m.value}
+                    checked={paymentMethod === m.value}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                    className="accent-accent-500"
+                  />
+                  <span className="text-sm text-ink-800">{m.label}</span>
+                </label>
+              ))}
+            </div>
+
+            <div className="border-t border-ink-200 pt-4 space-y-1">
+              <div className="flex justify-between text-small text-ink-500">
+                <span>Subtotal</span>
+                <span>${total.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between text-body text-ink-600">
+                <span>Total</span>
+                <span className="text-h3 text-accent-400">${total.toFixed(2)}</span>
+              </div>
+            </div>
+
+            <Button
+              variant="accent"
+              size="lg"
+              className="w-full"
+              loading={submitting}
+              onClick={handleCheckout}
+            >
+              Place order
+            </Button>
+
+            <p className="text-micro text-ink-500 text-center">
+              Orders are processed instantly after payment confirmation.
+            </p>
           </div>
         </div>
-        <button
-          onClick={handleCheckout}
-          disabled={submitting}
-          className="btn-primary w-full"
-        >
-          {submitting ? 'Processing…' : 'Place Order'}
-        </button>
       </div>
-    </div>
+    </PageTransition>
   );
 }

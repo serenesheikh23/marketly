@@ -1,7 +1,55 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useAppSelector, useAppDispatch, updateBalance } from '@/store';
 import { vipApi, transactionApi } from '@/api/client';
+import PageTransition from '@/components/PageTransition';
+
+const QUICK_ACTIONS = [
+  { to: '/dashboard/deposit', label: 'Deposit Funds', icon: 'deposit', color: 'accent' },
+  { to: '/dashboard/withdraw', label: 'Withdraw', icon: 'withdraw', color: 'secondary' },
+  { to: '/dashboard/vip', label: 'VIP Status', icon: 'vip', color: 'secondary' },
+  { to: '/dashboard/manual-services', label: 'Manual Services', icon: 'service', color: 'secondary' },
+  { to: '/dashboard/orders', label: 'My Orders', icon: 'orders', color: 'secondary' },
+];
+
+const ACTION_ICONS: Record<string, ReactNode> = {
+  deposit: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 5v14M5 12l7 7 7-7" />
+    </svg>
+  ),
+  withdraw: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 19V5M5 12l7-7 7 7" />
+    </svg>
+  ),
+  vip: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+    </svg>
+  ),
+  service: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="3" />
+      <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14" />
+    </svg>
+  ),
+  orders: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" />
+      <rect x="9" y="3" width="6" height="4" rx="1" />
+    </svg>
+  ),
+};
+
+function stagger(i: number) {
+  return {
+    initial: { opacity: 0, y: 12 },
+    animate: { opacity: 1, y: 0 },
+    transition: { delay: i * 0.07, duration: 0.35, ease: [0.16, 1, 0.3, 1] as const },
+  };
+}
 
 export default function Dashboard() {
   const user = useAppSelector((s) => s.auth.user);
@@ -10,70 +58,139 @@ export default function Dashboard() {
   const [txns, setTxns] = useState<any[]>([]);
 
   useEffect(() => {
-    vipApi.status().then((r) => {
-      setVip(r.data);
-      dispatch(updateBalance(r.data.balance.toString()));
-    }).catch(console.error);
-    transactionApi.list().then((r) => setTxns(r.data.data ?? [])).catch(console.error);
+    vipApi.status()
+      .then((r) => {
+        setVip(r.data);
+        dispatch(updateBalance(r.data.balance?.toString() ?? '0'));
+      })
+      .catch(console.error);
+    transactionApi.list()
+      .then((r) => setTxns(r.data.data ?? []))
+      .catch(console.error);
   }, []);
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">My Account</h1>
+    <PageTransition className="space-y-10">
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="card">
-          <p className="text-sm text-gray-500">Balance</p>
-          <p className="text-3xl font-bold text-primary-600">${Number(user?.balance ?? 0).toFixed(2)}</p>
+      {/* Header */}
+      <div className="flex items-start justify-between">
+        <div>
+          <p className="eyebrow mb-1">Welcome back</p>
+          <h1 className="text-h1 text-ink-900">{user?.name ?? 'User'}</h1>
         </div>
-        <div className="card">
-          <p className="text-sm text-gray-500">VIP Level</p>
-          <p className="text-xl font-bold">{vip?.label ?? '—'}</p>
-        </div>
-        <div className="card">
-          <p className="text-sm text-gray-500">Withdrawal Limit</p>
-          <p className="text-xl font-bold">{vip?.withdrawal_limit > 0 ? `$${vip.withdrawal_limit}` : 'None'}</p>
+        <div className="text-right">
+          <p className="text-micro text-ink-500 uppercase">Balance</p>
+          <p className="text-h2 text-accent-400 tabular-nums">
+            ${Number(user?.balance ?? 0).toFixed(2)}
+          </p>
         </div>
       </div>
 
-      <div className="card">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-bold">Quick Actions</h2>
-        </div>
-        <div className="flex flex-wrap gap-3">
-          <Link to="/dashboard/deposit" className="btn-primary">Deposit Funds</Link>
-          <Link to="/dashboard/withdraw" className="btn-secondary">Withdraw</Link>
-          <Link to="/dashboard/vip" className="btn-secondary">VIP Status</Link>
-          <Link to="/dashboard/manual-services" className="btn-secondary">Manual Services</Link>
+      {/* KPI cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {[
+          {
+            label: 'Balance',
+            value: `$${Number(user?.balance ?? 0).toFixed(2)}`,
+            sub: null,
+            color: 'accent',
+          },
+          {
+            label: 'VIP Level',
+            value: vip?.label ?? '—',
+            sub: vip?.withdrawal_limit > 0 ? `Limit: $${vip.withdrawal_limit}` : null,
+            color: 'vip',
+          },
+          {
+            label: 'This month',
+            value: `${txns.filter((t) => new Date(t.created_at).getMonth() === new Date().getMonth()).length}`,
+            sub: 'transactions',
+            color: 'neutral',
+          },
+        ].map((kpi, i) => (
+          <motion.div
+            key={kpi.label}
+            {...stagger(i)}
+            className="card-pad"
+          >
+            <p className="text-micro text-ink-500 uppercase tracking-wide mb-2">{kpi.label}</p>
+            <p
+              className={`text-h2 ${
+                kpi.color === 'accent'
+                  ? 'text-accent-400'
+                  : kpi.color === 'vip'
+                  ? 'text-status-vip'
+                  : 'text-ink-900'
+              }`}
+            >
+              {kpi.value}
+            </p>
+            {kpi.sub && <p className="text-micro text-ink-500 mt-1">{kpi.sub}</p>}
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Quick actions */}
+      <div>
+        <h2 className="text-h3 text-ink-900 mb-4">Quick actions</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+          {QUICK_ACTIONS.map((a, i) => (
+            <motion.div key={a.to} {...stagger(i)}>
+              <Link
+                to={a.to}
+                className={`card-hover flex flex-col items-center gap-3 p-4 text-center ${
+                  a.color === 'accent' ? 'border-accent-500/30 bg-accent-500/5' : ''
+                }`}
+              >
+                <span className={a.color === 'accent' ? 'text-accent-400' : 'text-ink-600'}>
+                  {ACTION_ICONS[a.icon]}
+                </span>
+                <span className="text-small font-medium text-ink-900">{a.label}</span>
+              </Link>
+            </motion.div>
+          ))}
         </div>
       </div>
 
-      <div className="card">
-        <h2 className="text-lg font-bold mb-4">Recent Transactions</h2>
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="text-left text-gray-500 border-b">
-              <th className="pb-2">Type</th>
-              <th className="pb-2">Amount</th>
-              <th className="pb-2">Status</th>
-              <th className="pb-2">Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {txns.slice(0, 10).map((t) => (
-              <tr key={t.id} className="border-b last:border-0">
-                <td className="py-2 capitalize">{t.type}</td>
-                <td className={`py-2 font-medium ${['deposit', 'refund', 'vip_upgrade'].includes(t.type) ? 'text-green-600' : 'text-red-600'}`}>
-                  {['deposit', 'refund', 'vip_upgrade'].includes(t.type) ? '+' : '-'}${Number(t.amount).toFixed(2)}
-                </td>
-                <td className="py-2"><span className={`badge-${t.status}`}>{t.status}</span></td>
-                <td className="py-2 text-gray-400">{new Date(t.created_at).toLocaleDateString()}</td>
+      {/* Recent transactions */}
+      <div className="card-pad">
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="text-h3 text-ink-900">Recent transactions</h2>
+          <Link to="/dashboard/orders" className="text-micro text-accent-400 hover:text-accent-300">
+            View all →
+          </Link>
+        </div>
+        {txns.length > 0 ? (
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Date</th>
               </tr>
-            ))}
-            {txns.length === 0 && <tr><td colSpan={4} className="py-4 text-center text-gray-400">No transactions yet.</td></tr>}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {txns.slice(0, 10).map((t) => {
+                const isPositive = ['deposit', 'refund', 'vip_upgrade'].includes(t.type);
+                return (
+                  <tr key={t.id}>
+                    <td className="capitalize text-ink-800">{t.type.replace('_', ' ')}</td>
+                    <td className={`font-semibold tabular-nums ${isPositive ? 'text-accent-400' : 'text-status-rejected'}`}>
+                      {isPositive ? '+' : '-'}${Number(t.amount).toFixed(2)}
+                    </td>
+                    <td><span className={`badge-${t.status}`}>{t.status}</span></td>
+                    <td className="text-ink-500">{new Date(t.created_at).toLocaleDateString()}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        ) : (
+          <p className="text-center py-8 text-ink-500">No transactions yet.</p>
+        )}
       </div>
-    </div>
+
+    </PageTransition>
   );
 }

@@ -1,46 +1,191 @@
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/inter/700.css';
+@import '@fontsource/inter/800.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  font-family: Inter, system-ui, -apple-system, sans-serif;
+/* ============================================================
+   BASE — modern dark marketplace aesthetic
+   ============================================================ */
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html, body, #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-ink-0 text-ink-700 antialiased font-sans;
+    font-feature-settings: 'cv11', 'ss01', 'ss03';
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    @apply text-ink-900 tracking-tighter;
+  }
+
+  /* Subtle selection */
+  ::selection {
+    background: rgba(16, 185, 129, 0.25);
+    color: #FAFAFA;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: #0A0A0A; }
+  ::-webkit-scrollbar-thumb { background: #1F1F1F; border-radius: 8px; }
+  ::-webkit-scrollbar-thumb:hover { background: #2A2A2A; }
 }
 
-body {
-  margin: 0;
-  background-color: #f9fafb;
-  color: #111827;
+/* ============================================================
+   COMPONENTS
+   ============================================================ */
+@layer components {
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg
+           px-4 py-2.5 text-sm font-medium
+           transition-all duration-200 ease-smooth
+           focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500/40
+           disabled:opacity-50 disabled:cursor-not-allowed
+           select-none;
+  }
+
+  .btn-primary {
+    @apply btn bg-ink-900 text-ink-0
+           hover:bg-white hover:scale-[1.01] active:scale-[0.99]
+           shadow-soft;
+  }
+
+  .btn-accent {
+    @apply btn bg-accent-500 text-ink-0
+           hover:bg-accent-400 hover:scale-[1.01] active:scale-[0.99]
+           shadow-glow;
+  }
+
+  .btn-secondary {
+    @apply btn bg-ink-100 text-ink-800 border border-ink-200
+           hover:bg-ink-200 hover:border-ink-300;
+  }
+
+  .btn-ghost {
+    @apply btn bg-transparent text-ink-700
+           hover:bg-ink-100 hover:text-ink-900;
+  }
+
+  .btn-danger {
+    @apply btn bg-status-rejected/10 text-status-rejected border border-status-rejected/20
+           hover:bg-status-rejected/15;
+  }
+
+  .btn-success {
+    @apply btn bg-accent-500/10 text-accent-400 border border-accent-500/20
+           hover:bg-accent-500/15;
+  }
+
+  .btn-sm { @apply px-3 py-1.5 text-xs; }
+  .btn-lg { @apply px-6 py-3.5 text-base; }
+
+  /* ---------- Cards ---------- */
+  .card {
+    @apply bg-ink-50 border border-ink-200 rounded-xl
+           transition-all duration-300 ease-smooth;
+  }
+  .card-hover {
+    @apply card hover:border-ink-300 hover:shadow-lift hover:-translate-y-0.5;
+  }
+
+  .card-pad { @apply card p-6; }
+  .card-pad-sm { @apply card p-4; }
+
+  /* ---------- Form inputs ---------- */
+  .input {
+    @apply w-full bg-ink-100 border border-ink-200 rounded-lg
+           px-3.5 py-2.5 text-sm text-ink-900 placeholder:text-ink-500
+           transition-all duration-200
+           focus:outline-none focus:border-accent-500/60 focus:bg-ink-50
+           focus:ring-4 focus:ring-accent-500/10;
+  }
+
+  .label {
+    @apply block text-xs font-semibold tracking-wide text-ink-600 uppercase mb-1.5;
+  }
+
+  /* ---------- Badges ---------- */
+  .badge {
+    @apply inline-flex items-center gap-1 px-2 py-0.5
+           text-micro uppercase rounded-md
+           border;
+  }
+  .badge-pending    { @apply badge text-status-pending    border-status-pending/20    bg-status-pending/10; }
+  .badge-processing { @apply badge text-status-processing border-status-processing/20 bg-status-processing/10; }
+  .badge-completed  { @apply badge text-accent-400        border-accent-500/20        bg-accent-500/10; }
+  .badge-rejected   { @apply badge text-status-rejected   border-status-rejected/20   bg-status-rejected/10; }
+  .badge-vip        { @apply badge text-status-vip        border-status-vip/20        bg-status-vip/10; }
+  .badge-neutral    { @apply badge text-ink-600           border-ink-200              bg-ink-100; }
+
+  /* ---------- Tables ---------- */
+  .table {
+    @apply w-full text-sm;
+  }
+  .table thead th {
+    @apply text-left text-micro uppercase text-ink-600
+           border-b border-ink-200 px-4 py-3 font-semibold;
+  }
+  .table tbody tr {
+    @apply border-b border-ink-200/60 last:border-0
+           transition-colors duration-150
+           hover:bg-ink-100/60;
+  }
+  .table tbody td {
+    @apply px-4 py-3.5 text-ink-800;
+  }
+
+  /* ---------- Section eyebrow ---------- */
+  .eyebrow {
+    @apply text-micro uppercase tracking-[0.2em] text-accent-400;
+  }
+
+  /* ---------- Sidebar nav link ---------- */
+  .nav-link {
+    @apply flex items-center gap-3 px-3 py-2 rounded-lg
+           text-sm text-ink-700
+           transition-colors duration-150
+           hover:bg-ink-100 hover:text-ink-900;
+  }
+  .nav-link-active {
+    @apply nav-link bg-ink-100 text-ink-900
+           before:absolute before:left-0 before:w-0.5 before:h-5
+           before:bg-accent-500 before:rounded-r relative;
+  }
+
+  /* ---------- Decorative ---------- */
+  .grid-bg {
+    background-image:
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+  .dot-bg {
+    background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
 }
 
-.btn {
-  @apply inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+  .text-pretty  { text-wrap: pretty; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { scrollbar-width: none; }
 }
-.btn-primary {
-  @apply btn bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500;
-}
-.btn-secondary {
-  @apply btn bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 focus:ring-primary-500;
-}
-.btn-danger {
-  @apply btn bg-red-600 text-white hover:bg-red-700 focus:ring-red-500;
-}
-.btn-success {
-  @apply btn bg-green-600 text-white hover:bg-green-700 focus:ring-green-500;
-}
-.card {
-  @apply bg-white rounded-lg shadow-sm border border-gray-200 p-6;
-}
-.input {
-  @apply w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500;
-}
-.label {
-  @apply block text-sm font-medium text-gray-700 mb-1;
-}
-.badge {
-  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
-}
-.badge-pending { @apply badge bg-yellow-100 text-yellow-800; }
-.badge-processing { @apply badge bg-blue-100 text-blue-800; }
-.badge-completed { @apply badge bg-green-100 text-green-800; }
-.badge-rejected { @apply badge bg-red-100 text-red-800; }
-.badge-vip { @apply badge bg-purple-100 text-purple-800; }
