@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { adminCategoryApi } from '@/api/client';
+import toast from 'react-hot-toast';
 import IconPicker from './IconPicker';
 import ImageUploader from './ImageUploader';
 import Button from './Button';
@@ -44,7 +45,7 @@ export default function CategoryModal({ category, onClose, onSaved }: CategoryMo
       onSaved();
       onClose();
     } catch (err: any) {
-      alert(err.response?.data?.message ?? 'Failed to save category');
+      toast.error(err.response?.data?.message ?? 'Failed to save category');
     } finally {
       setSaving(false);
     }

@@ -29,14 +29,19 @@ const CATEGORY_ICON: Record<string, string> = {
 export default function AdminCategories() {
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [editCategory, setEditCategory] = useState<any | undefined>(undefined);
 
   const fetch = () => {
     setLoading(true);
+    setError(null);
     adminCategoryApi.list()
       .then((r) => setCategories(r.data.categories ?? []))
-      .catch(console.error)
+      .catch((err: any) => {
+        console.error(err);
+        setError(err.response?.data?.message ?? 'Failed to load categories.');
+      })
       .finally(() => setLoading(false));
   };
 
@@ -66,6 +71,13 @@ export default function AdminCategories() {
           + New Category
         </button>
       </div>
+
+      {error && (
+        <div className="card-pad text-center">
+          <p className="text-body text-status-rejected mb-3">{error}</p>
+          <button onClick={fetch} className="btn-accent">Retry</button>
+        </div>
+      )}
 
       <div className="space-y-2">
         {categories.map((c, i) => (
