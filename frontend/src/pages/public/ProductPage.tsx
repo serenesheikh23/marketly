@@ -83,6 +83,7 @@ export default function ProductPage() {
           <ProductImage
             name={product.name}
             category={product.category?.name}
+            imageBase64={product.image_base64}
             className="w-full h-80 rounded-2xl"
           />
         </motion.div>
