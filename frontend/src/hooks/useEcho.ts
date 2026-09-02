@@ -1,23 +1,22 @@
 import { useEffect } from 'react';
 import Echo from 'laravel-echo';
-import { useAppSelector, useAppDispatch } from './useAuth';
-import { updateBalance } from '@/store';
+import Pusher from 'pusher-js';
+import { useAppSelector } from '@/store';
 import toast from 'react-hot-toast';
+
+// Pusher is required by Laravel Echo
+(window as any).Pusher = Pusher;
 
 const scheme = import.meta.env.VITE_REVERB_SCHEME || 'http';
 const host = import.meta.env.VITE_REVERB_HOST || '127.0.0.1';
 const port = parseInt(import.meta.env.VITE_REVERB_PORT || '8080', 10);
 const key = import.meta.env.VITE_REVERB_APP_KEY || 'marketplace-key';
 
+// @ts-ignore
 const echo = new Echo({
   broadcaster: 'reverb',
   host: `${scheme}://${host}:${port}`,
   key,
-  wsHost: host,
-  wsPort: port,
-  wsPath: '/app',
-  wssPrefix: 'socket.io',
-  enabledTransports: ['ws', 'wss'],
 });
 
 export function useEcho() {
