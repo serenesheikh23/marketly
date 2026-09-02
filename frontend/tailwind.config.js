@@ -18,7 +18,8 @@ export default {
       colors: {
         // Surfaces
         ink: {
-          0: '#0A0A0A',     // base background
+          DEFAULT: '#0A0A0A',   // base background (use `bg-ink`)
+          base:    '#0A0A0A',   // base background (use `bg-ink-base`)
           50: '#111111',    // raised
           100: '#161616',   // card
           200: '#1F1F1F',   // border / hover
