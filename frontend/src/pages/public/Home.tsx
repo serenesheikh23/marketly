@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { categoryApi, productApi } from '@/api/client';
+import { useAppSelector } from '@/store';
 import ProductImage from '@/components/ProductImage';
 import HeroArt from '@/components/HeroArt';
 import PageTransition from '@/components/PageTransition';
@@ -29,6 +30,7 @@ export default function Home() {
   const [categories, setCategories] = useState<any[]>([]);
   const [featured, setFeatured] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const isAuthenticated = useAppSelector((s) => s.auth.isAuthenticated);
 
   useEffect(() => {
     Promise.all([
@@ -71,12 +73,25 @@ export default function Home() {
               Instant auto-delivery, manual services, and secure payments — all in one place. No fluff, no delays.
             </p>
             <div className="flex flex-wrap gap-3">
-              <Link to="/category/software" className="btn-accent">
-                Browse products
-              </Link>
-              <Link to="/register" className="btn-secondary">
-                Create account
-              </Link>
+              {isAuthenticated ? (
+                <>
+                  <Link to="/dashboard" className="btn-accent">
+                    Continue shopping
+                  </Link>
+                  <Link to="/dashboard" className="btn-secondary">
+                    Go to dashboard
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link to="/category/design-programs" className="btn-accent">
+                    Browse products
+                  </Link>
+                  <Link to="/register" className="btn-secondary">
+                    Create account
+                  </Link>
+                </>
+              )}
             </div>
           </div>
 

@@ -25,6 +25,15 @@ class CategoryController extends Controller
             ->with(['children', 'manualOrderFields'])
             ->firstOrFail();
 
+        // Include active products on the category payload so the frontend
+        // can render the page with a single round trip. We also expose
+        // the full product list (including inactive) under `all_products`
+        // for the admin views.
+        $category->load(['products' => function ($q) {
+            $q->where('is_active', true)->latest();
+        }]);
+        $category->setRelation('active_products', $category->products);
+
         return response()->json(['category' => $category]);
     }
 

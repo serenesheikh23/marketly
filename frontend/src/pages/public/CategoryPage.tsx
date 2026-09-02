@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { categoryApi, productApi } from '@/api/client';
@@ -10,28 +10,67 @@ export default function CategoryPage() {
   const [category, setCategory] = useState<any>(null);
   const [products, setProducts] = useState<any[]>([]);
   const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [loading, setLoading] = useState(true);
 
+  // ── Debounce search ────────────────────────────────────────
+  const searchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
+    if (searchTimeout.current) clearTimeout(searchTimeout.current);
+    searchTimeout.current = setTimeout(() => {
+      setDebouncedSearch(value);
+    }, 350);
+  };
+
+  // ── Load category + initial products ──────────────────────
   useEffect(() => {
     if (!slug) return;
     setLoading(true);
-    Promise.all([
-      categoryApi.show(slug),
-      productApi.list({ category: slug, q: search }),
-    ])
-      .then(([catRes, prodRes]) => {
-        setCategory(catRes.data.category);
-        setProducts(prodRes.data.data ?? []);
+
+    categoryApi.show(slug)
+      .then((res) => {
+        const cat = res.data.category;
+        setCategory(cat);
+        // Use products from the enriched category response when there's no search
+        setProducts(cat.products ?? []);
+        setLoading(false);
       })
-      .catch(console.error)
-      .finally(() => setLoading(false));
-  }, [slug, search]);
+      .catch(() => {
+        setCategory(null);
+        setProducts([]);
+        setLoading(false);
+      });
+  }, [slug]);
+
+  // ── Refetch products when debounced search changes ─────────
+  useEffect(() => {
+    if (!slug) return;
+    // Skip if we haven't loaded the category yet
+    if (category === null) return;
+
+    // If no search term, use the category's products (already loaded)
+    if (!debouncedSearch) return;
+
+    productApi.list({ category: slug, q: debouncedSearch })
+      .then((res) => setProducts(res.data.data ?? []))
+      .catch(console.error);
+  }, [debouncedSearch, slug]);
 
   if (loading) {
     return (
       <div className="flex items-center justify-center py-24">
         <span className="w-8 h-8 rounded-full border-2 border-accent-500 border-t-transparent animate-spin" />
       </div>
+    );
+  }
+
+  if (!category) {
+    return (
+      <PageTransition className="text-center py-24 card-pad">
+        <p className="text-h3 text-ink-600 mb-4">Category not found.</p>
+        <Link to="/" className="btn-accent">Back to home</Link>
+      </PageTransition>
     );
   }
 
@@ -42,16 +81,16 @@ export default function CategoryPage() {
         <p className="eyebrow mb-2">
           <Link to="/" className="hover:text-accent-300 transition-colors">Home</Link>
           {' / '}
-          {category?.name}
+          {category.name}
         </p>
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-h1 text-ink-900 mb-2">{category?.name}</h1>
-            {category?.description && (
+            <h1 className="text-h1 text-ink-900 mb-2">{category.name}</h1>
+            {category.description && (
               <p className="text-body text-ink-600">{category.description}</p>
             )}
           </div>
-          <span className="badge-neutral mt-1 shrink-0">{category?.type}</span>
+          <span className="badge-neutral mt-1 shrink-0">{category.type}</span>
         </div>
       </div>
 
@@ -74,7 +113,7 @@ export default function CategoryPage() {
           placeholder="Search products…"
           className="input pl-10"
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => handleSearchChange(e.target.value)}
         />
       </div>
 
@@ -94,7 +133,7 @@ export default function CategoryPage() {
               >
                 <ProductImage
                   name={p.name}
-                  category={p.category?.name}
+                  category={category.name}
                   className="h-36 mb-4"
                 />
                 <div className="px-4 pb-4">
@@ -122,8 +161,17 @@ export default function CategoryPage() {
           <svg className="w-12 h-12 mx-auto mb-4 text-ink-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
             <path d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" strokeLinecap="round" />
           </svg>
-          <p className="text-body text-ink-600">No products found.</p>
-          <p className="text-small text-ink-500 mt-1">Try adjusting your search.</p>
+          <p className="text-body text-ink-600">
+            {search ? 'No products match your search.' : 'No products in this category yet.'}
+          </p>
+          {search && (
+            <button
+              onClick={() => handleSearchChange('')}
+              className="text-sm text-accent-400 hover:text-accent-300 mt-2 transition-colors"
+            >
+              Clear search
+            </button>
+          )}
         </div>
       )}
     </PageTransition>
