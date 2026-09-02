@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { adminProductApi, categoryApi } from '@/api/client';
+import toast from 'react-hot-toast';
 import ImageUploader from './ImageUploader';
 import Button from './Button';
 
@@ -11,6 +12,7 @@ interface ProductModalProps {
 
 export default function ProductModal({ product, onClose, onSaved }: ProductModalProps) {
   const [categories, setCategories] = useState<any[]>([]);
+  const [catError, setCatError] = useState(false);
   const [form, setForm] = useState({
     name: product?.name ?? '',
     description: product?.description ?? '',
@@ -27,7 +29,7 @@ export default function ProductModal({ product, onClose, onSaved }: ProductModal
   useEffect(() => {
     categoryApi.list()
       .then((r) => setCategories(r.data.categories ?? []))
-      .catch(console.error);
+      .catch(() => { setCatError(true); setCategories([]); });
   }, []);
 
   const set = (k: string) => (v: unknown) => setForm((p) => ({ ...p, [k]: v }));
@@ -49,7 +51,7 @@ export default function ProductModal({ product, onClose, onSaved }: ProductModal
       onSaved();
       onClose();
     } catch (err: any) {
-      alert(err.response?.data?.message ?? 'Failed to save product');
+      toast.error(err.response?.data?.message ?? 'Failed to save product');
     } finally {
       setSaving(false);
     }
@@ -90,6 +92,7 @@ export default function ProductModal({ product, onClose, onSaved }: ProductModal
                   <option key={c.id} value={c.id}>{c.name}</option>
                 ))}
               </select>
+              {catError && <p className="text-micro text-status-rejected mt-1">Failed to load categories.</p>}
             </div>
           </div>
           <div>

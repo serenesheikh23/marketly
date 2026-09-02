@@ -4,6 +4,7 @@ import { useAppSelector } from '@/hooks/useAuth';
 import { useEcho } from '@/hooks/useEcho';
 import Layout from '@/components/Layout';
 import AdminLayout from '@/components/AdminLayout';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 // Lazy load all page components
 const Home           = lazy(() => import('@/pages/public/Home'));
@@ -53,36 +54,38 @@ export default function App() {
   useEcho();
 
   return (
-    <Suspense fallback={<LoadingSpinner />}>
-      <Routes>
-        <Route element={<Layout />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/products" element={<Products />} />
-          <Route path="/category/:slug" element={<CategoryPage />} />
-          <Route path="/product/:slug" element={<ProductPage />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-          <Route path="/dashboard/deposit" element={<ProtectedRoute><Deposit /></ProtectedRoute>} />
-          <Route path="/dashboard/withdraw" element={<ProtectedRoute><Withdraw /></ProtectedRoute>} />
-          <Route path="/dashboard/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
-          <Route path="/dashboard/vip" element={<ProtectedRoute><VipPage /></ProtectedRoute>} />
-          <Route path="/dashboard/manual-services" element={<ProtectedRoute><ManualServices /></ProtectedRoute>} />
-        </Route>
+    <ErrorBoundary>
+      <Suspense fallback={<LoadingSpinner />}>
+        <Routes>
+          <Route element={<Layout />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/products" element={<Products />} />
+            <Route path="/category/:slug" element={<CategoryPage />} />
+            <Route path="/product/:slug" element={<ProductPage />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/dashboard/deposit" element={<ProtectedRoute><Deposit /></ProtectedRoute>} />
+            <Route path="/dashboard/withdraw" element={<ProtectedRoute><Withdraw /></ProtectedRoute>} />
+            <Route path="/dashboard/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
+            <Route path="/dashboard/vip" element={<ProtectedRoute><VipPage /></ProtectedRoute>} />
+            <Route path="/dashboard/manual-services" element={<ProtectedRoute><ManualServices /></ProtectedRoute>} />
+          </Route>
 
-        <Route element={<AdminRoute><AdminLayout /></AdminRoute>}>
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admin/users" element={<AdminUsers />} />
-          <Route path="/admin/products" element={<AdminProducts />} />
-          <Route path="/admin/categories" element={<AdminCategories />} />
-          <Route path="/admin/orders" element={<AdminOrders />} />
-          <Route path="/admin/orders/manual" element={<AdminManualOrders />} />
-          <Route path="/admin/deposits" element={<AdminDeposits />} />
-          <Route path="/admin/withdrawals" element={<AdminWithdrawals />} />
-          <Route path="/admin/settings" element={<AdminSettings />} />
-        </Route>
-      </Routes>
-    </Suspense>
+          <Route element={<AdminRoute><AdminLayout /></AdminRoute>}>
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/users" element={<AdminUsers />} />
+            <Route path="/admin/products" element={<AdminProducts />} />
+            <Route path="/admin/categories" element={<AdminCategories />} />
+            <Route path="/admin/orders" element={<AdminOrders />} />
+            <Route path="/admin/orders/manual" element={<AdminManualOrders />} />
+            <Route path="/admin/deposits" element={<AdminDeposits />} />
+            <Route path="/admin/withdrawals" element={<AdminWithdrawals />} />
+            <Route path="/admin/settings" element={<AdminSettings />} />
+          </Route>
+        </Routes>
+      </Suspense>
+    </ErrorBoundary>
   );
 }

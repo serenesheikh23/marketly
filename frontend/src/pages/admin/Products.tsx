@@ -8,14 +8,19 @@ import PageTransition from '@/components/PageTransition';
 export default function AdminProducts() {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [editProduct, setEditProduct] = useState<any | undefined>(undefined);
 
   const fetch = () => {
     setLoading(true);
+    setError(null);
     adminProductApi.list()
       .then((r) => setProducts(r.data.data ?? []))
-      .catch(console.error)
+      .catch((err: any) => {
+        console.error(err);
+        setError(err.response?.data?.message ?? 'Failed to load products.');
+      })
       .finally(() => setLoading(false));
   };
 
@@ -52,6 +57,13 @@ export default function AdminProducts() {
           + New Product
         </button>
       </div>
+
+      {error && (
+        <div className="card-pad text-center">
+          <p className="text-body text-status-rejected mb-3">{error}</p>
+          <button onClick={fetch} className="btn-accent">Retry</button>
+        </div>
+      )}
 
       <div className="card overflow-hidden p-0">
         <div className="overflow-x-auto">

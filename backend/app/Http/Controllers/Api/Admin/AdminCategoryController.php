@@ -14,59 +14,95 @@ class AdminCategoryController extends Controller
 {
     public function index(): JsonResponse
     {
-        $categories = Category::with(['children', 'manualOrderFields'])
-            ->whereNull('parent_id')
-            ->orderBy('sort_order')
-            ->get();
+        try {
+            $categories = Category::with(['children', 'manualOrderFields'])
+                ->whereNull('parent_id')
+                ->orderBy('sort_order')
+                ->get();
 
-        return response()->json(['categories' => $categories]);
+            return response()->json(['categories' => $categories]);
+        } catch (\Throwable $e) {
+            report($e);
+
+            return response()->json(['message' => 'Failed to load categories', 'error' => $e->getMessage()], 500);
+        }
     }
 
     public function store(StoreCategoryRequest $request): JsonResponse
     {
-        $category = Category::create($request->validated());
+        try {
+            $category = Category::create($request->validated());
 
-        return response()->json(['category' => $category], 201);
+            return response()->json(['category' => $category], 201);
+        } catch (\Throwable $e) {
+            report($e);
+
+            return response()->json(['message' => 'Failed to create category', 'error' => $e->getMessage()], 500);
+        }
     }
 
     public function update(UpdateCategoryRequest $request, Category $category): JsonResponse
     {
-        $category->update($request->validated());
+        try {
+            $category->update($request->validated());
 
-        return response()->json(['category' => $category->fresh(['manualOrderFields'])]);
+            return response()->json(['category' => $category->fresh(['manualOrderFields'])]);
+        } catch (\Throwable $e) {
+            report($e);
+
+            return response()->json(['message' => 'Failed to update category', 'error' => $e->getMessage()], 500);
+        }
     }
 
     public function destroy(Category $category): JsonResponse
     {
-        if ($category->products()->exists()) {
-            return response()->json(['message' => 'Cannot delete a category with products.'], 422);
-        }
-        $category->delete();
+        try {
+            if ($category->products()->exists()) {
+                return response()->json(['message' => 'Cannot delete a category with products.'], 422);
+            }
+            $category->delete();
 
-        return response()->json(['message' => 'Category deleted.']);
+            return response()->json(['message' => 'Category deleted.']);
+        } catch (\Throwable $e) {
+            report($e);
+
+            return response()->json(['message' => 'Failed to delete category', 'error' => $e->getMessage()], 500);
+        }
     }
 
     public function storeField(Request $request, Category $category): JsonResponse
     {
-        $data = $request->validate([
-            'label' => ['required', 'string'],
-            'key' => ['required', 'string'],
-            'type' => ['required', 'string', 'in:text,textarea,select,checkbox,number'],
-            'required' => ['nullable', 'boolean'],
-            'options' => ['nullable', 'array'],
-            'placeholder' => ['nullable', 'string'],
-            'sort_order' => ['nullable', 'integer'],
-        ]);
+        try {
+            $data = $request->validate([
+                'label' => ['required', 'string'],
+                'key' => ['required', 'string'],
+                'type' => ['required', 'string', 'in:text,textarea,select,checkbox,number'],
+                'required' => ['nullable', 'boolean'],
+                'options' => ['nullable', 'array'],
+                'placeholder' => ['nullable', 'string'],
+                'sort_order' => ['nullable', 'integer'],
+            ]);
 
-        $field = ManualOrderField::create(array_merge($data, ['category_id' => $category->id]));
+            $field = ManualOrderField::create(array_merge($data, ['category_id' => $category->id]));
 
-        return response()->json(['field' => $field], 201);
+            return response()->json(['field' => $field], 201);
+        } catch (\Throwable $e) {
+            report($e);
+
+            return response()->json(['message' => 'Failed to create field', 'error' => $e->getMessage()], 500);
+        }
     }
 
     public function destroyField(ManualOrderField $field): JsonResponse
     {
-        $field->delete();
+        try {
+            $field->delete();
 
-        return response()->json(['message' => 'Field deleted.']);
+            return response()->json(['message' => 'Field deleted.']);
+        } catch (\Throwable $e) {
+            report($e);
+
+            return response()->json(['message' => 'Failed to delete field', 'error' => $e->getMessage()], 500);
+        }
     }
 }

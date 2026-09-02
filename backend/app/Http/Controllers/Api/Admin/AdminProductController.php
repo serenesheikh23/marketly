@@ -13,44 +13,68 @@ class AdminProductController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $query = Product::with(['category', 'externalStore']);
+        try {
+            $query = Product::with(['category', 'externalStore']);
 
-        if ($request->filled('category')) {
-            $query->where('category_id', $request->integer('category'));
+            if ($request->filled('category')) {
+                $query->where('category_id', $request->integer('category'));
+            }
+
+            if ($request->filled('type')) {
+                $query->where('type', $request->string('type'));
+            }
+
+            if ($request->filled('q')) {
+                $term = $request->string('q');
+                $query->where(fn ($q) => $q->where('name', 'LIKE', "%{$term}%"));
+            }
+
+            $products = $query->latest()->paginate(25);
+
+            return response()->json($products);
+        } catch (\Throwable $e) {
+            report($e);
+
+            return response()->json(['message' => 'Failed to load products', 'error' => $e->getMessage()], 500);
         }
-
-        if ($request->filled('type')) {
-            $query->where('type', $request->string('type'));
-        }
-
-        if ($request->filled('q')) {
-            $term = $request->string('q');
-            $query->where(fn ($q) => $q->where('name', 'LIKE', "%{$term}%"));
-        }
-
-        $products = $query->latest()->paginate(25);
-
-        return response()->json($products);
     }
 
     public function store(StoreProductRequest $request): JsonResponse
     {
-        $product = Product::create($request->validated());
+        try {
+            $product = Product::create($request->validated());
 
-        return response()->json(['product' => $product->load(['category', 'externalStore'])], 201);
+            return response()->json(['product' => $product->load(['category', 'externalStore'])], 201);
+        } catch (\Throwable $e) {
+            report($e);
+
+            return response()->json(['message' => 'Failed to create product', 'error' => $e->getMessage()], 500);
+        }
     }
 
     public function update(UpdateProductRequest $request, Product $product): JsonResponse
     {
-        $product->update($request->validated());
+        try {
+            $product->update($request->validated());
 
-        return response()->json(['product' => $product->fresh(['category', 'externalStore'])]);
+            return response()->json(['product' => $product->fresh(['category', 'externalStore'])]);
+        } catch (\Throwable $e) {
+            report($e);
+
+            return response()->json(['message' => 'Failed to update product', 'error' => $e->getMessage()], 500);
+        }
     }
 
     public function destroy(Product $product): JsonResponse
     {
-        $product->delete();
+        try {
+            $product->delete();
 
-        return response()->json(['message' => 'Product deleted.']);
+            return response()->json(['message' => 'Product deleted.']);
+        } catch (\Throwable $e) {
+            report($e);
+
+            return response()->json(['message' => 'Failed to delete product', 'error' => $e->getMessage()], 500);
+        }
     }
 }
