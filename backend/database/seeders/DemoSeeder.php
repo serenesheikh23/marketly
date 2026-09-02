@@ -205,45 +205,178 @@ class DemoSeeder extends Seeder
 
         $products = [
             // Games
-            ['category' => 'games', 'name' => 'Steam Gift Card $50', 'price' => 50.00, 'stock' => 100, 'store' => $store?->id],
-            ['category' => 'games', 'name' => 'PlayStation Plus 3 Months', 'price' => 25.00, 'stock' => 50, 'store' => null],
-            ['category' => 'games', 'name' => 'Xbox Game Pass Ultimate 1 Month', 'price' => 14.99, 'stock' => 80, 'store' => null],
+            [
+                'category' => 'games',
+                'name' => 'Steam Gift Card $50',
+                'price' => 50.00,
+                'stock' => 100,
+                'store' => $store?->id,
+                'description' => 'Redeemable on Steam for any game, DLC, software, or in-game item of your choice. The code is delivered instantly to your Marketly inbox after checkout — no waiting, no shipping.',
+            ],
+            [
+                'category' => 'games',
+                'name' => 'PlayStation Plus 3 Months',
+                'price' => 25.00,
+                'stock' => 50,
+                'store' => null,
+                'description' => 'Three months of PlayStation Plus Essential — online multiplayer, two free monthly games, exclusive discounts, and 100 GB of cloud storage. Digital code delivered to your account in minutes.',
+            ],
+            [
+                'category' => 'games',
+                'name' => 'Xbox Game Pass Ultimate 1 Month',
+                'price' => 14.99,
+                'stock' => 80,
+                'store' => null,
+                'description' => 'One month of Xbox Game Pass Ultimate. Stream and download over 100 high-quality games on console, PC, and cloud. Includes EA Play membership and Xbox Live Gold.',
+            ],
 
             // Chat
-            ['category' => 'chat-applications', 'name' => 'Telegram Premium 3 Months', 'price' => 12.99, 'stock' => 200, 'store' => null],
-            ['category' => 'chat-applications', 'name' => 'WhatsApp Business API Setup', 'price' => 49.00, 'stock' => 30, 'store' => null],
+            [
+                'category' => 'chat-applications',
+                'name' => 'Telegram Premium 3 Months',
+                'price' => 12.99,
+                'stock' => 200,
+                'store' => null,
+                'description' => 'Three months of Telegram Premium for any account. Get exclusive stickers, faster downloads, animated profile photos, 4 GB file uploads, and an ad-free experience.',
+            ],
+            [
+                'category' => 'chat-applications',
+                'name' => 'WhatsApp Business API Setup',
+                'price' => 49.00,
+                'stock' => 30,
+                'store' => null,
+                'description' => 'Full WhatsApp Business API onboarding — verified business account, automated greeting messages, and 1,000 free conversational sessions per month. Delivered within 24 hours.',
+            ],
 
             // Cards
-            ['category' => 'cards', 'name' => 'Amazon Gift Card $25', 'price' => 25.00, 'stock' => 200, 'store' => $store?->id],
-            ['category' => 'cards', 'name' => 'iTunes Gift Card $50', 'price' => 50.00, 'stock' => 150, 'store' => null],
+            [
+                'category' => 'cards',
+                'name' => 'Amazon Gift Card $25',
+                'price' => 25.00,
+                'stock' => 200,
+                'store' => $store?->id,
+                'description' => 'Official Amazon.com gift card redeemable across millions of products — no fees, no expiration date. Perfect for birthdays, holidays, or treating yourself.',
+            ],
+            [
+                'category' => 'cards',
+                'name' => 'iTunes Gift Card $50',
+                'price' => 50.00,
+                'stock' => 150,
+                'store' => null,
+                'description' => 'Apple App Store & iTunes gift card. Buy apps, games, music, movies, iCloud storage, and subscriptions for any Apple ID. Code delivered instantly.',
+            ],
 
             // Balance
-            ['category' => 'balance-top-ups', 'name' => 'Mobile Top-up $20', 'price' => 20.00, 'stock' => 500, 'store' => null],
+            [
+                'category' => 'balance-top-ups',
+                'name' => 'Mobile Top-up $20',
+                'price' => 20.00,
+                'stock' => 500,
+                'store' => null,
+                'description' => 'Instant mobile airtime top-up for major carriers. Add $20 to your prepaid balance in seconds — supports AT&T, T-Mobile, Verizon, and 200+ carriers worldwide.',
+            ],
 
             // Design
-            ['category' => 'design-programs', 'name' => 'Adobe Creative Cloud 1 Month', 'price' => 54.99, 'stock' => 40, 'store' => null],
-            ['category' => 'design-programs', 'name' => 'Figma Professional 1 Year', 'price' => 180.00, 'stock' => 25, 'store' => null],
+            [
+                'category' => 'design-programs',
+                'name' => 'Adobe Creative Cloud 1 Month',
+                'price' => 54.99,
+                'stock' => 40,
+                'store' => null,
+                'description' => 'One month of Adobe Creative Cloud — Photoshop, Illustrator, Premiere Pro, After Effects, and 20+ apps. Cloud storage, fonts, and portfolio access included.',
+            ],
+            [
+                'category' => 'design-programs',
+                'name' => 'Figma Professional 1 Year',
+                'price' => 180.00,
+                'stock' => 25,
+                'store' => null,
+                'description' => 'A full year of Figma Professional for one designer. Unlimited Figma files, advanced prototyping, team libraries, FigJam boards, and priority support.',
+            ],
 
             // Streaming
-            ['category' => 'screen-subscriptions', 'name' => 'Netflix Premium 1 Month', 'price' => 17.99, 'stock' => 100, 'store' => null],
-            ['category' => 'screen-subscriptions', 'name' => 'Spotify Premium 6 Months', 'price' => 59.94, 'stock' => 80, 'store' => null],
+            [
+                'category' => 'screen-subscriptions',
+                'name' => 'Netflix Premium 1 Month',
+                'price' => 17.99,
+                'stock' => 100,
+                'store' => null,
+                'description' => 'One month of Netflix Premium — 4K Ultra HD streaming on 4 screens simultaneously. Watch thousands of TV shows, movies, and Netflix originals.',
+            ],
+            [
+                'category' => 'screen-subscriptions',
+                'name' => 'Spotify Premium 6 Months',
+                'price' => 59.94,
+                'stock' => 80,
+                'store' => null,
+                'description' => 'Six months of Spotify Premium Individual. Ad-free music, offline listening, unlimited skips, and high-quality audio streaming on any device.',
+            ],
 
             // VPN
-            ['category' => 'vpn-subscriptions', 'name' => 'NordVPN 1 Year', 'price' => 59.99, 'stock' => 60, 'store' => null],
+            [
+                'category' => 'vpn-subscriptions',
+                'name' => 'NordVPN 1 Year',
+                'price' => 59.99,
+                'stock' => 60,
+                'store' => null,
+                'description' => 'A full year of NordVPN — secure browsing, 5,500+ servers in 60 countries, military-grade encryption, malware protection, and support for 6 devices.',
+            ],
 
             // Account Verification (manual)
-            ['category' => 'account-verification', 'name' => 'Social Media Verification', 'price' => 49.00, 'stock' => 999, 'type' => CategoryType::Manual],
+            [
+                'category' => 'account-verification',
+                'name' => 'Social Media Verification',
+                'price' => 49.00,
+                'stock' => 999,
+                'type' => CategoryType::Manual,
+                'description' => 'Manual social media verification service. Submit your account and required documents — our team completes the verification badge process within 3-7 business days.',
+            ],
 
             // AI
-            ['category' => 'artificial-intelligence', 'name' => 'ChatGPT Plus 1 Month', 'price' => 20.00, 'stock' => 100, 'store' => null],
-            ['category' => 'artificial-intelligence', 'name' => 'Midjourney Pro 1 Month', 'price' => 30.00, 'stock' => 80, 'store' => null],
+            [
+                'category' => 'artificial-intelligence',
+                'name' => 'ChatGPT Plus 1 Month',
+                'price' => 20.00,
+                'stock' => 100,
+                'store' => null,
+                'description' => 'One month of ChatGPT Plus — GPT-4 access, faster response times, priority access during peak hours, and advanced data analysis with DALL·E image generation.',
+            ],
+            [
+                'category' => 'artificial-intelligence',
+                'name' => 'Midjourney Pro 1 Month',
+                'price' => 30.00,
+                'stock' => 80,
+                'store' => null,
+                'description' => 'One month of Midjourney Pro plan — 30 fast GPU hours per month, stealth image generation, and access to the latest AI image models on Discord.',
+            ],
 
             // Manual Charging
-            ['category' => 'manual-charging-store-offers', 'name' => 'Custom Store Offer', 'price' => 25.00, 'stock' => 999, 'type' => CategoryType::Manual],
+            [
+                'category' => 'manual-charging-store-offers',
+                'name' => 'Custom Store Offer',
+                'price' => 25.00,
+                'stock' => 999,
+                'type' => CategoryType::Manual,
+                'description' => 'Need something custom? Tell us what you want to purchase or top up, and our team will manually handle the order within 24 hours. Minimum order $25.',
+            ],
 
             // Social Media Services (manual)
-            ['category' => 'social-media-services', 'name' => 'Telegram Members 1000', 'price' => 15.00, 'stock' => 999, 'type' => CategoryType::Manual],
-            ['category' => 'social-media-services', 'name' => 'Facebook Page Likes 1000', 'price' => 25.00, 'stock' => 999, 'type' => CategoryType::Manual],
+            [
+                'category' => 'social-media-services',
+                'name' => 'Telegram Members 1000',
+                'price' => 15.00,
+                'stock' => 999,
+                'type' => CategoryType::Manual,
+                'description' => 'Add 1,000 real, active members to your Telegram channel or group. Gradual delivery to keep your growth looking organic. Non-drop guarantee included.',
+            ],
+            [
+                'category' => 'social-media-services',
+                'name' => 'Facebook Page Likes 1000',
+                'price' => 25.00,
+                'stock' => 999,
+                'type' => CategoryType::Manual,
+                'description' => 'Boost your Facebook page credibility with 1,000 high-quality page likes from real-looking profiles. Delivered over 3-5 days for natural-looking growth.',
+            ],
         ];
 
         foreach ($products as $p) {
@@ -252,7 +385,7 @@ class DemoSeeder extends Seeder
                 [
                     'category_id' => $categories[$p['category']] ?? null,
                     'name' => $p['name'],
-                    'description' => 'High-quality digital product delivered automatically after purchase.',
+                    'description' => $p['description'],
                     'price' => $p['price'],
                     'stock' => $p['stock'],
                     'type' => $p['type'] ?? CategoryType::Auto,

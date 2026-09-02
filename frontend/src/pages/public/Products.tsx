@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { productApi } from '@/api/client';
 import ProductImage from '@/components/ProductImage';
+import { ProductGridSkeleton } from '@/components/Skeleton';
 import { formatPrice } from '@/utils/format';
 import PageTransition from '@/components/PageTransition';
 
@@ -29,9 +30,13 @@ export default function Products() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-24">
-        <span className="w-8 h-8 rounded-full border-2 border-accent-500 border-t-transparent animate-spin" />
-      </div>
+      <PageTransition className="space-y-8">
+        <div>
+          <p className="eyebrow mb-2">Catalog</p>
+          <h1 className="text-h1 text-ink-900">All Products</h1>
+        </div>
+        <ProductGridSkeleton count={8} />
+      </PageTransition>
     );
   }
 

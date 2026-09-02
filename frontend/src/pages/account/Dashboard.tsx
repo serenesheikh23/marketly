@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAppSelector, useAppDispatch, updateBalance } from '@/store';
 import { vipApi, transactionApi } from '@/api/client';
+import EmptyState from '@/components/EmptyState';
 import PageTransition from '@/components/PageTransition';
 import { formatPrice } from '@/utils/format';
 
@@ -188,7 +189,18 @@ export default function Dashboard() {
             </tbody>
           </table>
         ) : (
-          <p className="text-center py-8 text-ink-500">No transactions yet.</p>
+          <EmptyState
+            icon={
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+                <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" strokeLinecap="round" strokeLinejoin="round" />
+                <rect x="9" y="3" width="6" height="4" rx="1" />
+                <path d="M9 12h6M9 16h4" strokeLinecap="round" />
+              </svg>
+            }
+            title="No transactions yet"
+            description="Your purchase history and wallet activity will appear here once you make your first transaction."
+            action={{ label: 'Browse products', to: '/products' }}
+          />
         )}
       </div>
 

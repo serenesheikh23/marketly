@@ -12,7 +12,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['https://eliasproject-production.up.railway.app'],
+    'allowed_origins' => ['https://marketly-production.up.railway.app'],
 
     'allowed_origins_patterns' => [],
 

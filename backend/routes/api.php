@@ -18,8 +18,8 @@ use App\Http\Controllers\Api\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
 // Public auth
-Route::post('/auth/register', [AuthController::class, 'register']);
-Route::post('/auth/login', [AuthController::class, 'login']);
+Route::middleware('throttle:register')->post('/auth/register', [AuthController::class, 'register']);
+Route::middleware('throttle:login')->post('/auth/login', [AuthController::class, 'login']);
 
 // Public content
 Route::get('/categories', [CategoryController::class, 'index']);
@@ -66,6 +66,7 @@ Route::middleware('auth:web')->group(function () {
 // Admin routes
 Route::middleware(['auth:web', 'role:admin|moderator'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'stats']);
+    Route::get('/health', [AdminDashboardController::class, 'health']);
 
     Route::get('/users', [UserController::class, 'index']);
     Route::get('/users/{user}', [UserController::class, 'show']);

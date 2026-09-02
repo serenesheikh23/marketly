@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { adminProductApi } from '@/api/client';
 import toast from 'react-hot-toast';
 import ProductModal from '@/components/ProductModal';
+import { TableSkeleton } from '@/components/Skeleton';
 import { formatPrice } from '@/utils/format';
 import PageTransition from '@/components/PageTransition';
 
@@ -65,7 +66,9 @@ export default function AdminProducts() {
         </div>
       )}
 
-      <div className="card overflow-hidden p-0">
+      {loading && !error && <TableSkeleton rows={6} columns={7} />}
+
+      <div className={`card overflow-hidden p-0 ${loading ? 'hidden' : ''}`}>
         <div className="overflow-x-auto">
           <table className="table">
             <thead>

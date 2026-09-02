@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { adminCategoryApi } from '@/api/client';
 import toast from 'react-hot-toast';
+import Modal from './Modal';
 import IconPicker from './IconPicker';
 import ImageUploader from './ImageUploader';
 import Button from './Button';
@@ -52,20 +53,13 @@ export default function CategoryModal({ category, onClose, onSaved }: CategoryMo
   };
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-ink-0/70 backdrop-blur-sm p-4"
-      onClick={(e) => e.target === e.currentTarget && onClose()}
+    <Modal
+      isOpen={true}
+      onClose={onClose}
+      title={isEdit ? 'Edit Category' : 'New Category'}
+      size="md"
     >
-      <div className="card-pad w-full max-w-lg max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-h3 text-ink-900">
-            {isEdit ? 'Edit Category' : 'New Category'}
-          </h2>
-          <button onClick={onClose} className="btn-ghost btn-sm p-1.5">
-            ✕
-          </button>
-        </div>
-        <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="label">Name *</label>
             <input
@@ -131,7 +125,6 @@ export default function CategoryModal({ category, onClose, onSaved }: CategoryMo
             </Button>
           </div>
         </form>
-      </div>
-    </div>
+    </Modal>
   );
 }

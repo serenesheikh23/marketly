@@ -100,7 +100,7 @@ export default function Register() {
             {[
               { key: 'name', label: 'Full name', type: 'text', placeholder: 'John Doe' },
               { key: 'email', label: 'Email address', type: 'email', placeholder: 'you@example.com' },
-              { key: 'password', label: 'Password', type: 'password', placeholder: 'Min. 8 characters' },
+              { key: 'password', label: 'Password', type: 'password', placeholder: 'Min. 10 characters · letters, numbers, symbol' },
               { key: 'password_confirmation', label: 'Confirm password', type: 'password', placeholder: 'Repeat password' },
             ].map(({ key, label, type, placeholder }) => (
               <div key={key}>
@@ -109,13 +109,19 @@ export default function Register() {
                   id={key}
                   type={type}
                   required
-                  minLength={key.includes('password') ? 8 : undefined}
+                  minLength={key.includes('password') ? 10 : undefined}
                   autoComplete={key === 'password_confirmation' ? 'new-password' : key}
                   className="input"
                   placeholder={placeholder}
                   value={(form as any)[key]}
                   onChange={set(key)}
+                  aria-describedby={key === 'password' ? 'password-hint' : undefined}
                 />
+                {key === 'password' && (
+                  <p id="password-hint" className="text-micro text-ink-500 mt-1.5">
+                    At least 10 characters with letters, numbers, and a symbol.
+                  </p>
+                )}
               </div>
             ))}
 
