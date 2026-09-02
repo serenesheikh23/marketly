@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { useAppSelector, useAppDispatch, updateBalance } from '@/store';
 import { vipApi, transactionApi } from '@/api/client';
 import PageTransition from '@/components/PageTransition';
+import { formatPrice } from '@/utils/format';
 
 const QUICK_ACTIONS = [
   { to: '/dashboard/deposit', label: 'Deposit Funds', icon: 'deposit', color: 'accent' },
@@ -81,7 +82,7 @@ export default function Dashboard() {
         <div className="text-right">
           <p className="text-micro text-ink-500 uppercase">Balance</p>
           <p className="text-h2 text-accent-400 tabular-nums">
-            ${Number(user?.balance ?? 0).toFixed(2)}
+            {formatPrice(user?.balance ?? 0)}
           </p>
         </div>
       </div>
@@ -91,7 +92,7 @@ export default function Dashboard() {
         {[
           {
             label: 'Balance',
-            value: `$${Number(user?.balance ?? 0).toFixed(2)}`,
+            value: formatPrice(user?.balance ?? 0),
             sub: null,
             color: 'accent',
           },
@@ -177,7 +178,7 @@ export default function Dashboard() {
                   <tr key={t.id}>
                     <td className="capitalize text-ink-800">{t.type.replace('_', ' ')}</td>
                     <td className={`font-semibold tabular-nums ${isPositive ? 'text-accent-400' : 'text-status-rejected'}`}>
-                      {isPositive ? '+' : '-'}${Number(t.amount).toFixed(2)}
+                      {isPositive ? '+' : '-'}{formatPrice(t.amount)}
                     </td>
                     <td><span className={`badge-${t.status}`}>{t.status}</span></td>
                     <td className="text-ink-500">{new Date(t.created_at).toLocaleDateString()}</td>

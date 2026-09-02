@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { adminDashboardApi } from '@/api/client';
 import PageTransition from '@/components/PageTransition';
+import { formatPrice } from '@/utils/format';
 
 const TILE_COLORS: Record<string, string> = {
   'Total Users':           'text-ink-900',
@@ -34,7 +35,7 @@ export default function AdminDashboard() {
 
   const tiles = [
     { label: 'Total Users',           value: s.total_users,            numeric: true },
-    { label: 'Revenue',               value: `$${(s.total_revenue ?? 0).toFixed(2)}`, numeric: false },
+    { label: 'Revenue',               value: formatPrice(s.total_revenue ?? 0), numeric: false },
     { label: 'Pending Deposits',      value: s.pending_deposits,        numeric: true },
     { label: 'Pending Withdrawals',   value: s.pending_withdrawals,     numeric: true },
     { label: 'Pending Manual Orders', value: s.pending_manual_orders,   numeric: true },
@@ -83,7 +84,7 @@ export default function AdminDashboard() {
               <tr key={o.id}>
                 <td className="font-medium text-ink-900">#{o.id}</td>
                 <td>{o.user?.name ?? '—'}</td>
-                <td className="tabular-nums">${Number(o.total).toFixed(2)}</td>
+                <td className="tabular-nums">{formatPrice(o.total)}</td>
                 <td><span className={`badge-${o.status}`}>{o.status}</span></td>
                 <td className="text-ink-500">{new Date(o.created_at).toLocaleDateString()}</td>
               </tr>

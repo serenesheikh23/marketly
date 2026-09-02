@@ -3,6 +3,7 @@ import { adminDepositApi } from '@/api/client';
 import toast from 'react-hot-toast';
 import Button from '@/components/Button';
 import PageTransition from '@/components/PageTransition';
+import { formatPrice } from '@/utils/format';
 
 export default function AdminDeposits() {
   const [deposits, setDeposits] = useState<any[]>([]);
@@ -63,7 +64,7 @@ export default function AdminDeposits() {
                   <td className="font-medium text-ink-900">#{d.id}</td>
                   <td>{d.user?.name ?? '—'}</td>
                   <td className="font-medium tabular-nums text-accent-400">
-                    ${Number(d.amount).toFixed(2)}
+                    {formatPrice(d.amount)}
                   </td>
                   <td>{d.method}</td>
                   <td><span className={`badge-${d.status}`}>{d.status}</span></td>

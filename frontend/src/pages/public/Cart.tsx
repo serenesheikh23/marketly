@@ -6,6 +6,7 @@ import { orderApi } from '@/api/client';
 import toast from 'react-hot-toast';
 import Button from '@/components/Button';
 import PageTransition from '@/components/PageTransition';
+import { formatPrice } from '@/utils/format';
 
 const PAYMENT_METHODS = [
   { value: 'cash_wallet', label: 'Cash Wallet' },
@@ -109,7 +110,7 @@ export default function Cart() {
               </div>
 
               <span className="text-h3 text-accent-400 w-24 text-right tabular-nums">
-                ${(item.price * item.quantity).toFixed(2)}
+                {formatPrice(item.price * item.quantity)}
               </span>
 
               <button
@@ -156,11 +157,11 @@ export default function Cart() {
             <div className="border-t border-ink-200 pt-4 space-y-1">
               <div className="flex justify-between text-small text-ink-500">
                 <span>Subtotal</span>
-                <span>${total.toFixed(2)}</span>
+                <span>{formatPrice(total)}</span>
               </div>
               <div className="flex justify-between text-body text-ink-600">
                 <span>Total</span>
-                <span className="text-h3 text-accent-400">${total.toFixed(2)}</span>
+                <span className="text-h3 text-accent-400">{formatPrice(total)}</span>
               </div>
             </div>
 

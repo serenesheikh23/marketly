@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { categoryApi, productApi } from '@/api/client';
 import { useAppSelector } from '@/store';
 import ProductImage from '@/components/ProductImage';
+import { formatPrice } from '@/utils/format';
 import HeroArt from '@/components/HeroArt';
 import PageTransition from '@/components/PageTransition';
 
@@ -75,7 +76,7 @@ export default function Home() {
             <div className="flex flex-wrap gap-3">
               {isAuthenticated ? (
                 <>
-                  <Link to="/dashboard" className="btn-accent">
+                  <Link to="/products" className="btn-accent">
                     Continue shopping
                   </Link>
                   <Link to="/dashboard" className="btn-secondary">
@@ -84,7 +85,7 @@ export default function Home() {
                 </>
               ) : (
                 <>
-                  <Link to="/category/design-programs" className="btn-accent">
+                  <Link to="/products" className="btn-accent">
                     Browse products
                   </Link>
                   <Link to="/register" className="btn-secondary">
@@ -181,7 +182,7 @@ export default function Home() {
                   </p>
                   <div className="flex items-center justify-between">
                     <span className="text-h3 text-accent-400">
-                      ${Number(p.price).toFixed(2)}
+                      {formatPrice(p.price)}
                     </span>
                     {p.external_store_id && (
                       <span className="badge-neutral text-micro">External</span>

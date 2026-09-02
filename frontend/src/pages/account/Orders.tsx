@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { orderApi } from '@/api/client';
 import PageTransition from '@/components/PageTransition';
+import { formatPrice } from '@/utils/format';
 
 export default function Orders() {
   const [orders, setOrders] = useState<any[]>([]);
@@ -56,7 +57,7 @@ export default function Orders() {
                 <div className="text-right">
                   <span className={`badge-${order.status}`}>{order.status}</span>
                   <p className="text-h3 text-accent-400 mt-1 tabular-nums">
-                    ${Number(order.total).toFixed(2)}
+                    {formatPrice(order.total)}
                   </p>
                 </div>
               </div>
@@ -69,7 +70,7 @@ export default function Orders() {
                         {item.product?.name ?? 'Product'} × {item.quantity}
                       </span>
                       <span className="text-ink-600 tabular-nums">
-                        ${(Number(item.unit_price) * item.quantity).toFixed(2)}
+                        {formatPrice(Number(item.unit_price) * item.quantity)}
                       </span>
                     </div>
                   ))}

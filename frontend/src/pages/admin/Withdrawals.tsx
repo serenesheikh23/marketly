@@ -3,6 +3,7 @@ import { adminWithdrawalApi } from '@/api/client';
 import toast from 'react-hot-toast';
 import Button from '@/components/Button';
 import PageTransition from '@/components/PageTransition';
+import { formatPrice } from '@/utils/format';
 
 export default function AdminWithdrawals() {
   const [withdrawals, setWithdrawals] = useState<any[]>([]);
@@ -64,9 +65,9 @@ export default function AdminWithdrawals() {
                   <td className="font-medium text-ink-900">#{w.id}</td>
                   <td>{w.user?.name ?? '—'}</td>
                   <td className="font-medium tabular-nums text-status-rejected">
-                    ${Number(w.amount).toFixed(2)}
+                    {formatPrice(w.amount)}
                   </td>
-                  <td className="text-ink-500 tabular-nums">${Number(w.fee).toFixed(2)}</td>
+                  <td className="text-ink-500 tabular-nums">{formatPrice(w.fee)}</td>
                   <td>{w.method}</td>
                   <td><span className={`badge-${w.status}`}>{w.status}</span></td>
                   <td className="text-ink-500">{new Date(w.created_at).toLocaleDateString()}</td>

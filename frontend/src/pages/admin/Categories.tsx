@@ -2,14 +2,35 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { adminCategoryApi } from '@/api/client';
 import toast from 'react-hot-toast';
-import Button from '@/components/Button';
+import CategoryModal from '@/components/CategoryModal';
 import PageTransition from '@/components/PageTransition';
+
+const CATEGORY_ICON: Record<string, string> = {
+  'gamepad-2':'🎮','zap':'⚡','shield':'🛡️','globe':'🌐','server':'🖥️',
+  'monitor':'🖥️','credit-card':'💳','wallet':'💰','message-circle':'💬',
+  'phone':'📞','mail':'📧','user':'👤','users':'👥','star':'⭐','heart':'❤️',
+  'shopping-cart':'🛒','bag':'👜','package':'📦','box':'📦','layers':'📚',
+  'grid':'⊞','image':'🖼️','camera':'📷','film':'🎬','video':'🎥','music':'🎵',
+  'headphones':'🎧','mic':'🎤','bell':'🔔','lock':'🔒','unlock':'🔓','key':'🔑',
+  'shield-check':'✅','eye':'👁️','search':'🔍','settings':'⚙️','tool':'🔧',
+  'wrench':'🔧','code':'💻','database':'🗄️','cloud':'☁️','download':'⬇️',
+  'upload':'⬆️','share':'🔗','link':'🔗','copy':'📋','clipboard':'📋',
+  'bookmark':'🔖','tag':'🏷️','flag':'🚩','book':'📖','map':'🗺️',
+  'navigation':'🧭','map-pin':'📍','compass':'🧭','send':'📤','inbox':'📥',
+  'check-circle':'✅','x-circle':'❌','alert-circle':'⚠️','info':'ℹ️',
+  'plus':'➕','minus':'➖','refresh':'🔄','clock':'🕐','calendar':'📅',
+  'dollar-sign':'$','trending-up':'📈','trending-down':'📉','pie-chart':'📊',
+  'facebook':'📘','twitter':'🐦','instagram':'📷','youtube':'▶️','twitch':'🎮',
+  'discord':'💬','telegram':'✈️','bot':'🤖','cpu':'🖥️','smartphone':'📱',
+  'gem':'💎','crown':'👑','award':'🏆','gift':'🎁','sparkles':'✨',
+  'rocket':'🚀','target':'🎯',
+};
 
 export default function AdminCategories() {
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [form, setForm] = useState({ name: '', type: 'auto', description: '', icon: '' });
-  const [saving, setSaving] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [editCategory, setEditCategory] = useState<any | undefined>(undefined);
 
   const fetch = () => {
     setLoading(true);
@@ -21,92 +42,81 @@ export default function AdminCategories() {
 
   useEffect(() => { fetch(); }, []);
 
-  const handleCreate = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSaving(true);
+  const handleDelete = async (cat: any) => {
+    if (!confirm(`Delete category "${cat.name}"? This cannot be undone.`)) return;
     try {
-      await adminCategoryApi.create(form);
-      toast.success('Category created.');
-      setForm({ name: '', type: 'auto', description: '', icon: '' });
+      await adminCategoryApi.delete(cat.id);
+      toast.success('Category deleted.');
       fetch();
     } catch (err: any) { toast.error(err.response?.data?.message ?? 'Failed'); }
-    finally { setSaving(false); }
   };
 
-  const deleteCat = async (id: number) => {
-    if (!confirm('Delete this category?')) return;
-    try {
-      await adminCategoryApi.delete(id);
-      toast.success('Deleted.');
-      fetch();
-    } catch (err: any) { toast.error(err.response?.data?.message ?? 'Failed'); }
-  };
+  const openEdit = (cat: any) => { setEditCategory(cat); setShowModal(true); };
+  const openNew = () => { setEditCategory(undefined); setShowModal(true); };
+  const onSaved = () => { toast.success(editCategory ? 'Category updated.' : 'Category created.'); fetch(); };
 
   return (
     <PageTransition className="space-y-8">
-      <div>
-        <p className="eyebrow mb-1">Taxonomy</p>
-        <h1 className="text-h1 text-ink-900">Categories</h1>
+      <div className="flex items-end justify-between">
+        <div>
+          <p className="eyebrow mb-1">Taxonomy</p>
+          <h1 className="text-h1 text-ink-900">Categories</h1>
+        </div>
+        <button onClick={openNew} className="btn-accent">
+          + New Category
+        </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <form onSubmit={handleCreate} className="card-pad space-y-4">
-          <h2 className="text-h3 text-ink-900">New category</h2>
-          <div>
-            <label className="label">Name</label>
-            <input className="input" placeholder="e.g. Streaming Accounts" value={form.name}
-              onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} required />
-          </div>
-          <div>
-            <label className="label">Type</label>
-            <select className="input" value={form.type}
-              onChange={(e) => setForm((p) => ({ ...p, type: e.target.value }))}>
-              <option value="auto">Automatic</option>
-              <option value="manual">Manual</option>
-            </select>
-          </div>
-          <div>
-            <label className="label">Description</label>
-            <textarea className="input" rows={2} placeholder="Optional" value={form.description}
-              onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))} />
-          </div>
-          <div>
-            <label className="label">Icon key</label>
-            <input className="input" placeholder="gamepad, wallet, monitor…" value={form.icon}
-              onChange={(e) => setForm((p) => ({ ...p, icon: e.target.value }))} />
-          </div>
-          <Button type="submit" variant="accent" className="w-full" loading={saving}>
-            Create
-          </Button>
-        </form>
-
-        <div className="lg:col-span-2 space-y-3">
-          {categories.map((c, i) => (
-            <motion.div key={c.id}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.04, duration: 0.3 }}
-              className="card-pad flex items-center justify-between"
-            >
+      <div className="space-y-2">
+        {categories.map((c, i) => (
+          <motion.div
+            key={c.id}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.04, duration: 0.3 }}
+            className="card-pad flex items-center justify-between"
+          >
+            <div className="flex items-center gap-3">
+              {c.image_base64 ? (
+                <img
+                  src={c.image_base64}
+                  alt={c.name}
+                  className="w-10 h-10 rounded-lg object-cover border border-ink-200 flex-shrink-0"
+                />
+              ) : (
+                <div className="w-10 h-10 rounded-lg bg-ink-100 border border-ink-200 flex items-center justify-center text-xl flex-shrink-0">
+                  {CATEGORY_ICON[c.icon] ?? c.icon?.charAt(0).toUpperCase() ?? '📦'}
+                </div>
+              )}
               <div>
                 <p className="text-sm font-semibold text-ink-900">{c.name}</p>
-                <p className="text-micro text-ink-500 mt-0.5">
+                <p className="text-micro text-ink-500">
                   {c.slug} · <span className="text-ink-600">{c.type}</span>
                 </p>
               </div>
-              <button
-                onClick={() => deleteCat(c.id)}
-                className="text-small font-medium text-status-rejected hover:text-status-rejected/80"
-              >
+            </div>
+            <div className="flex items-center gap-2">
+              <button onClick={() => openEdit(c)} className="btn-secondary btn-sm">
+                Edit
+              </button>
+              <button onClick={() => handleDelete(c)} className="btn-danger btn-sm">
                 Delete
               </button>
-            </motion.div>
-          ))}
-          {categories.length === 0 && !loading && (
-            <p className="text-center text-ink-500 py-8">No categories yet.</p>
-          )}
-        </div>
+            </div>
+          </motion.div>
+        ))}
+        {categories.length === 0 && !loading && (
+          <p className="text-center text-ink-500 py-8">No categories yet.</p>
+        )}
       </div>
+
+      {showModal && (
+        <CategoryModal
+          category={editCategory}
+          onClose={() => setShowModal(false)}
+          onSaved={onSaved}
+        />
+      )}
     </PageTransition>
   );
 }

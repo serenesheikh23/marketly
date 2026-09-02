@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Enums\CategoryType;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreCategoryRequest;
+use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Category;
 use App\Models\ManualOrderField;
 use Illuminate\Http\JsonResponse;
@@ -17,36 +18,21 @@ class AdminCategoryController extends Controller
             ->whereNull('parent_id')
             ->orderBy('sort_order')
             ->get();
+
         return response()->json(['categories' => $categories]);
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(StoreCategoryRequest $request): JsonResponse
     {
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'parent_id' => ['nullable', 'exists:categories,id'],
-            'type' => ['required', 'string', 'in:auto,manual'],
-            'description' => ['nullable', 'string'],
-            'icon' => ['nullable', 'string'],
-            'sort_order' => ['nullable', 'integer'],
-        ]);
+        $category = Category::create($request->validated());
 
-        $category = Category::create($data);
         return response()->json(['category' => $category], 201);
     }
 
-    public function update(Request $request, Category $category): JsonResponse
+    public function update(UpdateCategoryRequest $request, Category $category): JsonResponse
     {
-        $data = $request->validate([
-            'name' => ['sometimes', 'string', 'max:255'],
-            'parent_id' => ['nullable', 'exists:categories,id'],
-            'type' => ['sometimes', 'string', 'in:auto,manual'],
-            'description' => ['nullable', 'string'],
-            'icon' => ['nullable', 'string'],
-            'sort_order' => ['sometimes', 'integer'],
-        ]);
+        $category->update($request->validated());
 
-        $category->update($data);
         return response()->json(['category' => $category->fresh(['manualOrderFields'])]);
     }
 
@@ -56,6 +42,7 @@ class AdminCategoryController extends Controller
             return response()->json(['message' => 'Cannot delete a category with products.'], 422);
         }
         $category->delete();
+
         return response()->json(['message' => 'Category deleted.']);
     }
 
@@ -72,12 +59,14 @@ class AdminCategoryController extends Controller
         ]);
 
         $field = ManualOrderField::create(array_merge($data, ['category_id' => $category->id]));
+
         return response()->json(['field' => $field], 201);
     }
 
     public function destroyField(ManualOrderField $field): JsonResponse
     {
         $field->delete();
+
         return response()->json(['message' => 'Field deleted.']);
     }
 }

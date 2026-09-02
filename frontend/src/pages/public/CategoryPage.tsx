@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { categoryApi, productApi } from '@/api/client';
 import ProductImage from '@/components/ProductImage';
+import { formatPrice } from '@/utils/format';
 import PageTransition from '@/components/PageTransition';
 
 export default function CategoryPage() {
@@ -145,7 +146,7 @@ export default function CategoryPage() {
                   </p>
                   <div className="flex items-center justify-between">
                     <span className="text-h3 text-accent-400">
-                      ${Number(p.price).toFixed(2)}
+                      {formatPrice(p.price)}
                     </span>
                     {p.external_store_id && (
                       <span className="badge-neutral text-micro">External</span>

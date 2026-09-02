@@ -5,6 +5,7 @@ import { productApi } from '@/api/client';
 import { useAppDispatch, addToCart } from '@/store';
 import Button from '@/components/Button';
 import ProductImage from '@/components/ProductImage';
+import { formatPrice } from '@/utils/format';
 import PageTransition from '@/components/PageTransition';
 
 export default function ProductPage() {
@@ -118,7 +119,7 @@ export default function ProductPage() {
           <div className="card-pad space-y-5">
             <div className="flex items-baseline gap-3">
               <span className="text-display-1 text-accent-400 font-bold">
-                ${Number(product.price).toFixed(2)}
+                {formatPrice(product.price)}
               </span>
               <span className="text-body text-ink-500">per unit</span>
             </div>
@@ -178,7 +179,7 @@ export default function ProductPage() {
               <span className="text-body text-ink-600">
                 Total:{' '}
                 <strong className="text-ink-900">
-                  ${(Number(product.price) * quantity).toFixed(2)}
+                  {formatPrice(Number(product.price) * quantity)}
                 </strong>
               </span>
               <Button

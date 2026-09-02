@@ -1,11 +1,29 @@
+import type { ReactNode } from 'react';
+
 interface ProductImageProps {
   name: string;
   category?: string;
+  imageBase64?: string;
   className?: string;
 }
 
-/** Deterministic, locally-rendered product thumbnail — no external images. */
-export default function ProductImage({ name, category, className = '' }: ProductImageProps) {
+/** Deterministic, locally-rendered product thumbnail — no external images.
+ *  If imageBase64 is provided, renders the uploaded image instead. */
+export default function ProductImage({ name, category, imageBase64, className = '' }: ProductImageProps): ReactNode {
+  if (imageBase64) {
+    return (
+      <div className={`relative w-full overflow-hidden rounded-lg bg-ink-100 ${className}`}>
+        <img
+          src={imageBase64}
+          alt={name}
+          className="w-full h-full object-cover"
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+    );
+  }
+
   // Pick a hue from the name so the same product always gets the same art.
   const hash = [...name].reduce((a, c) => a + c.charCodeAt(0), 0);
   const hueA = (hash * 47) % 360;
