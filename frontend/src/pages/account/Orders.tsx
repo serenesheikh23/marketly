@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { orderApi } from '@/api/client';
+import EmptyState from '@/components/EmptyState';
 import PageTransition from '@/components/PageTransition';
 import { formatPrice } from '@/utils/format';
 
@@ -28,13 +29,17 @@ export default function Orders() {
       <h1 className="text-h1 text-ink-900">My Orders</h1>
 
       {orders.length === 0 ? (
-        <div className="card-pad text-center py-16">
-          <svg className="w-12 h-12 mx-auto mb-4 text-ink-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" strokeLinecap="round" />
-            <rect x="9" y="3" width="6" height="4" rx="1" />
-          </svg>
-          <p className="text-body text-ink-600">No orders yet.</p>
-        </div>
+        <EmptyState
+          icon={
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+              <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" strokeLinecap="round" />
+              <rect x="9" y="3" width="6" height="4" rx="1" />
+            </svg>
+          }
+          title="No orders yet"
+          description="When you place your first order, it will appear here with real-time status updates. Browse the catalog to get started."
+          action={{ label: 'Browse products', to: '/products' }}
+        />
       ) : (
         <div className="space-y-4">
           {orders.map((order, i) => (

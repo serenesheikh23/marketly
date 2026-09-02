@@ -1,4 +1,4 @@
-# Digital Marketplace & Services Platform
+# Marketly — Digital Marketplace & Services Platform
 
 A full-stack Laravel + React digital marketplace with VIP tiers, manual services, and crypto payments.
 

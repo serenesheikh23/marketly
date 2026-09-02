@@ -5,6 +5,7 @@ import { useEcho } from '@/hooks/useEcho';
 import Layout from '@/components/Layout';
 import AdminLayout from '@/components/AdminLayout';
 import ErrorBoundary from '@/components/ErrorBoundary';
+import Analytics from '@/components/Analytics';
 
 // Lazy load all page components
 const Home           = lazy(() => import('@/pages/public/Home'));
@@ -55,6 +56,7 @@ export default function App() {
 
   return (
     <ErrorBoundary>
+      <Analytics />
       <Suspense fallback={<LoadingSpinner />}>
         <Routes>
           <Route element={<Layout />}>

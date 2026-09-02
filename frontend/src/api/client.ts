@@ -136,4 +136,5 @@ export const adminSettingsApi = {
 // Admin — Dashboard
 export const adminDashboardApi = {
   stats: () => api.get('/admin/dashboard'),
+  health: () => api.get('/admin/health'),
 };

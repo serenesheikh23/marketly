@@ -5,6 +5,7 @@ import { useAppSelector, useAppDispatch, updateQuantity, removeFromCart, clearCa
 import { orderApi } from '@/api/client';
 import toast from 'react-hot-toast';
 import Button from '@/components/Button';
+import EmptyState from '@/components/EmptyState';
 import PageTransition from '@/components/PageTransition';
 import { formatPrice } from '@/utils/format';
 
@@ -20,8 +21,14 @@ export default function Cart() {
   const navigate = useNavigate();
   const [paymentMethod, setPaymentMethod] = useState('cash_wallet');
   const [submitting, setSubmitting] = useState(false);
+  const [confirming, setConfirming] = useState(false);
 
   const total = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+
+  const handleConfirm = () => {
+    if (items.length === 0) return;
+    setConfirming(true);
+  };
 
   const handleCheckout = async () => {
     if (items.length === 0) return;
@@ -47,17 +54,19 @@ export default function Cart() {
 
   if (items.length === 0) {
     return (
-      <PageTransition className="text-center py-24 card-pad max-w-lg mx-auto">
-        <svg className="w-16 h-16 mx-auto mb-6 text-ink-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" strokeLinecap="round" strokeLinejoin="round" />
-          <line x1="3" y1="6" x2="21" y2="6" />
-          <path d="M16 10a4 4 0 0 1-8 0" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-        <h2 className="text-h2 text-ink-900 mb-2">Your cart is empty</h2>
-        <p className="text-body text-ink-600 mb-8">
-          Looks like you haven't added anything yet.
-        </p>
-        <Link to="/" className="btn-accent">Browse products</Link>
+      <PageTransition>
+        <EmptyState
+          icon={
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" strokeLinecap="round" strokeLinejoin="round" />
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <path d="M16 10a4 4 0 0 1-8 0" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          }
+          title="Your cart is empty"
+          description="You haven't added any products yet. Browse our catalog to find game keys, subscriptions, and more."
+          action={{ label: 'Browse products', to: '/products' }}
+        />
       </PageTransition>
     );
   }
@@ -165,15 +174,68 @@ export default function Cart() {
               </div>
             </div>
 
-            <Button
-              variant="accent"
-              size="lg"
-              className="w-full"
-              loading={submitting}
-              onClick={handleCheckout}
+            {/* Demo payment notice — visible until real API keys are added */}
+            <div
+              role="note"
+              aria-live="polite"
+              className="flex items-start gap-2 p-3 rounded-lg bg-status-pending/10 border border-status-pending/30 text-status-pending text-small"
             >
-              Place order
-            </Button>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="flex-shrink-0 mt-0.5" aria-hidden="true">
+                <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+              <span>
+                <strong className="font-semibold">Demo mode:</strong> payment is
+                currently a mock — orders will not be charged until real
+                payment keys are configured.
+              </span>
+            </div>
+
+            {confirming ? (
+              <div className="space-y-3">
+                <div className="card-pad bg-ink-100/40 p-4 space-y-1 text-small">
+                  <p className="text-ink-700">
+                    <strong className="text-ink-900">{items.length}</strong> item
+                    {items.length === 1 ? '' : 's'} for{' '}
+                    <strong className="text-accent-400">{formatPrice(total)}</strong>
+                  </p>
+                  <p className="text-ink-500">
+                    Paying with{' '}
+                    <strong className="text-ink-700">
+                      {PAYMENT_METHODS.find((m) => m.value === paymentMethod)?.label}
+                    </strong>
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    variant="accent"
+                    size="lg"
+                    className="flex-1"
+                    loading={submitting}
+                    onClick={handleCheckout}
+                  >
+                    Confirm order
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    onClick={() => setConfirming(false)}
+                    disabled={submitting}
+                  >
+                    Edit
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <Button
+                variant="accent"
+                size="lg"
+                className="w-full"
+                onClick={handleConfirm}
+              >
+                Review &amp; place order
+              </Button>
+            )}
 
             <p className="text-micro text-ink-500 text-center">
               Orders are processed instantly after payment confirmation.

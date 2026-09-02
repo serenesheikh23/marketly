@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { adminProductApi, categoryApi } from '@/api/client';
 import toast from 'react-hot-toast';
+import Modal from './Modal';
 import ImageUploader from './ImageUploader';
 import Button from './Button';
 
@@ -58,16 +59,13 @@ export default function ProductModal({ product, onClose, onSaved }: ProductModal
   };
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-ink-0/70 backdrop-blur-sm p-4"
-      onClick={(e) => e.target === e.currentTarget && onClose()}
+    <Modal
+      isOpen={true}
+      onClose={onClose}
+      title={isEdit ? 'Edit Product' : 'New Product'}
+      size="xl"
     >
-      <div className="card-pad w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-h3 text-ink-900">{isEdit ? 'Edit Product' : 'New Product'}</h2>
-          <button onClick={onClose} className="btn-ghost btn-sm p-1.5">✕</button>
-        </div>
-        <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="label">Name *</label>
@@ -170,7 +168,6 @@ export default function ProductModal({ product, onClose, onSaved }: ProductModal
             </Button>
           </div>
         </form>
-      </div>
-    </div>
+    </Modal>
   );
 }

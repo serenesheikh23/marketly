@@ -5,7 +5,54 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0A0A0A" />
-    <title>Marketplace — Digital Goods & Services</title>
+    <meta name="color-scheme" content="dark" />
+
+    <!-- Primary SEO -->
+    <title>Marketly — Digital Goods & Services Marketplace</title>
+    <meta name="title" content="Marketly — Digital Goods & Services Marketplace" />
+    <meta name="description" content="Marketly is a premium digital marketplace for game keys, gift cards, software licenses, VPN & streaming subscriptions, AI tools, and custom services. VIP tiers, manual fulfillment, and crypto payments." />
+    <meta name="keywords" content="digital marketplace, game keys, gift cards, software licenses, VPN, streaming, AI tools, crypto payments, USDT, Binance Pay, Marketly" />
+    <meta name="author" content="Marketly" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://marketly-production.up.railway.app/" />
+    <meta property="og:title" content="Marketly — Digital Goods & Services Marketplace" />
+    <meta property="og:description" content="Premium digital marketplace for game keys, gift cards, software licenses, streaming subscriptions, AI tools, and custom services. VIP tiers and crypto payments." />
+    <meta property="og:image" content="https://marketly-production.up.railway.app/og-image.svg" />
+    <meta property="og:site_name" content="Marketly" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://marketly-production.up.railway.app/" />
+    <meta name="twitter:title" content="Marketly — Digital Goods & Services Marketplace" />
+    <meta name="twitter:description" content="Premium digital marketplace for game keys, gift cards, software licenses, streaming subscriptions, AI tools, and custom services." />
+    <meta name="twitter:image" content="https://marketly-production.up.railway.app/og-image.svg" />
+
+    <!-- Preconnect to API for faster TTFB -->
+    <link rel="preconnect" href="https://marketly-production.up.railway.app" />
+
+    <!-- ── Analytics placeholder ─────────────────────────────────── -->
+    <!-- To enable analytics, set VITE_GA_MEASUREMENT_ID or VITE_UMAMI_WEBSITE_ID
+         in the frontend .env file. The script tag will be injected automatically. -->
+
+    <!-- ── Theme bootstrap to prevent dark/light flash ─────────── -->
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('theme');
+          if (stored === 'light') {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.dataset.theme = 'light';
+          } else {
+            document.documentElement.classList.add('dark');
+            document.documentElement.dataset.theme = 'dark';
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
