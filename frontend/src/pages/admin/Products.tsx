@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
 import { adminProductApi } from '@/api/client';
 import toast from 'react-hot-toast';
-import Button from '@/components/Button';
+import ProductModal from '@/components/ProductModal';
+import { formatPrice } from '@/utils/format';
 import PageTransition from '@/components/PageTransition';
 
 export default function AdminProducts() {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [editProduct, setEditProduct] = useState<any | undefined>(undefined);
 
   const fetch = () => {
     setLoading(true);
@@ -18,6 +21,15 @@ export default function AdminProducts() {
 
   useEffect(() => { fetch(); }, []);
 
+  const handleDelete = async (p: any) => {
+    if (!confirm(`Delete "${p.name}"? This cannot be undone.`)) return;
+    try {
+      await adminProductApi.delete(p.id);
+      toast.success('Product deleted.');
+      fetch();
+    } catch (err: any) { toast.error(err.response?.data?.message ?? 'Failed'); }
+  };
+
   const toggleActive = async (p: any) => {
     try {
       await adminProductApi.update(p.id, { is_active: !p.is_active });
@@ -26,14 +38,8 @@ export default function AdminProducts() {
     } catch (err: any) { toast.error(err.response?.data?.message ?? 'Failed'); }
   };
 
-  const deleteProduct = async (id: number) => {
-    if (!confirm('Delete this product?')) return;
-    try {
-      await adminProductApi.delete(id);
-      toast.success('Deleted.');
-      fetch();
-    } catch (err: any) { toast.error(err.response?.data?.message ?? 'Failed'); }
-  };
+  const openEdit = (p: any) => { setEditProduct(p); setShowModal(true); };
+  const openNew = () => { setEditProduct(undefined); setShowModal(true); };
 
   return (
     <PageTransition className="space-y-6">
@@ -42,7 +48,9 @@ export default function AdminProducts() {
           <p className="eyebrow mb-1">Catalog</p>
           <h1 className="text-h1 text-ink-900">Products</h1>
         </div>
-        <Button variant="secondary" size="sm" onClick={fetch}>Refresh</Button>
+        <button onClick={openNew} className="btn-accent">
+          + New Product
+        </button>
       </div>
 
       <div className="card overflow-hidden p-0">
@@ -64,7 +72,7 @@ export default function AdminProducts() {
                 <tr key={p.id}>
                   <td className="font-medium text-ink-900">{p.name}</td>
                   <td className="text-ink-500">{p.category?.name ?? '—'}</td>
-                  <td className="tabular-nums">${Number(p.price).toFixed(2)}</td>
+                  <td className="tabular-nums">{formatPrice(p.price)}</td>
                   <td>
                     <span className={p.type === 'manual' ? 'badge-pending' : 'badge-completed'}>
                       {p.type}
@@ -84,22 +92,39 @@ export default function AdminProducts() {
                     </button>
                   </td>
                   <td>
-                    <button
-                      onClick={() => deleteProduct(p.id)}
-                      className="text-small font-medium text-status-rejected hover:text-status-rejected/80"
-                    >
-                      Delete
-                    </button>
+                    <div className="flex gap-2">
+                      <button onClick={() => openEdit(p)} className="btn-secondary btn-sm">
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(p)}
+                        className="btn-danger btn-sm"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
               {products.length === 0 && !loading && (
-                <tr><td colSpan={7} className="text-center text-ink-500 py-8">No products yet.</td></tr>
+                <tr>
+                  <td colSpan={7} className="text-center text-ink-500 py-8">
+                    No products yet.
+                  </td>
+                </tr>
               )}
             </tbody>
           </table>
         </div>
       </div>
+
+      {showModal && (
+        <ProductModal
+          product={editProduct}
+          onClose={() => setShowModal(false)}
+          onSaved={() => { toast.success('Product saved.'); fetch(); }}
+        />
+      )}
     </PageTransition>
   );
 }

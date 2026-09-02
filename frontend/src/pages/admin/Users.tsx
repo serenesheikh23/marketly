@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { adminUserApi } from '@/api/client';
 import toast from 'react-hot-toast';
 import PageTransition from '@/components/PageTransition';
+import { formatPrice } from '@/utils/format';
 
 export default function AdminUsers() {
   const [users, setUsers] = useState<any[]>([]);
@@ -88,7 +89,7 @@ export default function AdminUsers() {
                       <option value="vip2">VIP2</option>
                     </select>
                   </td>
-                  <td className="font-medium tabular-nums">${Number(u.balance).toFixed(2)}</td>
+                  <td className="font-medium tabular-nums">{formatPrice(u.balance)}</td>
                   <td>
                     {u.banned_at
                       ? <span className="badge-rejected">Banned</span>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { adminOrderApi } from '@/api/client';
 import PageTransition from '@/components/PageTransition';
+import { formatPrice } from '@/utils/format';
 
 export default function AdminOrders() {
   const [orders, setOrders] = useState<any[]>([]);
@@ -38,7 +39,7 @@ export default function AdminOrders() {
                 <tr key={o.id}>
                   <td className="font-medium text-ink-900">#{o.id}</td>
                   <td>{o.user?.name ?? '—'}</td>
-                  <td className="tabular-nums">${Number(o.total).toFixed(2)}</td>
+                  <td className="tabular-nums">{formatPrice(o.total)}</td>
                   <td><span className={`badge-${o.status}`}>{o.status}</span></td>
                   <td className="text-ink-500">{o.payment_method}</td>
                   <td className="text-ink-500">{new Date(o.created_at).toLocaleDateString()}</td>

@@ -20,6 +20,7 @@ class Category extends Model
         'type',
         'description',
         'icon',
+        'image_base64',
         'sort_order',
     ];
 
