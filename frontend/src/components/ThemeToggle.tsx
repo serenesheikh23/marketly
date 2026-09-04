@@ -1,11 +1,12 @@
-import { useAppSelector, toggleTheme } from '@/store';
+import { useAppSelector, useAppDispatch, toggleTheme } from '@/store';
 
 export default function ThemeToggle() {
   const { theme } = useAppSelector((s) => s.theme);
+  const dispatch = useAppDispatch();
 
   return (
     <button
-      onClick={() => toggleTheme()}
+      onClick={() => dispatch(toggleTheme())}
       aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
       className="p-1.5 rounded-lg text-gray-600 dark:text-ink-500 hover:text-gray-900 dark:hover:text-ink-900 hover:bg-gray-100 dark:hover:bg-ink-100 transition-all duration-200"
     >

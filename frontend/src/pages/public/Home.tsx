@@ -61,8 +61,8 @@ export default function Home() {
     <PageTransition className="space-y-16">
 
       {/* ── Hero ──────────────────────────────────────────── */}
-      <section className="relative overflow-hidden rounded-2xl border border-ink-200 bg-gray-50 dark:bg-ink-50">
-        <div className="absolute inset-0 opacity-40">
+      <section className="relative overflow-hidden rounded-2xl border border-ink-200">
+        <div className="absolute inset-0 opacity-40 dark:opacity-40">
           <HeroArt variant="aurora" className="w-full h-full" />
         </div>
         <div className="relative z-10 px-10 py-16 flex flex-col md:flex-row items-center gap-10">
