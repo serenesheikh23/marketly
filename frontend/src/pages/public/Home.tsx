@@ -61,7 +61,7 @@ export default function Home() {
     <PageTransition className="space-y-16">
 
       {/* ── Hero ──────────────────────────────────────────── */}
-      <section className="relative w-full rounded-2xl border border-ink-200">
+      <section className="relative w-full rounded-2xl shadow-xl shadow-gray-200/50 dark:shadow-black/20">
         {/* Full-width aurora background */}
         <div className="absolute inset-0 opacity-40 dark:opacity-40 pointer-events-none">
           <HeroArt variant="aurora" className="w-full h-full" />
@@ -102,51 +102,41 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Right: modern floating visual */}
-          <div className="flex flex-col items-center gap-4 flex-shrink-0 mt-8 lg:mt-0">
-
+          {/* Right: modern floating visual - NO TEXT */}
+          <div className="flex flex-col items-center justify-center flex-shrink-0 mt-8 lg:mt-0">
             {/* Main glassmorphic product showcase card */}
             <motion.div
               animate={{ y: [0, -10, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-              className="relative w-64"
+              className="relative w-48 lg:w-64"
             >
               {/* Glow orb behind card */}
               <div className="absolute -inset-6 rounded-3xl bg-accent-400/20 blur-2xl pointer-events-none" />
               {/* Glass card */}
               <div className="relative backdrop-blur-xl bg-white/10 dark:bg-ink-50/10 border border-white/20 dark:border-ink-50/20 rounded-2xl p-6 shadow-glow">
-                {/* Product icon row */}
-                <div className="grid grid-cols-3 gap-3 mb-5">
-                  {[
-                    { icon: '🎮', label: 'Games' },
-                    { icon: '💬', label: 'Chat' },
-                    { icon: '💳', label: 'Cards' },
-                    { icon: '💰', label: 'Top-up' },
-                    { icon: '🎨', label: 'Design' },
-                    { icon: '🤖', label: 'AI' },
-                  ].map(({ icon, label }) => (
-                    <div key={label} className="flex flex-col items-center gap-1">
-                      <div className="w-10 h-10 rounded-xl bg-white/20 dark:bg-ink-50/20 backdrop-blur-sm border border-white/20 dark:border-ink-50/20 flex items-center justify-center text-lg shadow-sm">
-                        {icon}
-                      </div>
-                      <span className="text-micro text-gray-600 dark:text-ink-500">{label}</span>
-                    </div>
-                  ))}
-                </div>
-                {/* Price preview */}
-                <div className="flex items-center justify-between pt-4 border-t border-white/20 dark:border-ink-50/20">
-                  <div>
-                    <p className="text-micro text-gray-500 dark:text-ink-500">From</p>
-                    <p className="text-h3 text-accent-400 font-bold">$5.99</p>
+                {/* Product icon row - only icons, no text */}
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-white/20 dark:bg-ink-50/20 backdrop-blur-sm border border-white/20 dark:border-ink-50/20 flex items-center justify-center text-lg shadow-sm">
+                    🎮
                   </div>
-                  <div className="flex items-center gap-1.5">
-                    <div className="w-2 h-2 rounded-full bg-status-completed animate-pulse" />
-                    <span className="text-micro text-gray-500 dark:text-ink-500">Instant delivery</span>
+                  <div className="w-10 h-10 rounded-xl bg-white/20 dark:bg-ink-50/20 backdrop-blur-sm border border-white/20 dark:border-ink-50/20 flex items-center justify-center text-lg shadow-sm">
+                    💬
+                  </div>
+                  <div className="w-10 h-10 rounded-xl bg-white/20 dark:bg-ink-50/20 backdrop-blur-sm border border-white/20 dark:border-ink-50/20 flex items-center justify-center text-lg shadow-sm">
+                    💳
+                  </div>
+                  <div className="w-10 h-10 rounded-xl bg-white/20 dark:bg-ink-50/20 backdrop-blur-sm border border-white/20 dark:border-ink-50/20 flex items-center justify-center text-lg shadow-sm">
+                    💰
+                  </div>
+                  <div className="w-10 h-10 rounded-xl bg-white/20 dark:bg-ink-50/20 backdrop-blur-sm border border-white/20 dark:border-ink-50/20 flex items-center justify-center text-lg shadow-sm">
+                    🎨
+                  </div>
+                  <div className="w-10 h-10 rounded-xl bg-white/20 dark:bg-ink-50/20 backdrop-blur-sm border border-white/20 dark:border-ink-50/20 flex items-center justify-center text-lg shadow-sm">
+                    🤖
                   </div>
                 </div>
               </div>
             </motion.div>
-
           </div>
         </div>
       </section>
