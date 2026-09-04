@@ -37,6 +37,8 @@ export default function AdminWithdrawals() {
     } catch (err: any) { toast.error(err.response?.data?.message ?? 'Failed'); }
   };
 
+  const hasPending = withdrawals.some((w) => w.status === 'pending');
+
   return (
     <PageTransition className="space-y-6">
       <div>
@@ -56,33 +58,37 @@ export default function AdminWithdrawals() {
                 <th>Method</th>
                 <th>Status</th>
                 <th>Date</th>
-                <th>Actions</th>
+                {hasPending && <th>Actions</th>}
               </tr>
             </thead>
             <tbody>
               {withdrawals.map((w) => (
                 <tr key={w.id}>
-                  <td className="font-medium text-ink-900">#{w.id}</td>
-                  <td>{w.user?.name ?? '—'}</td>
-                  <td className="font-medium tabular-nums text-status-rejected">
+                  <td className="font-medium text-ink-900 whitespace-nowrap">#{w.id}</td>
+                  <td className="whitespace-nowrap">{w.user?.name ?? '—'}</td>
+                  <td className="font-medium tabular-nums text-status-rejected whitespace-nowrap">
                     {formatPrice(w.amount)}
                   </td>
-                  <td className="text-ink-500 tabular-nums">{formatPrice(w.fee)}</td>
-                  <td>{w.method}</td>
+                  <td className="text-ink-500 tabular-nums whitespace-nowrap">{formatPrice(w.fee)}</td>
+                  <td className="whitespace-nowrap">{w.method}</td>
                   <td><span className={`badge-${w.status}`}>{w.status}</span></td>
-                  <td className="text-ink-500">{new Date(w.created_at).toLocaleDateString()}</td>
-                  <td>
-                    {w.status === 'pending' ? (
-                      <div className="flex gap-2">
-                        <Button size="sm" variant="success" onClick={() => approve(w.id)}>Approve</Button>
-                        <Button size="sm" variant="danger" onClick={() => reject(w.id)}>Reject</Button>
-                      </div>
-                    ) : null}
-                  </td>
+                  <td className="text-ink-500 whitespace-nowrap">{new Date(w.created_at).toLocaleDateString()}</td>
+                  {hasPending && (
+                    <td>
+                      {w.status === 'pending' ? (
+                        <div className="flex gap-2">
+                          <Button size="sm" variant="success" onClick={() => approve(w.id)}>Approve</Button>
+                          <Button size="sm" variant="danger" onClick={() => reject(w.id)}>Reject</Button>
+                        </div>
+                      ) : (
+                        <span className="text-micro text-ink-500">—</span>
+                      )}
+                    </td>
+                  )}
                 </tr>
               ))}
               {withdrawals.length === 0 && !loading && (
-                <tr><td colSpan={8} className="text-center text-ink-500 py-8">No withdrawals yet.</td></tr>
+                <tr><td colSpan={hasPending ? 8 : 7} className="text-center text-ink-500 py-8">No withdrawals yet.</td></tr>
               )}
             </tbody>
           </table>

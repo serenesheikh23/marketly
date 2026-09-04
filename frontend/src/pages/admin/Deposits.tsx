@@ -37,6 +37,8 @@ export default function AdminDeposits() {
     } catch (err: any) { toast.error(err.response?.data?.message ?? 'Failed'); }
   };
 
+  const hasPending = deposits.some((d) => d.status === 'pending');
+
   return (
     <PageTransition className="space-y-6">
       <div>
@@ -55,32 +57,36 @@ export default function AdminDeposits() {
                 <th>Method</th>
                 <th>Status</th>
                 <th>Date</th>
-                <th>Actions</th>
+                {hasPending && <th>Actions</th>}
               </tr>
             </thead>
             <tbody>
               {deposits.map((d) => (
                 <tr key={d.id}>
-                  <td className="font-medium text-ink-900">#{d.id}</td>
-                  <td>{d.user?.name ?? '—'}</td>
-                  <td className="font-medium tabular-nums text-accent-400">
+                  <td className="font-medium text-ink-900 whitespace-nowrap">#{d.id}</td>
+                  <td className="whitespace-nowrap">{d.user?.name ?? '—'}</td>
+                  <td className="font-medium tabular-nums text-accent-400 whitespace-nowrap">
                     {formatPrice(d.amount)}
                   </td>
-                  <td>{d.method}</td>
+                  <td className="whitespace-nowrap">{d.method}</td>
                   <td><span className={`badge-${d.status}`}>{d.status}</span></td>
-                  <td className="text-ink-500">{new Date(d.created_at).toLocaleDateString()}</td>
-                  <td>
-                    {d.status === 'pending' ? (
-                      <div className="flex gap-2">
-                        <Button size="sm" variant="success" onClick={() => approve(d.id)}>Approve</Button>
-                        <Button size="sm" variant="danger" onClick={() => reject(d.id)}>Reject</Button>
-                      </div>
-                    ) : null}
-                  </td>
+                  <td className="text-ink-500 whitespace-nowrap">{new Date(d.created_at).toLocaleDateString()}</td>
+                  {hasPending && (
+                    <td>
+                      {d.status === 'pending' ? (
+                        <div className="flex gap-2">
+                          <Button size="sm" variant="success" onClick={() => approve(d.id)}>Approve</Button>
+                          <Button size="sm" variant="danger" onClick={() => reject(d.id)}>Reject</Button>
+                        </div>
+                      ) : (
+                        <span className="text-micro text-ink-500">—</span>
+                      )}
+                    </td>
+                  )}
                 </tr>
               ))}
               {deposits.length === 0 && !loading && (
-                <tr><td colSpan={7} className="text-center text-ink-500 py-8">No deposits yet.</td></tr>
+                <tr><td colSpan={hasPending ? 7 : 6} className="text-center text-ink-500 py-8">No deposits yet.</td></tr>
               )}
             </tbody>
           </table>
