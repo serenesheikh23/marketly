@@ -5,8 +5,10 @@ import ProductModal from '@/components/ProductModal';
 import { TableSkeleton } from '@/components/Skeleton';
 import { formatPrice } from '@/utils/format';
 import PageTransition from '@/components/PageTransition';
+import { useI18n } from '@/i18n';
 
 export default function AdminProducts() {
+  const { locale } = useI18n();
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -85,8 +87,14 @@ export default function AdminProducts() {
             <tbody>
               {products.map((p) => (
                 <tr key={p.id}>
-                  <td className="font-medium text-ink-900">{p.name}</td>
-                  <td className="text-ink-500">{p.category?.name ?? '—'}</td>
+                  <td className="font-medium text-ink-900">{locale === 'ar' && p.name_ar ? p.name_ar : p.name}</td>
+                  <td className="text-ink-500">
+                    {p.category
+                      ? locale === 'ar' && p.category.name_ar
+                        ? p.category.name_ar
+                        : p.category.name
+                      : '—'}
+                  </td>
                   <td className="tabular-nums">{formatPrice(p.price)}</td>
                   <td>
                     <span className={p.type === 'manual' ? 'badge-pending' : 'badge-completed'}>

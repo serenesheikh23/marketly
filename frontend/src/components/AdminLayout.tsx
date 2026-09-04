@@ -83,7 +83,7 @@ export default function AdminLayout() {
   const closeSidebar = () => setSidebarOpen(false);
 
   return (
-    <div className="flex min-h-screen bg-ink">
+    <div className="flex min-h-screen bg-white dark:bg-ink">
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div
@@ -95,11 +95,11 @@ export default function AdminLayout() {
       {/* Sidebar — fixed on mobile (overlay), sticky on lg+ */}
       <aside
         className={`
-          fixed inset-y-0 left-0 z-40 w-64 flex flex-col
+          fixed inset-y-0 start-0 z-40 w-64 flex flex-col
           bg-ink-50 border-r border-ink-200
           transition-transform duration-300
-          lg:sticky lg:top-0 lg:z-20 lg:translate-x-0 lg:flex-shrink-0 lg:h-screen
-          ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+          lg:sticky lg:top-0 lg:z-20 lg:flex-shrink-0 lg:h-screen
+          ${sidebarOpen ? 'ltr:translate-x-0 rtl:translate-x-0' : 'ltr:-translate-x-full rtl:translate-x-full'}
         `}
       >
         <div className="flex items-center justify-between px-4 py-5 border-b border-ink-200">
@@ -162,7 +162,7 @@ export default function AdminLayout() {
       {/* Mobile hamburger — only on mobile */}
       <button
         onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="fixed top-4 left-4 z-50 p-2 rounded-md bg-ink-50 border border-ink-200 hover:bg-ink-100 lg:hidden"
+        className="fixed top-4 ltr:start-4 rtl:end-4 z-50 p-2 rounded-md bg-white dark:bg-ink-50 border border-ink-200 hover:bg-ink-100 lg:hidden"
         aria-label="Toggle sidebar"
       >
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -173,8 +173,8 @@ export default function AdminLayout() {
       </button>
 
       {/* Content — offset by sidebar on lg+ */}
-      <div className="flex-1 overflow-auto lg:ml-64">
-        <PageTransition className="p-4 pt-16 lg:p-8 lg:pt-8 pl-14 lg:pl-8">
+      <div className="flex-1 overflow-auto lg:ms-64 rtl:lg:me-64 rtl:lg:ms-0">
+        <PageTransition className="p-4 pt-16 lg:p-8 lg:pt-8 ps-14 lg:ps-8 max-w-7xl mx-auto w-full">
           <Outlet />
         </PageTransition>
       </div>

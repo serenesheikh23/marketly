@@ -6,8 +6,11 @@ import ProductImage from '@/components/ProductImage';
 import { ProductGridSkeleton } from '@/components/Skeleton';
 import { formatPrice } from '@/utils/format';
 import PageTransition from '@/components/PageTransition';
+import { useI18n } from '@/i18n';
+import { localized } from '@/utils/localize';
 
 export default function Products() {
+  const { locale } = useI18n();
   const [products, setProducts] = useState<any[]>([]);
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
@@ -70,13 +73,13 @@ export default function Products() {
               transition={{ delay: i * 0.03, duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
             >
               <Link to={`/product/${p.slug}`} className="card-hover group block overflow-hidden">
-                <ProductImage name={p.name} category={p.category?.name} imageBase64={p.image_base64} imageUrl={p.image_url} className="h-40 mb-4" />
+                <ProductImage name={localized(p, 'name', 'name_ar', locale)} category={localized(p.category, 'name', 'name_ar', locale)} imageBase64={p.image_base64} imageUrl={p.image_url} className="h-40 mb-4" />
                 <div className="px-4 pb-4">
                   <h3 className="text-sm font-semibold text-ink-900 group-hover:text-accent-400 transition-colors line-clamp-2 mb-1">
-                    {p.name}
+                    {localized(p, 'name', 'name_ar', locale)}
                   </h3>
                   <p className="text-micro text-ink-500 line-clamp-2 mb-3">
-                    {p.description}
+                    {localized(p, 'description', 'description_ar', locale)}
                   </p>
                   <div className="flex items-center justify-between">
                     <span className="text-h3 text-accent-400">

@@ -5,9 +5,12 @@ import { categoryApi, productApi } from '@/api/client';
 import ProductImage from '@/components/ProductImage';
 import { formatPrice } from '@/utils/format';
 import PageTransition from '@/components/PageTransition';
+import { useI18n } from '@/i18n';
+import { localized } from '@/utils/localize';
 
 export default function CategoryPage() {
   const { slug } = useParams();
+  const { locale } = useI18n();
   const [category, setCategory] = useState<any>(null);
   const [products, setProducts] = useState<any[]>([]);
   const [search, setSearch] = useState('');
@@ -82,13 +85,13 @@ export default function CategoryPage() {
         <p className="eyebrow mb-2">
           <Link to="/" className="hover:text-accent-300 transition-colors">Home</Link>
           {' / '}
-          {category.name}
+          {localized(category, 'name', 'name_ar', locale)}
         </p>
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-h1 text-ink-900 mb-2">{category.name}</h1>
+            <h1 className="text-h1 text-ink-900 mb-2">{localized(category, 'name', 'name_ar', locale)}</h1>
             {category.description && (
-              <p className="text-body text-ink-600">{category.description}</p>
+              <p className="text-body text-ink-600">{localized(category, 'description', 'description_ar', locale)}</p>
             )}
           </div>
           <span className="badge-neutral mt-1 shrink-0">{category.type}</span>
@@ -133,18 +136,18 @@ export default function CategoryPage() {
                 className="card-hover group block overflow-hidden"
               >
                 <ProductImage
-                  name={p.name}
-                  category={category.name}
+                  name={localized(p, 'name', 'name_ar', locale)}
+                  category={localized(category, 'name', 'name_ar', locale)}
                   imageBase64={p.image_base64}
                   imageUrl={p.image_url}
                   className="h-36 mb-4"
                 />
                 <div className="px-4 pb-4">
                   <h3 className="text-sm font-semibold text-ink-900 group-hover:text-accent-400 transition-colors line-clamp-2 mb-1">
-                    {p.name}
+                    {localized(p, 'name', 'name_ar', locale)}
                   </h3>
                   <p className="text-micro text-ink-500 line-clamp-2 mb-3">
-                    {p.description}
+                    {localized(p, 'description', 'description_ar', locale)}
                   </p>
                   <div className="flex items-center justify-between">
                     <span className="text-h3 text-accent-400">

@@ -10,8 +10,10 @@ interface CategoryModalProps {
   category?: {
     id: number;
     name: string;
+    name_ar?: string;
     type: string;
     description: string;
+    description_ar?: string;
     icon: string;
     image_base64: string;
     sort_order: number;
@@ -23,8 +25,10 @@ interface CategoryModalProps {
 export default function CategoryModal({ category, onClose, onSaved }: CategoryModalProps) {
   const [form, setForm] = useState({
     name: category?.name ?? '',
+    name_ar: category?.name_ar ?? '',
     type: category?.type ?? 'auto',
     description: category?.description ?? '',
+    description_ar: category?.description_ar ?? '',
     icon: category?.icon ?? '',
     image_base64: category?.image_base64 ?? '',
     sort_order: category?.sort_order ?? 0,
@@ -61,13 +65,23 @@ export default function CategoryModal({ category, onClose, onSaved }: CategoryMo
     >
       <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="label">Name *</label>
+            <label className="label">Name (EN) *</label>
             <input
               className="input"
               value={form.name}
               onChange={(e) => set('name')(e.target.value)}
               required
               placeholder="Category name"
+            />
+          </div>
+          <div>
+            <label className="label">Name (AR)</label>
+            <input
+              className="input"
+              dir="rtl"
+              value={form.name_ar}
+              onChange={(e) => set('name_ar')(e.target.value)}
+              placeholder="اسم الفئة"
             />
           </div>
           <div>
@@ -82,13 +96,24 @@ export default function CategoryModal({ category, onClose, onSaved }: CategoryMo
             </select>
           </div>
           <div>
-            <label className="label">Description</label>
+            <label className="label">Description (EN)</label>
             <textarea
               className="input"
               rows={2}
               value={form.description}
               onChange={(e) => set('description')(e.target.value)}
               placeholder="Optional description"
+            />
+          </div>
+          <div>
+            <label className="label">Description (AR)</label>
+            <textarea
+              className="input"
+              rows={2}
+              dir="rtl"
+              value={form.description_ar}
+              onChange={(e) => set('description_ar')(e.target.value)}
+              placeholder="وصف اختياري"
             />
           </div>
           <div>
