@@ -45,7 +45,7 @@ export default function AdminDeposits() {
     <PageTransition className="space-y-6">
       <div>
         <p className="eyebrow mb-1">{t('admin.finance')}</p>
-        <h1 className="text-h1 text-ink-900">{t('admin.deposits')}</h1>
+        <h1 className="text-h1 text-gray-900 dark:text-ink-900">{t('admin.deposits')}</h1>
       </div>
 
       <div className="card overflow-hidden p-0">
@@ -65,14 +65,14 @@ export default function AdminDeposits() {
             <tbody>
               {deposits.map((d) => (
                 <tr key={d.id}>
-                  <td className="font-medium text-ink-900 whitespace-nowrap">#{d.id}</td>
+                  <td className="font-medium text-gray-900 dark:text-ink-900 whitespace-nowrap">#{d.id}</td>
                   <td className="whitespace-nowrap">{d.user?.name ?? '—'}</td>
                   <td className="font-medium tabular-nums text-accent-400 whitespace-nowrap">
                     {formatPrice(d.amount)}
                   </td>
                   <td className="whitespace-nowrap">{d.method}</td>
                   <td><span className={`badge-${d.status}`}>{d.status}</span></td>
-                  <td className="text-ink-500 whitespace-nowrap">{new Date(d.created_at).toLocaleDateString()}</td>
+                  <td className="text-gray-600 dark:text-ink-500 whitespace-nowrap">{new Date(d.created_at).toLocaleDateString()}</td>
                   {hasPending && (
                     <td>
                       {d.status === 'pending' ? (
@@ -81,14 +81,14 @@ export default function AdminDeposits() {
                           <Button size="sm" variant="danger" onClick={() => reject(d.id)}>{t('admin.reject')}</Button>
                         </div>
                       ) : (
-                        <span className="text-micro text-ink-500">—</span>
+                        <span className="text-micro text-gray-600 dark:text-ink-500">—</span>
                       )}
                     </td>
                   )}
                 </tr>
               ))}
               {deposits.length === 0 && !loading && (
-                <tr><td colSpan={hasPending ? 7 : 6} className="text-center text-ink-500 py-8">{t('admin.noDepositsYet')}</td></tr>
+                <tr><td colSpan={hasPending ? 7 : 6} className="text-center text-gray-600 dark:text-ink-500 py-8">{t('admin.noDepositsYet')}</td></tr>
               )}
             </tbody>
           </table>

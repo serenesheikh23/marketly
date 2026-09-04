@@ -45,7 +45,7 @@ export default function Layout() {
                   </Link>
                 )}
                 <div className="mx-3 w-px h-5 bg-ink-200" />
-                <span className="text-sm text-ink-600 font-medium tabular-nums">
+                <span className="text-sm text-gray-600 dark:text-ink-600 font-medium tabular-nums">
                   {formatPrice(user?.balance)}
                 </span>
                 <button
@@ -86,12 +86,12 @@ export default function Layout() {
         <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <Logo size="sm" showText={false} />
-            <span className="text-micro text-ink-500">
+            <span className="text-micro text-gray-600 dark:text-ink-500">
               {t('footer.copyright', { year: new Date().getFullYear() })}
             </span>
           </div>
           <SocialLinks />
-          <p className="text-micro text-ink-500 text-center sm:text-right">
+          <p className="text-micro text-gray-600 dark:text-ink-500 text-center sm:text-right">
             {t('footer.tagline')}
           </p>
         </div>

@@ -59,7 +59,7 @@ export default function ImageUploader({ value, onChange, label }: ImageUploaderP
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
-          className="w-32 h-32 rounded-lg border-2 border-dashed border-ink-200 flex flex-col items-center justify-center gap-1 text-ink-500 hover:border-accent-500 hover:text-accent-400 transition-colors cursor-pointer"
+          className="w-32 h-32 rounded-lg border-2 border-dashed border-ink-200 flex flex-col items-center justify-center gap-1 text-gray-600 dark:text-ink-500 hover:border-accent-500 hover:text-accent-400 transition-colors cursor-pointer"
         >
           <svg
             width="20"

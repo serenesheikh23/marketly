@@ -49,20 +49,20 @@ export default function AdminSettings() {
     <PageTransition className="space-y-8">
       <div>
         <p className="eyebrow mb-1">{t('admin.system')}</p>
-        <h1 className="text-h1 text-ink-900">{t('admin.settings')}</h1>
+        <h1 className="text-h1 text-gray-900 dark:text-ink-900">{t('admin.settings')}</h1>
       </div>
 
       <div className="space-y-6">
         {Object.entries(GROUPS).map(([group, info]) => (
           <div key={group} className="card-pad">
-            <h2 className="text-h3 text-ink-900 mb-5">{t(info.labelKey)}</h2>
+            <h2 className="text-h3 text-gray-900 dark:text-ink-900 mb-5">{t(info.labelKey)}</h2>
             <div className="space-y-4">
               {info.keys.map((key) => {
                 const value = (settings[group] ?? {})[key]?.value ?? '';
                 return (
                   <div key={key} className="flex items-start gap-3">
                     <div className="w-48 flex-shrink-0 pt-1">
-                      <p className="text-small font-medium text-ink-800 break-words">{key}</p>
+                      <p className="text-small font-medium text-gray-800 dark:text-ink-800 break-words">{key}</p>
                     </div>
                     <input
                       type="text"

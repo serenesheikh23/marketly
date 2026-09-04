@@ -44,10 +44,10 @@ export default function AdminUsers() {
       <div className="flex items-end justify-between gap-4 flex-wrap">
         <div>
           <p className="eyebrow mb-1">Users</p>
-          <h1 className="text-h1 text-ink-900">All users</h1>
+          <h1 className="text-h1 text-gray-900 dark:text-ink-900">All users</h1>
         </div>
         <div className="relative w-72 max-w-full">
-          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600 dark:text-ink-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
           </svg>
           <input
@@ -76,8 +76,8 @@ export default function AdminUsers() {
             <tbody>
               {users.map((u) => (
                 <tr key={u.id}>
-                  <td className="font-medium text-ink-900">{u.name}</td>
-                  <td className="text-ink-500">{u.email}</td>
+                  <td className="font-medium text-gray-900 dark:text-ink-900">{u.name}</td>
+                  <td className="text-gray-600 dark:text-ink-500">{u.email}</td>
                   <td>
                     <select
                       className="input py-1 text-xs w-28"
@@ -110,7 +110,7 @@ export default function AdminUsers() {
                 </tr>
               ))}
               {users.length === 0 && !loading && (
-                <tr><td colSpan={6} className="text-center text-ink-500 py-8">No users found.</td></tr>
+                <tr><td colSpan={6} className="text-center text-gray-600 dark:text-ink-500 py-8">No users found.</td></tr>
               )}
             </tbody>
           </table>

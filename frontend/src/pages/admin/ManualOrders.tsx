@@ -33,14 +33,14 @@ export default function AdminManualOrders() {
     <PageTransition className="space-y-6">
       <div>
         <p className="eyebrow mb-1">{t('admin.operations')}</p>
-        <h1 className="text-h1 text-ink-900">{t('admin.manualOrders')}</h1>
-        <p className="text-body text-ink-600 mt-1">{t('admin.noPendingManual')}</p>
+        <h1 className="text-h1 text-gray-900 dark:text-ink-900">{t('admin.manualOrders')}</h1>
+        <p className="text-body text-gray-600 dark:text-ink-600 mt-1">{t('admin.noPendingManual')}</p>
       </div>
 
       <div className="space-y-3">
         {orders.length === 0 && !loading && (
           <div className="card-pad text-center py-12">
-            <p className="text-body text-ink-500">{t('admin.noPendingManual')}</p>
+            <p className="text-body text-gray-600 dark:text-ink-500">{t('admin.noPendingManual')}</p>
           </div>
         )}
         {orders.map((order, i) => (
@@ -52,10 +52,10 @@ export default function AdminManualOrders() {
           >
             <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="text-body font-semibold text-ink-900">
+                <p className="text-body font-semibold text-gray-900 dark:text-ink-900">
                   Order #{order.id} — {order.user?.name ?? 'Unknown'}
                 </p>
-                <p className="text-micro text-ink-500 mt-0.5">
+                <p className="text-micro text-gray-600 dark:text-ink-500 mt-0.5">
                   {new Date(order.created_at).toLocaleString()}
                 </p>
               </div>
@@ -64,12 +64,12 @@ export default function AdminManualOrders() {
 
             <div className="space-y-2">
               {order.items?.map((item: any) => (
-                <div key={item.id} className="bg-ink-100 p-3 rounded-lg">
-                  <p className="text-small font-medium text-ink-900">{item.product?.name}</p>
+                <div key={item.id} className="bg-gray-100 dark:bg-ink-100 p-3 rounded-lg">
+                  <p className="text-small font-medium text-gray-900 dark:text-ink-900">{item.product?.name}</p>
                   {item.payload && (
-                    <div className="mt-1 text-micro text-ink-500 flex flex-wrap gap-x-3">
+                    <div className="mt-1 text-micro text-gray-600 dark:text-ink-500 flex flex-wrap gap-x-3">
                       {Object.entries(item.payload).map(([k, v]) => (
-                        <span key={k}>{k}: <span className="text-ink-700">{String(v)}</span></span>
+                        <span key={k}>{k}: <span className="text-gray-700 dark:text-ink-700">{String(v)}</span></span>
                       ))}
                     </div>
                   )}
