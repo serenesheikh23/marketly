@@ -1,6 +1,6 @@
+import { useState, useEffect } from 'react';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { useAppSelector, useAppDispatch, logout } from '@/store';
+import { useAppDispatch, logout } from '@/store';
 import { authApi } from '@/api/client';
 import Logo from './Logo';
 import PageTransition from './PageTransition';
@@ -70,6 +70,7 @@ export default function AdminLayout() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleLogout = async () => {
     await authApi.logout();
@@ -77,12 +78,26 @@ export default function AdminLayout() {
     navigate('/');
   };
 
+  const closeSidebar = () => setSidebarOpen(false);
+
   return (
     <div className="flex min-h-screen bg-ink">
+      {/* Mobile sidebar overlay */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-30 md:hidden"
+          onClick={closeSidebar}
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className="w-60 bg-ink-50 border-r border-ink-200 flex flex-col flex-shrink-0">
+      <aside
+        className={`fixed md:relative z-40 w-64 h-full bg-ink-50 border-r border-ink-200 flex flex-col flex-shrink-0 transition-transform duration-300 ${
+          sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+        }`}
+      >
         <div className="px-4 py-5 border-b border-ink-200">
-          <Link to="/" className="flex items-center gap-2.5">
+          <Link to="/" className="flex items-center gap-2.5" onClick={closeSidebar}>
             <Logo size="sm" />
           </Link>
           <p className="text-micro text-ink-500 mt-1 px-0.5">Admin Panel</p>
@@ -97,7 +112,8 @@ export default function AdminLayout() {
               <Link
                 key={item.to}
                 to={item.to}
-                className={`nav-link text-sm ${isActive ? 'nav-link-active' : ''}`}
+                onClick={closeSidebar}
+                className={`nav-link text-sm flex items-center gap-2 ${isActive ? 'nav-link-active' : ''}`}
               >
                 <span className={isActive ? 'text-accent-400' : 'text-ink-500'}>{item.icon}</span>
                 {item.label}
@@ -107,7 +123,7 @@ export default function AdminLayout() {
         </nav>
 
         <div className="px-3 py-4 border-t border-ink-200 space-y-0.5">
-          <Link to="/dashboard" className="nav-link text-sm">
+          <Link to="/dashboard" className="nav-link text-sm" onClick={closeSidebar}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-ink-500">
               <path d="M15 18l-6-6 6-6"/>
             </svg>
@@ -127,9 +143,29 @@ export default function AdminLayout() {
         </div>
       </aside>
 
+      {/* Mobile menu button */}
+      <button
+        onClick={() => setSidebarOpen(!sidebarOpen)}
+        className="fixed top-4 left-4 z-50 p-2 rounded-md bg-ink-50 border border-ink-200 hover:bg-ink-100 md:hidden"
+        aria-label="Toggle sidebar"
+      >
+        {sidebarOpen ? (
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        ) : (
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        )}
+      </button>
+
       {/* Content */}
-      <div className="flex-1 overflow-auto">
-        <PageTransition className="p-8">
+      <div className="flex-1 overflow-auto md:ml-0">
+        <PageTransition className="p-4 md:p-8 pl-12 md:pl-8">
           <Outlet />
         </PageTransition>
       </div>
