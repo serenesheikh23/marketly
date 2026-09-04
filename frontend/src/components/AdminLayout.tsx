@@ -87,7 +87,7 @@ export default function AdminLayout() {
 
   return (
     <div className="flex min-h-screen bg-gray-50 dark:bg-ink">
-      {/* ── Mobile overlay (behind sidebar, z-30) ── */}
+      {/* ── Mobile overlay (behind sidebar) ── */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-30 lg:hidden"
@@ -96,8 +96,8 @@ export default function AdminLayout() {
       )}
 
       {/* ── Sidebar ──
-          Mobile:  fixed/overlay, slides in/out (z-50, above overlay z-30)
-          Desktop: fixed, always visible on the side (z-40)
+          FIXED LOGIC: Uses a single conditional for mobile.
+          Desktop overrides it with `lg:` variants.
       ── */}
       <aside
         className={`
@@ -107,8 +107,11 @@ export default function AdminLayout() {
           ltr:border-r rtl:border-l
           transition-transform duration-300
           lg:z-40 lg:flex-shrink-0 lg:h-screen
-          ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-          ltr:-translate-x-full rtl:translate-x-full
+          ${
+            sidebarOpen
+              ? 'translate-x-0'
+              : '-translate-x-full ltr:-translate-x-full rtl:translate-x-full'
+          }
           lg:ltr:translate-x-0 lg:rtl:translate-x-0
         `}
       >
@@ -186,7 +189,7 @@ export default function AdminLayout() {
         </div>
       </aside>
 
-      {/* ── Hamburger button — mobile only (z-40, below sidebar z-50) ── */}
+      {/* ── Hamburger button — mobile only ── */}
       <button
         onClick={toggleSidebar}
         className="fixed top-4 start-4 z-40 p-2 rounded-md bg-white dark:bg-ink-50 border border-gray-200 dark:border-ink-200 text-gray-700 dark:text-ink-700 hover:bg-gray-100 dark:hover:bg-ink-100 lg:hidden"
