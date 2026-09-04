@@ -61,7 +61,7 @@ export default function Home() {
     <PageTransition className="space-y-16">
 
       {/* ── Hero ──────────────────────────────────────────── */}
-      <section className="relative w-full rounded-2xl border border-ink-200 overflow-hidden">
+      <section className="relative w-full rounded-2xl border border-ink-200">
         {/* Full-width aurora background */}
         <div className="absolute inset-0 opacity-40 dark:opacity-40 pointer-events-none">
           <HeroArt variant="aurora" className="w-full h-full" />
@@ -102,8 +102,8 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Right: modern floating visual (hidden on mobile) */}
-          <div className="hidden lg:flex flex-col items-center gap-4 flex-shrink-0">
+          {/* Right: modern floating visual */}
+          <div className="flex flex-col items-center gap-4 flex-shrink-0 mt-8 lg:mt-0">
 
             {/* Main glassmorphic product showcase card */}
             <motion.div
@@ -145,16 +145,6 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-            </motion.div>
-
-            {/* Floating badge */}
-            <motion.div
-              animate={{ y: [-4, 4, -4] }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
-              className="backdrop-blur-xl bg-white/10 dark:bg-ink-50/10 border border-white/20 dark:border-ink-50/20 rounded-full px-4 py-2 shadow-soft flex items-center gap-2"
-            >
-              <span className="text-accent-400 text-sm">⚡</span>
-              <span className="text-small font-semibold text-gray-800 dark:text-ink-800">Auto-delivery 24/7</span>
             </motion.div>
 
           </div>
