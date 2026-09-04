@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import axios from 'axios';
+import { Gamepad2, MessageCircle, CreditCard, Wallet, Palette, Bot } from 'lucide-react';
 import { authApi } from '@/api/client';
 import { useAppDispatch, setUser } from '@/store';
 import toast from 'react-hot-toast';
-import HeroArt from '@/components/HeroArt';
 import Logo from '@/components/Logo';
 import Button from '@/components/Button';
 import PageTransition from '@/components/PageTransition';
@@ -45,26 +45,60 @@ export default function Login() {
 
   return (
     <PageTransition className="min-h-screen flex">
-      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
-        <HeroArt variant="aurora" className="absolute inset-0 w-full h-full" />
-        <div className="relative z-10 flex flex-col justify-between p-12 w-full">
-          <Logo size="md" />
-          <div className="space-y-6">
-            <p className="eyebrow">{t('home.digitalMarketplace')}</p>
-            <h1 className="text-h1 text-gray-900 dark:text-ink-900 leading-tight text-balance">
-              Buy, sell &amp; trade<br />
-              <span className="text-accent-400">instantly.</span>
-            </h1>
-            <p className="text-body text-gray-600 dark:text-ink-600 max-w-sm">
-              {t('home.heroDescription')}
-            </p>
-          </div>
-          <p className="text-micro text-gray-600 dark:text-ink-500">
-            &copy; {new Date().getFullYear()} marketly. All rights reserved.
-          </p>
+      {/* Left: floating icons — visible on all screens */}
+      <div className="flex lg:w-1/2 items-center justify-center px-6 py-12 lg:px-16 lg:py-20">
+        <div className="relative w-full h-64 lg:h-80 flex-shrink-0 mt-8 lg:mt-0">
+          <motion.div
+            animate={{ y: [0, -15, 0], x: [0, 5, 0], rotate: [0, 8, 0] }}
+            transition={{ duration: 5, delay: 0, repeat: Infinity, ease: 'easeInOut' }}
+            className="absolute top-[5%] left-[8%]"
+          >
+            <Gamepad2 size={34} className="text-accent-400 drop-shadow-lg" />
+          </motion.div>
+
+          <motion.div
+            animate={{ y: [0, 18, 0], x: [0, -8, 0], rotate: [0, -6, 0] }}
+            transition={{ duration: 6, delay: 0.4, repeat: Infinity, ease: 'easeInOut' }}
+            className="absolute top-[35%] right-[5%]"
+          >
+            <MessageCircle size={28} className="text-accent-300 drop-shadow-lg" />
+          </motion.div>
+
+          <motion.div
+            animate={{ y: [0, -20, 0], x: [0, 10, 0], rotate: [0, 12, 0] }}
+            transition={{ duration: 4.8, delay: 0.8, repeat: Infinity, ease: 'easeInOut' }}
+            className="absolute bottom-[20%] left-[15%]"
+          >
+            <CreditCard size={30} className="text-accent-500 drop-shadow-lg" />
+          </motion.div>
+
+          <motion.div
+            animate={{ y: [0, 12, 0], x: [0, -5, 0], rotate: [0, -4, 0] }}
+            transition={{ duration: 5.5, delay: 0.2, repeat: Infinity, ease: 'easeInOut' }}
+            className="absolute top-[15%] left-[45%]"
+          >
+            <Wallet size={24} className="text-accent-400 drop-shadow-lg" />
+          </motion.div>
+
+          <motion.div
+            animate={{ y: [0, -10, 0], x: [0, 6, 0], rotate: [0, 7, 0] }}
+            transition={{ duration: 6.5, delay: 1.1, repeat: Infinity, ease: 'easeInOut' }}
+            className="absolute bottom-[10%] right-[25%]"
+          >
+            <Palette size={26} className="text-accent-300 drop-shadow-lg" />
+          </motion.div>
+
+          <motion.div
+            animate={{ y: [0, 15, 0], x: [0, -8, 0], rotate: [0, -8, 0] }}
+            transition={{ duration: 5.2, delay: 0.6, repeat: Infinity, ease: 'easeInOut' }}
+            className="absolute bottom-[35%] left-[70%]"
+          >
+            <Bot size={32} className="text-accent-500 drop-shadow-lg" />
+          </motion.div>
         </div>
       </div>
 
+      {/* Right: form */}
       <div className="flex-1 flex items-center justify-center px-6 py-12 lg:px-16">
         <div className="w-full max-w-md">
           <div className="lg:hidden mb-10 flex justify-center">
