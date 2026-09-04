@@ -103,63 +103,60 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Right: floating icon visual */}
-          <div className="relative w-48 lg:w-64 h-48 lg:h-64 flex-shrink-0 mt-8 lg:mt-0">
-            {/* Glow orb behind the cluster */}
-            <div className="absolute inset-0 rounded-full bg-accent-400/20 blur-3xl pointer-events-none" />
-
-            {/* Gamepad2 — top-left */}
+          {/* Right: randomly scattered floating icons - NO circle, NO box */}
+          <div className="relative w-full lg:w-1/3 h-64 lg:h-80 flex-shrink-0 mt-8 lg:mt-0">
+            {/* Gamepad2 — far top-left */}
             <motion.div
-              animate={{ y: [0, -8, 0], opacity: [0.8, 1, 0.8] }}
-              transition={{ duration: 3.5, delay: 0, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute top-2 left-4"
+              animate={{ y: [0, -15, 0], x: [0, 5, 0], rotate: [0, 8, 0] }}
+              transition={{ duration: 5, delay: 0, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute top-[5%] left-[8%]"
             >
-              <Gamepad2 size={22} className="text-accent-400 drop-shadow-lg" />
+              <Gamepad2 size={34} className="text-accent-400 drop-shadow-lg" />
             </motion.div>
 
-            {/* MessageCircle — top-right */}
+            {/* MessageCircle — middle-right */}
             <motion.div
-              animate={{ y: [0, -10, 0], opacity: [0.7, 1, 0.7] }}
-              transition={{ duration: 4.2, delay: 0.4, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute top-4 right-2"
+              animate={{ y: [0, 18, 0], x: [0, -8, 0], rotate: [0, -6, 0] }}
+              transition={{ duration: 6, delay: 0.4, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute top-[35%] right-[5%]"
             >
-              <MessageCircle size={18} className="text-accent-400 drop-shadow-lg" />
+              <MessageCircle size={28} className="text-accent-300 drop-shadow-lg" />
             </motion.div>
 
-            {/* CreditCard — middle-left */}
+            {/* CreditCard — bottom-left */}
             <motion.div
-              animate={{ y: [0, 8, 0], opacity: [0.75, 1, 0.75] }}
-              transition={{ duration: 3.8, delay: 0.8, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute top-1/2 -translate-y-1/2 left-0"
+              animate={{ y: [0, -20, 0], x: [0, 10, 0], rotate: [0, 12, 0] }}
+              transition={{ duration: 4.8, delay: 0.8, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute bottom-[20%] left-[15%]"
             >
-              <CreditCard size={20} className="text-accent-400 drop-shadow-lg" />
+              <CreditCard size={30} className="text-accent-500 drop-shadow-lg" />
             </motion.div>
 
-            {/* Wallet — middle-right */}
+            {/* Wallet — top-center */}
             <motion.div
-              animate={{ y: [0, -7, 0], opacity: [0.8, 1, 0.8] }}
-              transition={{ duration: 4.5, delay: 0.3, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute top-1/2 -translate-y-1/2 right-0"
+              animate={{ y: [0, 12, 0], x: [0, -5, 0], rotate: [0, -4, 0] }}
+              transition={{ duration: 5.5, delay: 0.2, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute top-[15%] left-[45%]"
             >
-              <Wallet size={20} className="text-accent-400 drop-shadow-lg" />
+              <Wallet size={24} className="text-accent-400 drop-shadow-lg" />
             </motion.div>
 
-            {/* Palette — bottom-left */}
+            {/* Palette — bottom-right */}
             <motion.div
-              animate={{ y: [0, 9, 0], opacity: [0.7, 1, 0.7] }}
-              transition={{ duration: 3.2, delay: 1.1, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute bottom-4 left-6"
+              animate={{ y: [0, -10, 0], x: [0, 6, 0], rotate: [0, 7, 0] }}
+              transition={{ duration: 6.5, delay: 1.1, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute bottom-[10%] right-[25%]"
             >
-              <Palette size={18} className="text-accent-400 drop-shadow-lg" />
+              <Palette size={26} className="text-accent-300 drop-shadow-lg" />
             </motion.div>
 
-            {/* Bot — bottom-right */}
+            {/* Bot — far bottom-center */}
             <motion.div
-              animate={{ y: [0, -6, 0], opacity: [0.8, 1, 0.8] }}
-              transition={{ duration: 4.0, delay: 0.6, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute bottom-2 right-4"
+              animate={{ y: [0, 15, 0], x: [0, -8, 0], rotate: [0, -8, 0] }}
+              transition={{ duration: 5.2, delay: 0.6, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute bottom-[35%] left-[70%]"
             >
-              <Bot size={22} className="text-accent-400 drop-shadow-lg" />
+              <Bot size={32} className="text-accent-500 drop-shadow-lg" />
             </motion.div>
           </div>
         </div>
