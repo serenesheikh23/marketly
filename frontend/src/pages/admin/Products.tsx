@@ -8,7 +8,7 @@ import PageTransition from '@/components/PageTransition';
 import { useI18n } from '@/i18n';
 
 export default function AdminProducts() {
-  const { locale } = useI18n();
+  const { locale, t } = useI18n();
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -22,7 +22,7 @@ export default function AdminProducts() {
       .then((r) => setProducts(r.data.data ?? []))
       .catch((err: any) => {
         console.error(err);
-        setError(err.response?.data?.message ?? 'Failed to load products.');
+        setError(err.response?.data?.message ?? t('common.failed'));
       })
       .finally(() => setLoading(false));
   };
@@ -30,20 +30,20 @@ export default function AdminProducts() {
   useEffect(() => { fetch(); }, []);
 
   const handleDelete = async (p: any) => {
-    if (!confirm(`Delete "${p.name}"? This cannot be undone.`)) return;
+    if (!confirm(t('admin.deleteConfirm', { name: p.name }))) return;
     try {
       await adminProductApi.delete(p.id);
-      toast.success('Product deleted.');
+      toast.success(t('admin.productDeleted'));
       fetch();
-    } catch (err: any) { toast.error(err.response?.data?.message ?? 'Failed'); }
+    } catch (err: any) { toast.error(err.response?.data?.message ?? t('common.failed')); }
   };
 
   const toggleActive = async (p: any) => {
     try {
       await adminProductApi.update(p.id, { is_active: !p.is_active });
-      toast.success(p.is_active ? 'Product deactivated.' : 'Product activated.');
+      toast.success(p.is_active ? t('admin.productDeactivated') : t('admin.productActivated'));
       fetch();
-    } catch (err: any) { toast.error(err.response?.data?.message ?? 'Failed'); }
+    } catch (err: any) { toast.error(err.response?.data?.message ?? t('common.failed')); }
   };
 
   const openEdit = (p: any) => { setEditProduct(p); setShowModal(true); };
@@ -53,18 +53,18 @@ export default function AdminProducts() {
     <PageTransition className="space-y-6">
       <div className="flex items-end justify-between">
         <div>
-          <p className="eyebrow mb-1">Catalog</p>
-          <h1 className="text-h1 text-gray-900 dark:text-ink-900">Products</h1>
+          <p className="eyebrow mb-1">{t('admin.system')}</p>
+          <h1 className="text-h1 text-gray-900 dark:text-ink-900">{t('admin.products')}</h1>
         </div>
         <button onClick={openNew} className="btn-accent">
-          + New Product
+          + {t('admin.newProduct')}
         </button>
       </div>
 
       {error && (
         <div className="card-pad text-center">
           <p className="text-body text-status-rejected mb-3">{error}</p>
-          <button onClick={fetch} className="btn-accent">Retry</button>
+          <button onClick={fetch} className="btn-accent">{t('admin.retry')}</button>
         </div>
       )}
 
@@ -75,20 +75,20 @@ export default function AdminProducts() {
           <table className="table">
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Price</th>
-                <th>Type</th>
-                <th>Stock</th>
-                <th>Active</th>
-                <th>Actions</th>
+                <th>{t('admin.name')}</th>
+                <th>{t('admin.category')}</th>
+                <th>{t('admin.price')}</th>
+                <th>{t('admin.type')}</th>
+                <th>{t('admin.stock')}</th>
+                <th>{t('admin.active')}</th>
+                <th>{t('admin.actions')}</th>
               </tr>
             </thead>
             <tbody>
               {products.map((p) => (
                 <tr key={p.id}>
                   <td className="font-medium text-gray-900 dark:text-ink-900">{locale === 'ar' && p.name_ar ? p.name_ar : p.name}</td>
-                  <td className="text-gray-600 dark:text-ink-500">
+                  <td className="text-gray-500 dark:text-ink-500">
                     {p.category
                       ? locale === 'ar' && p.category.name_ar
                         ? p.category.name_ar
@@ -111,19 +111,19 @@ export default function AdminProducts() {
                           : 'text-status-rejected hover:text-status-rejected/80'
                       }`}
                     >
-                      {p.is_active ? 'Active' : 'Inactive'}
+                      {p.is_active ? t('admin.active') : t('admin.inactive')}
                     </button>
                   </td>
                   <td>
                     <div className="flex gap-2">
                       <button onClick={() => openEdit(p)} className="btn-secondary btn-sm">
-                        Edit
+                        {t('common.edit')}
                       </button>
                       <button
                         onClick={() => handleDelete(p)}
                         className="btn-danger btn-sm"
                       >
-                        Delete
+                        {t('common.delete')}
                       </button>
                     </div>
                   </td>
@@ -131,8 +131,8 @@ export default function AdminProducts() {
               ))}
               {products.length === 0 && !loading && (
                 <tr>
-                  <td colSpan={7} className="text-center text-gray-600 dark:text-ink-500 py-8">
-                    No products yet.
+                  <td colSpan={7} className="text-center text-gray-500 dark:text-ink-500 py-8">
+                    {t('admin.noProductsYet')}
                   </td>
                 </tr>
               )}
@@ -145,7 +145,7 @@ export default function AdminProducts() {
         <ProductModal
           product={editProduct}
           onClose={() => setShowModal(false)}
-          onSaved={() => { toast.success('Product saved.'); fetch(); }}
+          onSaved={() => { toast.success(t('admin.productSaved')); fetch(); }}
         />
       )}
     </PageTransition>

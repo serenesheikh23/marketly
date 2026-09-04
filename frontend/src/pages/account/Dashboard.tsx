@@ -6,13 +6,14 @@ import { vipApi, transactionApi } from '@/api/client';
 import EmptyState from '@/components/EmptyState';
 import PageTransition from '@/components/PageTransition';
 import { formatPrice } from '@/utils/format';
+import { useI18n } from '@/i18n';
 
 const QUICK_ACTIONS = [
-  { to: '/dashboard/deposit', label: 'Deposit Funds', icon: 'deposit', color: 'accent' },
-  { to: '/dashboard/withdraw', label: 'Withdraw', icon: 'withdraw', color: 'secondary' },
-  { to: '/dashboard/vip', label: 'VIP Status', icon: 'vip', color: 'secondary' },
-  { to: '/dashboard/manual-services', label: 'Manual Services', icon: 'service', color: 'secondary' },
-  { to: '/dashboard/orders', label: 'My Orders', icon: 'orders', color: 'secondary' },
+  { to: '/dashboard/deposit', label: 'admin.depositFunds', icon: 'deposit', color: 'accent' },
+  { to: '/dashboard/withdraw', label: 'admin.withdraw', icon: 'withdraw', color: 'secondary' },
+  { to: '/dashboard/vip', label: 'admin.vipStatus', icon: 'vip', color: 'secondary' },
+  { to: '/dashboard/manual-services', label: 'admin.manualServices', icon: 'service', color: 'secondary' },
+  { to: '/dashboard/orders', label: 'admin.myOrders', icon: 'orders', color: 'secondary' },
 ];
 
 const ACTION_ICONS: Record<string, ReactNode> = {
@@ -54,6 +55,7 @@ function stagger(i: number) {
 }
 
 export default function Dashboard() {
+  const { t } = useI18n();
   const user = useAppSelector((s) => s.auth.user);
   const dispatch = useAppDispatch();
   const [vip, setVip] = useState<any>(null);
@@ -77,11 +79,11 @@ export default function Dashboard() {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <p className="eyebrow mb-1">Welcome back</p>
+          <p className="eyebrow mb-1">{t('home.welcomeBack')}</p>
           <h1 className="text-h1 text-gray-900 dark:text-ink-900">{user?.name ?? 'User'}</h1>
         </div>
         <div className="text-right">
-          <p className="text-micro text-gray-600 dark:text-ink-500 uppercase">Balance</p>
+          <p className="text-micro text-gray-500 dark:text-ink-500 uppercase">{t('account.balance')}</p>
           <p className="text-h2 text-accent-400 tabular-nums">
             {formatPrice(user?.balance ?? 0)}
           </p>
@@ -92,7 +94,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[
           {
-            label: 'Balance',
+            label: t('account.balance'),
             value: formatPrice(user?.balance ?? 0),
             sub: null,
             color: 'accent',
@@ -100,13 +102,13 @@ export default function Dashboard() {
           {
             label: 'VIP Level',
             value: vip?.label ?? '—',
-            sub: vip?.withdrawal_limit > 0 ? `Limit: $${vip.withdrawal_limit}` : null,
+            sub: vip?.withdrawal_limit > 0 ? `${t('admin.withdrawals')}: $${vip.withdrawal_limit}` : null,
             color: 'vip',
           },
           {
-            label: 'This month',
+            label: t('admin.thisMonth'),
             value: `${txns.filter((t) => new Date(t.created_at).getMonth() === new Date().getMonth()).length}`,
-            sub: 'transactions',
+            sub: t('admin.recentOrders'),
             color: 'neutral',
           },
         ].map((kpi, i) => (
@@ -115,7 +117,7 @@ export default function Dashboard() {
             {...stagger(i)}
             className="card-pad"
           >
-            <p className="text-micro text-gray-600 dark:text-ink-500 uppercase tracking-wide mb-2">{kpi.label}</p>
+            <p className="text-micro text-gray-500 dark:text-ink-500 uppercase tracking-wide mb-2">{kpi.label}</p>
             <p
               className={`text-h2 ${
                 kpi.color === 'accent'
@@ -127,14 +129,14 @@ export default function Dashboard() {
             >
               {kpi.value}
             </p>
-            {kpi.sub && <p className="text-micro text-gray-600 dark:text-ink-500 mt-1">{kpi.sub}</p>}
+            {kpi.sub && <p className="text-micro text-gray-500 dark:text-ink-500 mt-1">{kpi.sub}</p>}
           </motion.div>
         ))}
       </div>
 
       {/* Quick actions */}
       <div>
-        <h2 className="text-h3 text-gray-900 dark:text-ink-900 mb-4">Quick actions</h2>
+        <h2 className="text-h3 text-gray-900 dark:text-ink-900 mb-4">{t('admin.quickActions')}</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {QUICK_ACTIONS.map((a, i) => (
             <motion.div key={a.to} {...stagger(i)}>
@@ -144,10 +146,10 @@ export default function Dashboard() {
                   a.color === 'accent' ? 'border-accent-500/30 bg-accent-500/5' : ''
                 }`}
               >
-                <span className={a.color === 'accent' ? 'text-accent-400' : 'text-gray-600 dark:text-ink-600'}>
+                <span className={a.color === 'accent' ? 'text-accent-400' : 'text-gray-500 dark:text-ink-600'}>
                   {ACTION_ICONS[a.icon]}
                 </span>
-                <span className="text-small font-medium text-gray-900 dark:text-ink-900">{a.label}</span>
+                <span className="text-small font-medium text-gray-900 dark:text-ink-900">{t(a.label)}</span>
               </Link>
             </motion.div>
           ))}
@@ -157,19 +159,19 @@ export default function Dashboard() {
       {/* Recent transactions */}
       <div className="card-pad">
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-h3 text-gray-900 dark:text-ink-900">Recent transactions</h2>
+          <h2 className="text-h3 text-gray-900 dark:text-ink-900">{t('admin.recentTransactions')}</h2>
           <Link to="/dashboard/orders" className="text-micro text-accent-400 hover:text-accent-300">
-            View all →
+            {t('home.viewAll')} →
           </Link>
         </div>
         {txns.length > 0 ? (
           <table className="table">
             <thead>
               <tr>
-                <th>Type</th>
-                <th>Amount</th>
-                <th>Status</th>
-                <th>Date</th>
+                <th>{t('admin.type')}</th>
+                <th>{t('admin.amount')}</th>
+                <th>{t('admin.status')}</th>
+                <th>{t('admin.date')}</th>
               </tr>
             </thead>
             <tbody>
@@ -177,12 +179,12 @@ export default function Dashboard() {
                 const isPositive = ['deposit', 'refund', 'vip_upgrade'].includes(t.type);
                 return (
                   <tr key={t.id}>
-                    <td className="capitalize text-gray-800 dark:text-ink-800">{t.type.replace('_', ' ')}</td>
+                    <td className="capitalize text-gray-900 dark:text-ink-800">{t.type.replace('_', ' ')}</td>
                     <td className={`font-semibold tabular-nums ${isPositive ? 'text-accent-400' : 'text-status-rejected'}`}>
                       {isPositive ? '+' : '-'}{formatPrice(t.amount)}
                     </td>
                     <td><span className={`badge-${t.status}`}>{t.status}</span></td>
-                    <td className="text-gray-600 dark:text-ink-500">{new Date(t.created_at).toLocaleDateString()}</td>
+                    <td className="text-gray-500 dark:text-ink-500">{new Date(t.created_at).toLocaleDateString()}</td>
                   </tr>
                 );
               })}
@@ -197,9 +199,9 @@ export default function Dashboard() {
                 <path d="M9 12h6M9 16h4" strokeLinecap="round" />
               </svg>
             }
-            title="No transactions yet"
-            description="Your purchase history and wallet activity will appear here once you make your first transaction."
-            action={{ label: 'Browse products', to: '/products' }}
+            title={t('admin.noTransactionsYet')}
+            description={t('admin.purchaseHistory')}
+            action={{ label: t('home.browseProducts'), to: '/products' }}
           />
         )}
       </div>
