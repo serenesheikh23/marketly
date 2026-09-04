@@ -44,6 +44,7 @@ const ar: import('./en').Translations = {
     featuredProducts: 'منتجات مميزة',
     hotRightNow: 'الأكثر طلباً الآن',
     viewAll: 'عرض الكل',
+    browse: 'تصفح',
   },
 
   // Cart / Checkout

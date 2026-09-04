@@ -44,6 +44,7 @@ const en = {
     featuredProducts: 'Featured products',
     hotRightNow: 'Hot right now',
     viewAll: 'View all',
+    browse: 'Browse',
   },
 
   // Cart / Checkout
