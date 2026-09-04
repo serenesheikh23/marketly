@@ -173,7 +173,7 @@ export default function ProductModal({ product, onClose, onSaved }: ProductModal
               checked={form.is_active}
               onChange={(e) => set('is_active')(e.target.checked)}
             />
-            <label htmlFor="is_active" className="text-sm text-ink-800">
+            <label htmlFor="is_active" className="text-sm text-gray-800 dark:text-ink-800">
               Active (visible to customers)
             </label>
           </div>

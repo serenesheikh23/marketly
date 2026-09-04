@@ -84,8 +84,8 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
             title={name}
             className={`w-9 h-9 rounded-lg flex items-center justify-center text-base transition-all ${
               value === name
-                ? 'bg-accent-500 text-ink text-lg'
-                : 'bg-ink-100 text-ink-700 hover:bg-ink-200'
+                ? 'bg-accent-500 text-gray-900 dark:text-ink text-lg'
+                : 'bg-gray-100 dark:bg-ink-100 text-gray-700 dark:text-ink-700 hover:bg-gray-200 dark:hover:bg-ink-200'
             }`}
           >
             <IconDisplay name={name} />
@@ -93,7 +93,7 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
         ))}
       </div>
       {filtered.length === 0 && (
-        <p className="text-small text-ink-500 text-center py-4">No icons found.</p>
+        <p className="text-small text-gray-600 dark:text-ink-500 text-center py-4">No icons found.</p>
       )}
     </div>
   );

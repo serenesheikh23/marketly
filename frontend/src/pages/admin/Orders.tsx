@@ -39,16 +39,16 @@ export default function AdminOrders() {
             <tbody>
               {orders.map((o) => (
                 <tr key={o.id}>
-                  <td className="font-medium text-ink-900 whitespace-nowrap">#{o.id}</td>
+                  <td className="font-medium text-gray-900 dark:text-ink-900 whitespace-nowrap">#{o.id}</td>
                   <td className="whitespace-nowrap">{o.user?.name ?? '—'}</td>
                   <td className="tabular-nums whitespace-nowrap">{formatPrice(o.total)}</td>
                   <td><span className={`badge-${o.status}`}>{o.status}</span></td>
-                  <td className="text-ink-500 whitespace-nowrap">{o.payment_method}</td>
-                  <td className="text-ink-500 whitespace-nowrap">{new Date(o.created_at).toLocaleDateString()}</td>
+                  <td className="text-gray-600 dark:text-ink-500 whitespace-nowrap">{o.payment_method}</td>
+                  <td className="text-gray-600 dark:text-ink-500 whitespace-nowrap">{new Date(o.created_at).toLocaleDateString()}</td>
                 </tr>
               ))}
               {orders.length === 0 && !loading && (
-                <tr><td colSpan={6} className="text-center text-ink-500 py-8">{t('admin.noOrdersYet')}</td></tr>
+                <tr><td colSpan={6} className="text-center text-gray-600 dark:text-ink-500 py-8">{t('admin.noOrdersYet')}</td></tr>
               )}
             </tbody>
           </table>

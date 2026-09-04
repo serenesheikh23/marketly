@@ -67,7 +67,7 @@ export default function AdminCategories() {
       <div className="flex items-end justify-between">
         <div>
           <p className="eyebrow mb-1">MARKETLY</p>
-          <h1 className="text-h1 text-ink-900">Categories</h1>
+          <h1 className="text-h1 text-gray-900 dark:text-ink-900">Categories</h1>
         </div>
         <button onClick={openNew} className="btn-accent">
           + New Category
@@ -98,14 +98,14 @@ export default function AdminCategories() {
                   className="w-10 h-10 rounded-lg object-cover border border-ink-200 flex-shrink-0"
                 />
               ) : (
-                <div className="w-10 h-10 rounded-lg bg-ink-100 border border-ink-200 flex items-center justify-center text-xl flex-shrink-0">
+                <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-ink-100 border border-ink-200 flex items-center justify-center text-xl flex-shrink-0">
                   {CATEGORY_ICON[c.icon] ?? c.icon?.charAt(0).toUpperCase() ?? '📦'}
                 </div>
               )}
               <div>
-                <p className="text-sm font-semibold text-ink-900">{locale === 'ar' && c.name_ar ? c.name_ar : c.name}</p>
-                <p className="text-micro text-ink-500">
-                  {c.slug} · <span className="text-ink-600">{c.type}</span>
+                <p className="text-sm font-semibold text-gray-900 dark:text-ink-900">{locale === 'ar' && c.name_ar ? c.name_ar : c.name}</p>
+                <p className="text-micro text-gray-600 dark:text-ink-500">
+                  {c.slug} · <span className="text-gray-500 dark:text-ink-600">{c.type}</span>
                 </p>
               </div>
             </div>
@@ -120,7 +120,7 @@ export default function AdminCategories() {
           </motion.div>
         ))}
         {categories.length === 0 && !loading && (
-          <p className="text-center text-ink-500 py-8">No categories yet.</p>
+          <p className="text-center text-gray-600 dark:text-ink-500 py-8">No categories yet.</p>
         )}
       </div>
 

@@ -14,7 +14,7 @@ export default function ProductImage({ name, category, imageBase64, imageUrl, cl
 
   if (src) {
     return (
-      <div className={`relative w-full overflow-hidden rounded-lg bg-ink-100 ${className}`}>
+      <div className={`relative w-full overflow-hidden rounded-lg bg-gray-100 dark:bg-ink-100 ${className}`}>
         <img
           src={src}
           alt={name}
@@ -38,7 +38,7 @@ export default function ProductImage({ name, category, imageBase64, imageUrl, cl
 
   return (
     <div
-      className={`relative w-full overflow-hidden rounded-lg bg-ink-100 ${className}`}
+      className={`relative w-full overflow-hidden rounded-lg bg-gray-100 dark:bg-ink-100 ${className}`}
       aria-label={name}
     >
       <svg

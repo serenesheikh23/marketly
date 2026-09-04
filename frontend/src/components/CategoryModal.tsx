@@ -120,7 +120,7 @@ export default function CategoryModal({ category, onClose, onSaved }: CategoryMo
             <label className="label">Icon</label>
             <IconPicker value={form.icon} onChange={(v) => set('icon')(v)} />
             {form.icon && (
-              <p className="text-micro text-ink-500 mt-1">
+              <p className="text-micro text-gray-600 dark:text-ink-500 mt-1">
                 Selected: <span className="font-mono">{form.icon}</span>
               </p>
             )}

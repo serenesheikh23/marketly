@@ -24,11 +24,11 @@ export default class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       if (this.props.fallback) return <>{this.props.fallback}</>;
       return (
-        <div className="min-h-screen flex items-center justify-center bg-ink-100 p-8">
+        <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-ink-100 p-8">
           <div className="card-pad max-w-md text-center space-y-4">
             <div className="text-4xl">⚠️</div>
-            <h2 className="text-h3 text-ink-900">Something went wrong</h2>
-            <p className="text-body text-ink-600">
+            <h2 className="text-h3 text-gray-900 dark:text-ink-900">Something went wrong</h2>
+            <p className="text-body text-gray-600 dark:text-ink-600">
               {this.state.error?.message ?? 'An unexpected error occurred.'}
             </p>
             <button

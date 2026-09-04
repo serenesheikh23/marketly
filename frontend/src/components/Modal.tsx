@@ -88,7 +88,7 @@ export default function Modal({ isOpen, onClose, title, children, size = 'md' }:
         tabIndex={-1}
       >
         <div className="flex items-center justify-between mb-6">
-          <h2 id="modal-title" className="text-h3 text-ink-900">{title}</h2>
+          <h2 id="modal-title" className="text-h3 text-gray-900 dark:text-ink-900">{title}</h2>
           <button
             type="button"
             onClick={onClose}

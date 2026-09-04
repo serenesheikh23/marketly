@@ -54,7 +54,7 @@ export default function AdminProducts() {
       <div className="flex items-end justify-between">
         <div>
           <p className="eyebrow mb-1">Catalog</p>
-          <h1 className="text-h1 text-ink-900">Products</h1>
+          <h1 className="text-h1 text-gray-900 dark:text-ink-900">Products</h1>
         </div>
         <button onClick={openNew} className="btn-accent">
           + New Product
@@ -87,8 +87,8 @@ export default function AdminProducts() {
             <tbody>
               {products.map((p) => (
                 <tr key={p.id}>
-                  <td className="font-medium text-ink-900">{locale === 'ar' && p.name_ar ? p.name_ar : p.name}</td>
-                  <td className="text-ink-500">
+                  <td className="font-medium text-gray-900 dark:text-ink-900">{locale === 'ar' && p.name_ar ? p.name_ar : p.name}</td>
+                  <td className="text-gray-600 dark:text-ink-500">
                     {p.category
                       ? locale === 'ar' && p.category.name_ar
                         ? p.category.name_ar
@@ -131,7 +131,7 @@ export default function AdminProducts() {
               ))}
               {products.length === 0 && !loading && (
                 <tr>
-                  <td colSpan={7} className="text-center text-ink-500 py-8">
+                  <td colSpan={7} className="text-center text-gray-600 dark:text-ink-500 py-8">
                     No products yet.
                   </td>
                 </tr>

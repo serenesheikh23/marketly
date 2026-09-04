@@ -29,7 +29,7 @@ export default function Logo({ size = 'md', showText = true }: LogoProps) {
         >M</text>
       </motion.svg>
       {showText && (
-        <span className="text-ink-900 font-bold tracking-tighter text-lg">
+        <span className="text-gray-900 dark:text-ink-900 font-bold tracking-tighter text-lg">
           marketly
         </span>
       )}

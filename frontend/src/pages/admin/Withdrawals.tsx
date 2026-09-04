@@ -45,7 +45,7 @@ export default function AdminWithdrawals() {
     <PageTransition className="space-y-6">
       <div>
         <p className="eyebrow mb-1">{t('admin.finance')}</p>
-        <h1 className="text-h1 text-ink-900">{t('admin.withdrawals')}</h1>
+        <h1 className="text-h1 text-gray-900 dark:text-ink-900">{t('admin.withdrawals')}</h1>
       </div>
 
       <div className="card overflow-hidden p-0">
@@ -66,15 +66,15 @@ export default function AdminWithdrawals() {
             <tbody>
               {withdrawals.map((w) => (
                 <tr key={w.id}>
-                  <td className="font-medium text-ink-900 whitespace-nowrap">#{w.id}</td>
+                  <td className="font-medium text-gray-900 dark:text-ink-900 whitespace-nowrap">#{w.id}</td>
                   <td className="whitespace-nowrap">{w.user?.name ?? '—'}</td>
                   <td className="font-medium tabular-nums text-status-rejected whitespace-nowrap">
                     {formatPrice(w.amount)}
                   </td>
-                  <td className="text-ink-500 tabular-nums whitespace-nowrap">{formatPrice(w.fee)}</td>
+                  <td className="text-gray-600 dark:text-ink-500 tabular-nums whitespace-nowrap">{formatPrice(w.fee)}</td>
                   <td className="whitespace-nowrap">{w.method}</td>
                   <td><span className={`badge-${w.status}`}>{w.status}</span></td>
-                  <td className="text-ink-500 whitespace-nowrap">{new Date(w.created_at).toLocaleDateString()}</td>
+                  <td className="text-gray-600 dark:text-ink-500 whitespace-nowrap">{new Date(w.created_at).toLocaleDateString()}</td>
                   {hasPending && (
                     <td>
                       {w.status === 'pending' ? (
@@ -83,14 +83,14 @@ export default function AdminWithdrawals() {
                           <Button size="sm" variant="danger" onClick={() => reject(w.id)}>{t('admin.reject')}</Button>
                         </div>
                       ) : (
-                        <span className="text-micro text-ink-500">—</span>
+                        <span className="text-micro text-gray-600 dark:text-ink-500">—</span>
                       )}
                     </td>
                   )}
                 </tr>
               ))}
               {withdrawals.length === 0 && !loading && (
-                <tr><td colSpan={hasPending ? 8 : 7} className="text-center text-ink-500 py-8">{t('admin.noWithdrawalsYet')}</td></tr>
+                <tr><td colSpan={hasPending ? 8 : 7} className="text-center text-gray-600 dark:text-ink-500 py-8">{t('admin.noWithdrawalsYet')}</td></tr>
               )}
             </tbody>
           </table>

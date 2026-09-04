@@ -46,15 +46,15 @@ export default function Login() {
           <Logo size="md" />
           <div className="space-y-6">
             <p className="eyebrow">{t('home.digitalMarketplace')}</p>
-            <h1 className="text-h1 text-ink-900 leading-tight text-balance">
+            <h1 className="text-h1 text-gray-900 dark:text-ink-900 leading-tight text-balance">
               Buy, sell &amp; trade<br />
               <span className="text-accent-400">instantly.</span>
             </h1>
-            <p className="text-body text-ink-600 max-w-sm">
+            <p className="text-body text-gray-600 dark:text-ink-600 max-w-sm">
               {t('home.heroDescription')}
             </p>
           </div>
-          <p className="text-micro text-ink-500">
+          <p className="text-micro text-gray-600 dark:text-ink-500">
             &copy; {new Date().getFullYear()} marketly. All rights reserved.
           </p>
         </div>
@@ -71,8 +71,8 @@ export default function Login() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           >
-            <h2 className="text-h2 text-ink-900 mb-2">{t('auth.login')}</h2>
-            <p className="text-body text-ink-600 mb-8">
+            <h2 className="text-h2 text-gray-900 dark:text-ink-900 mb-2">{t('auth.login')}</h2>
+            <p className="text-body text-gray-600 dark:text-ink-600 mb-8">
               {t('auth.noAccount')}{' '}
               <Link to="/register" className="text-accent-400 hover:text-accent-300 transition-colors">
                 {t('auth.createAccount')}
@@ -128,17 +128,17 @@ export default function Login() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.4 }}
-            className="mt-8 p-4 bg-ink-100 border border-ink-200 rounded-xl"
+            className="mt-8 p-4 bg-gray-100 dark:bg-ink-100 border border-ink-200 rounded-xl"
           >
-            <p className="text-micro text-ink-500 uppercase tracking-wide mb-2">Demo accounts</p>
-            <p className="text-micro text-ink-600 mb-1">Password for all: <code className="text-accent-400">password</code></p>
+            <p className="text-micro text-gray-600 dark:text-ink-500 uppercase tracking-wide mb-2">Demo accounts</p>
+            <p className="text-micro text-gray-600 dark:text-ink-600 mb-1">Password for all: <code className="text-accent-400">password</code></p>
             <div className="space-y-0.5 mt-2">
               {[
                 'admin@demo.test — full admin',
                 'mod@demo.test — moderator',
                 'user@demo.test — regular user',
               ].map((d) => (
-                <p key={d} className="text-micro text-ink-500">{d}</p>
+                <p key={d} className="text-micro text-gray-600 dark:text-ink-500">{d}</p>
               ))}
             </div>
           </motion.div>

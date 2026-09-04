@@ -23,7 +23,7 @@ export default function Skeleton({ className = '', style, rounded = 'md' }: Skel
       role="status"
       aria-live="polite"
       aria-busy="true"
-      className={`relative overflow-hidden bg-ink-100 ${ROUNDED[rounded]} ${className}`}
+      className={`relative overflow-hidden bg-gray-100 dark:bg-ink-100 ${ROUNDED[rounded]} ${className}`}
       style={style}
     >
       <span className="sr-only">Loading…</span>
