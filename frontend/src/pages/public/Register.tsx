@@ -8,10 +8,12 @@ import HeroArt from '@/components/HeroArt';
 import Logo from '@/components/Logo';
 import Button from '@/components/Button';
 import PageTransition from '@/components/PageTransition';
+import { useI18n } from '@/i18n';
 
 export default function Register() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { t } = useI18n();
   const [form, setForm] = useState({ name: '', email: '', password: '', password_confirmation: '' });
   const [loading, setLoading] = useState(false);
 
@@ -35,7 +37,6 @@ export default function Register() {
 
   return (
     <PageTransition className="min-h-screen flex">
-      {/* ── Left panel: brand / art ─────────────────────────── */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
         <HeroArt variant="orbs" className="absolute inset-0 w-full h-full" />
         <div className="relative z-10 flex flex-col justify-between p-12 w-full">
@@ -69,7 +70,6 @@ export default function Register() {
         </div>
       </div>
 
-      {/* ── Right panel: form ─────────────────────────────────── */}
       <div className="flex-1 flex items-center justify-center px-6 py-12 lg:px-16">
         <div className="w-full max-w-md">
           <div className="lg:hidden mb-10 flex justify-center">
@@ -81,11 +81,11 @@ export default function Register() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           >
-            <h2 className="text-h2 text-ink-900 mb-2">Create account</h2>
+            <h2 className="text-h2 text-ink-900 mb-2">{t('auth.createAccount')}</h2>
             <p className="text-body text-ink-600 mb-8">
-              Already have one?{' '}
+              {t('auth.haveAccount')}{' '}
               <Link to="/login" className="text-accent-400 hover:text-accent-300 transition-colors">
-                Sign in
+                {t('auth.signIn')}
               </Link>
             </p>
           </motion.div>
@@ -98,10 +98,10 @@ export default function Register() {
             transition={{ delay: 0.18, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           >
             {[
-              { key: 'name', label: 'Full name', type: 'text', placeholder: 'John Doe' },
-              { key: 'email', label: 'Email address', type: 'email', placeholder: 'you@example.com' },
-              { key: 'password', label: 'Password', type: 'password', placeholder: 'Min. 10 characters · letters, numbers, symbol' },
-              { key: 'password_confirmation', label: 'Confirm password', type: 'password', placeholder: 'Repeat password' },
+              { key: 'name', label: t('auth.name'), type: 'text', placeholder: 'John Doe' },
+              { key: 'email', label: t('auth.email'), type: 'email', placeholder: 'you@example.com' },
+              { key: 'password', label: t('auth.password'), type: 'password', placeholder: 'Min. 10 characters · letters, numbers, symbol' },
+              { key: 'password_confirmation', label: t('auth.confirmPassword'), type: 'password', placeholder: 'Repeat password' },
             ].map(({ key, label, type, placeholder }) => (
               <div key={key}>
                 <label htmlFor={key} className="label">{label}</label>
@@ -132,7 +132,7 @@ export default function Register() {
               loading={loading}
               className="w-full mt-2"
             >
-              Create account
+              {t('auth.createAccount')}
             </Button>
 
             <p className="text-micro text-ink-500 text-center">

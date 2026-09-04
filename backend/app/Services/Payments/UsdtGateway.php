@@ -15,11 +15,11 @@ class UsdtGateway implements PaymentGatewayInterface
 
     public function createDeposit(float $amount, string $currency, array $meta = []): array
     {
-        $reference = 'usdt_' . Str::uuid()->toString();
-        $wallet = config('services.usdt.wallet', '0xMOCKUSDTWALLETADDRESS');
+        $reference = 'usdt_'.Str::uuid()->toString();
+        $wallet = config('services.usdt.wallet');
         $memo = strtoupper(substr($reference, -8));
 
-        Log::info('USDT mock deposit created', [
+        Log::info('USDT deposit created', [
             'reference' => $reference,
             'amount' => $amount,
             'wallet' => $wallet,
@@ -33,7 +33,7 @@ class UsdtGateway implements PaymentGatewayInterface
             'currency' => 'USDT_BEP20',
             'wallet_address' => $wallet,
             'memo' => $memo,
-            'qr_code' => 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' . urlencode("usdt:{$wallet}?memo={$memo}"),
+            'qr_code' => 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data='.urlencode("usdt:{$wallet}?memo={$memo}"),
             'instructions' => 'Send USDT (BEP-20) to the address above with the memo. Your balance will be credited after 1 confirmation.',
         ];
     }
@@ -42,7 +42,7 @@ class UsdtGateway implements PaymentGatewayInterface
     {
         $signature = $request->header('X-Usdt-Signature');
         $payload = $request->getContent();
-        $secret = config('services.usdt.secret', 'MOCK_USDT_SECRET');
+        $secret = config('services.usdt.secret');
 
         $expected = hash_hmac('sha256', $payload, $secret);
 

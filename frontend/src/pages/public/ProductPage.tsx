@@ -7,11 +7,13 @@ import Button from '@/components/Button';
 import ProductImage from '@/components/ProductImage';
 import { formatPrice } from '@/utils/format';
 import PageTransition from '@/components/PageTransition';
+import { useI18n } from '@/i18n';
 
 export default function ProductPage() {
   const { slug } = useParams();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const { t } = useI18n();
   const [product, setProduct] = useState<any>(null);
   const [quantity, setQuantity] = useState(1);
   const [payload, setPayload] = useState<Record<string, string>>({});
@@ -37,8 +39,8 @@ export default function ProductPage() {
   if (!product) {
     return (
       <PageTransition className="text-center py-24">
-        <p className="text-h3 text-ink-600 mb-4">Product not found.</p>
-        <Link to="/" className="btn-accent">Back to home</Link>
+        <p className="text-h3 text-ink-600 mb-4">{t('product.productNotFound')}</p>
+        <Link to="/" className="btn-accent">{t('product.backToHome')}</Link>
       </PageTransition>
     );
   }
@@ -46,24 +48,21 @@ export default function ProductPage() {
   const isManual = product.type === 'manual';
 
   const handleAddToCart = () => {
-    // Validate quantity
     if (!quantity || quantity < 1) {
-      setErrors({ quantity: 'Quantity must be at least 1' });
+      setErrors({ quantity: t('product.errorQuantity') });
       return;
     }
 
-    // Validate manual product fields
     if (isManual) {
       const newErrors: Record<string, string> = {};
-      const linkValue = (payload['Link / Username'] ?? '').trim();
+      const linkValue = (payload[t('product.linkUsername')] ?? '').trim();
       if (!linkValue) {
-        newErrors['Link / Username'] = 'Please enter your Link / Username';
+        newErrors[t('product.linkUsername')] = t('product.errorLink');
       }
-      // Quantity for manual product is stored in payload too
-      const qtyValue = (payload['Quantity'] ?? '').trim();
+      const qtyValue = (payload[t('product.quantity')] ?? '').trim();
       const qtyNum = parseInt(qtyValue, 10);
       if (!qtyValue || isNaN(qtyNum) || qtyNum < 1) {
-        newErrors['Quantity'] = 'Quantity must be at least 1';
+        newErrors[t('product.quantity')] = t('product.errorQuantity');
       }
       setErrors(newErrors);
       if (Object.keys(newErrors).length > 0) return;
@@ -77,7 +76,7 @@ export default function ProductPage() {
         name: product.name,
         price: Number(product.price),
         quantity: isManual
-          ? Math.max(1, parseInt((payload['Quantity'] ?? '1').trim(), 10) || 1)
+          ? Math.max(1, parseInt((payload[t('product.quantity')] ?? '1').trim(), 10) || 1)
           : quantity,
         payload: isManual ? payload : undefined,
       }),
@@ -85,11 +84,17 @@ export default function ProductPage() {
     navigate('/cart');
   };
 
+  const manualFields = [
+    t('product.linkUsername'),
+    t('product.quantity'),
+    t('product.notesOptional'),
+  ];
+
   return (
     <PageTransition className="max-w-5xl mx-auto">
       {/* Breadcrumb */}
       <p className="eyebrow mb-6">
-        <Link to="/" className="hover:text-accent-300 transition-colors">Home</Link>
+        <Link to="/" className="hover:text-accent-300 transition-colors">{t('nav.home')}</Link>
         {' / '}
         <Link
           to={`/category/${product.category?.slug}`}
@@ -102,7 +107,6 @@ export default function ProductPage() {
       </p>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-        {/* Left: product visual */}
         <motion.div
           initial={{ opacity: 0, x: -16 }}
           animate={{ opacity: 1, x: 0 }}
@@ -112,11 +116,11 @@ export default function ProductPage() {
             name={product.name}
             category={product.category?.name}
             imageBase64={product.image_base64}
+            imageUrl={product.image_url}
             className="w-full h-80 rounded-2xl"
           />
         </motion.div>
 
-        {/* Right: details + purchase */}
         <motion.div
           className="space-y-6"
           initial={{ opacity: 0, x: 16 }}
@@ -126,17 +130,17 @@ export default function ProductPage() {
           <div>
             <div className="flex flex-wrap gap-2 mb-4">
               {product.external_store_id && (
-                <span className="badge-neutral">External Store</span>
+                <span className="badge-neutral">{t('product.externalStore')}</span>
               )}
               <span className={`badge ${isManual ? 'badge-pending' : 'badge-completed'}`}>
-                {isManual ? 'Manual Service' : 'Auto Delivery'}
+                {isManual ? t('product.manualService') : t('product.autoDelivery')}
               </span>
             </div>
             <h1 className="text-h1 text-ink-900 mb-2">{product.name}</h1>
             <div className="text-small text-ink-500">
-              <span>Category: <Link to={`/category/${product.category?.slug}`} className="text-accent-400 hover:underline">{product.category?.name}</Link></span>
+              <span>{t('product.category')}: <Link to={`/category/${product.category?.slug}`} className="text-accent-400 hover:underline">{product.category?.name}</Link></span>
               <span className="mx-2">·</span>
-              <span>In stock: <strong className="text-ink-700">{product.stock}</strong></span>
+              <span>{t('product.inStock')}: <strong className="text-ink-700">{product.stock}</strong></span>
             </div>
           </div>
 
@@ -144,18 +148,17 @@ export default function ProductPage() {
             {product.description}
           </p>
 
-          {/* Purchase card */}
           <div className="card-pad space-y-5">
             <div className="flex items-baseline gap-3">
               <span className="text-display-1 text-accent-400 font-bold">
                 {formatPrice(product.price)}
               </span>
-              <span className="text-body text-ink-500">per unit</span>
+              <span className="text-body text-ink-500">{t('product.perUnit')}</span>
             </div>
 
             {!isManual && (
               <div>
-                <label className="label">Quantity</label>
+                <label className="label">{t('product.quantity')}</label>
                 <div className="flex items-center gap-3">
                   <button
                     onClick={() => setQuantity((q) => Math.max(1, q - 1))}
@@ -186,9 +189,9 @@ export default function ProductPage() {
             {isManual && (
               <div className="space-y-3">
                 <p className="text-micro text-ink-500 uppercase tracking-wide">
-                  Service details
+                  {t('product.serviceDetails')}
                 </p>
-                {['Link / Username', 'Quantity', 'Notes (optional)'].map((label) => (
+                {manualFields.map((label) => (
                   <div key={label}>
                     <label className="label">{label}</label>
                     <input
@@ -210,7 +213,7 @@ export default function ProductPage() {
 
             <div className="flex items-center justify-between">
               <span className="text-body text-ink-600">
-                Total:{' '}
+                {t('product.total')}:{' '}
                 <strong className="text-ink-900">
                   {formatPrice(Number(product.price) * quantity)}
                 </strong>
@@ -220,7 +223,7 @@ export default function ProductPage() {
                 size="lg"
                 onClick={handleAddToCart}
               >
-                Add to cart
+                {t('product.addToCart')}
               </Button>
             </div>
           </div>

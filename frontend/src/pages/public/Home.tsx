@@ -7,6 +7,7 @@ import ProductImage from '@/components/ProductImage';
 import { formatPrice } from '@/utils/format';
 import HeroArt from '@/components/HeroArt';
 import PageTransition from '@/components/PageTransition';
+import { useI18n } from '@/i18n';
 
 const CATEGORY_ICON: Record<string, string> = {
   gamepad:      '🎮',
@@ -32,6 +33,7 @@ export default function Home() {
   const [featured, setFeatured] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const isAuthenticated = useAppSelector((s) => s.auth.isAuthenticated);
+  const { t } = useI18n();
 
   useEffect(() => {
     Promise.all([
@@ -59,44 +61,42 @@ export default function Home() {
 
       {/* ── Hero ──────────────────────────────────────────── */}
       <section className="relative overflow-hidden rounded-2xl border border-ink-200 bg-ink-50">
-        {/* Art behind content */}
         <div className="absolute inset-0 opacity-40">
           <HeroArt variant="aurora" className="w-full h-full" />
         </div>
         <div className="relative z-10 px-10 py-16 flex flex-col md:flex-row items-center gap-10">
           <div className="flex-1">
-            <p className="eyebrow mb-4">Digital Marketplace</p>
+            <p className="eyebrow mb-4">{t('home.digitalMarketplace')}</p>
             <h1 className="text-display-2 text-ink-900 mb-4 text-balance">
-              The modern way to<br />
-              <span className="text-accent-400">buy digital.</span>
+              {t('home.heroTitle1')}<br />
+              <span className="text-accent-400">{t('home.heroTitle2')}</span>
             </h1>
             <p className="text-body-lg text-ink-600 mb-8 max-w-lg">
-              Instant auto-delivery, manual services, and secure payments — all in one place. No fluff, no delays.
+              {t('home.heroDescription')}
             </p>
             <div className="flex flex-wrap gap-3">
               {isAuthenticated ? (
                 <>
                   <Link to="/products" className="btn-accent">
-                    Continue shopping
+                    {t('home.continueShopping')}
                   </Link>
                   <Link to="/dashboard" className="btn-secondary">
-                    Go to dashboard
+                    {t('home.goToDashboard')}
                   </Link>
                 </>
               ) : (
                 <>
                   <Link to="/products" className="btn-accent">
-                    Browse products
+                    {t('home.browseProducts')}
                   </Link>
                   <Link to="/register" className="btn-secondary">
-                    Create account
+                    {t('home.createAccount')}
                   </Link>
                 </>
               )}
             </div>
           </div>
 
-          {/* Floating stat cards */}
           <div className="hidden md:grid grid-cols-2 gap-3 w-64">
             {[
               { label: 'Products', value: '500+' },
@@ -124,7 +124,7 @@ export default function Home() {
         <div className="flex items-end justify-between mb-6">
           <div>
             <p className="eyebrow mb-1">Browse</p>
-            <h2 className="text-h2 text-ink-900">Categories</h2>
+            <h2 className="text-h2 text-ink-900">{t('home.categories')}</h2>
           </div>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
@@ -151,14 +151,14 @@ export default function Home() {
       <section>
         <div className="flex items-end justify-between mb-6">
           <div>
-            <p className="eyebrow mb-1">Hot right now</p>
-            <h2 className="text-h2 text-ink-900">Featured products</h2>
+            <p className="eyebrow mb-1">{t('home.hotRightNow')}</p>
+            <h2 className="text-h2 text-ink-900">{t('home.featuredProducts')}</h2>
           </div>
           <Link
             to="/products"
             className="text-sm text-accent-400 hover:text-accent-300 transition-colors"
           >
-            View all →
+            {t('home.viewAll')} →
           </Link>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -172,6 +172,7 @@ export default function Home() {
                   name={p.name}
                   category={p.category?.name}
                   imageBase64={p.image_base64}
+                  imageUrl={p.image_url}
                   className="h-40 mb-4"
                 />
                 <div className="px-4 pb-4">

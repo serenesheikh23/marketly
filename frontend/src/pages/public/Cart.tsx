@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { useAppSelector, useAppDispatch, updateQuantity, removeFromCart, clearCart, translations } from '@/store';
+import { useAppSelector, useAppDispatch, updateQuantity, removeFromCart, clearCart } from '@/store';
 import { orderApi } from '@/api/client';
 import toast from 'react-hot-toast';
 import Button from '@/components/Button';
 import EmptyState from '@/components/EmptyState';
 import PageTransition from '@/components/PageTransition';
 import { formatPrice } from '@/utils/format';
+import { useI18n } from '@/i18n';
 
 const PAYMENT_METHODS = [
   { value: 'cash_wallet', label: 'Cash Wallet' },
@@ -17,13 +18,12 @@ const PAYMENT_METHODS = [
 
 export default function Cart() {
   const { items } = useAppSelector((s) => s.cart);
-  const { locale } = useAppSelector((s) => s.language);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { t } = useI18n();
   const [paymentMethod, setPaymentMethod] = useState('cash_wallet');
   const [submitting, setSubmitting] = useState(false);
   const [confirming, setConfirming] = useState(false);
-  const t = translations[locale];
 
   const total = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
 
@@ -44,11 +44,11 @@ export default function Cart() {
         })),
         payment_method: paymentMethod,
       });
-      toast.success(`Order #${res.data.order.id} placed!`);
+      toast.success(t('cart.orderPlaced', { id: res.data.order.id }));
       dispatch(clearCart());
       navigate('/dashboard/orders');
     } catch (err: any) {
-      toast.error(err.response?.data?.message ?? 'Checkout failed');
+      toast.error(err.response?.data?.message ?? t('cart.checkoutFailed'));
     } finally {
       setSubmitting(false);
     }
@@ -65,9 +65,9 @@ export default function Cart() {
               <path d="M16 10a4 4 0 0 1-8 0" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           }
-          title={t.emptyCart}
-          description={t.browseCatalog}
-          action={{ label: t.browseProductsBtn, to: '/products' }}
+          title={t('cart.emptyCart')}
+          description={t('cart.emptyDescription')}
+          action={{ label: t('cart.browseProducts'), to: '/products' }}
         />
       </PageTransition>
     );
@@ -75,7 +75,7 @@ export default function Cart() {
 
   return (
     <PageTransition>
-      <h1 className="text-h1 text-ink-900 mb-8">{t.yourCart}</h1>
+      <h1 className="text-h1 text-ink-900 mb-8">{t('cart.yourCart')}</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Items */}
@@ -97,7 +97,6 @@ export default function Cart() {
                 )}
               </div>
 
-              {/* Quantity controls */}
               <div className="flex items-center gap-2">
                 <button
                   onClick={() =>
@@ -127,7 +126,7 @@ export default function Cart() {
               <button
                 onClick={() => dispatch(removeFromCart(item.product_id))}
                 className="btn-ghost btn-sm text-status-rejected/70 hover:text-status-rejected p-1.5"
-                aria-label="Remove"
+                aria-label={t('cart.remove')}
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                   <path d="M18 6 6 18M6 6l12 12" />
@@ -140,7 +139,7 @@ export default function Cart() {
         {/* Summary */}
         <div className="lg:col-span-1">
           <div className="card-pad sticky top-24 space-y-5">
-            <h2 className="text-h3 text-ink-900">{t.checkout}</h2>
+            <h2 className="text-h3 text-ink-900">{t('cart.checkout')}</h2>
 
             <div className="space-y-2">
               {PAYMENT_METHODS.map((m) => (
@@ -167,43 +166,26 @@ export default function Cart() {
 
             <div className="border-t border-ink-200 pt-4 space-y-1">
               <div className="flex justify-between text-small text-ink-500">
-                <span>{t.subtotal}</span>
+                <span>{t('cart.subtotal')}</span>
                 <span>{formatPrice(total)}</span>
               </div>
               <div className="flex justify-between text-body text-ink-600">
-                <span>{t.total}</span>
+                <span>{t('cart.total')}</span>
                 <span className="text-h3 text-accent-400">{formatPrice(total)}</span>
               </div>
-            </div>
-
-            {/* Demo payment notice — visible until real API keys are added */}
-            <div
-              role="note"
-              aria-live="polite"
-              className="flex items-start gap-2 p-3 rounded-lg bg-status-pending/10 border border-status-pending/30 text-status-pending text-small"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="flex-shrink-0 mt-0.5" aria-hidden="true">
-                <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-                <line x1="12" y1="9" x2="12" y2="13" />
-                <line x1="12" y1="17" x2="12.01" y2="17" />
-              </svg>
-              <span>
-                <strong className="font-semibold">Demo mode:</strong> payment is
-                currently a mock — orders will not be charged until real
-                payment keys are configured.
-              </span>
             </div>
 
             {confirming ? (
               <div className="space-y-3">
                 <div className="card-pad bg-ink-100/40 p-4 space-y-1 text-small">
                   <p className="text-ink-700">
-                    <strong className="text-ink-900">{items.length}</strong> item
-                    {items.length === 1 ? '' : 's'} for{' '}
+                    <strong className="text-ink-900">{items.length}</strong>{' '}
+                    {items.length === 1 ? t('cart.item') : t('cart.items')}{' '}
+                    {t('cart.for')}{' '}
                     <strong className="text-accent-400">{formatPrice(total)}</strong>
                   </p>
                   <p className="text-ink-500">
-                    Paying with{' '}
+                    {t('cart.payWith')}{' '}
                     <strong className="text-ink-700">
                       {PAYMENT_METHODS.find((m) => m.value === paymentMethod)?.label}
                     </strong>
@@ -217,14 +199,14 @@ export default function Cart() {
                     loading={submitting}
                     onClick={handleCheckout}
                   >
-                    {t.confirmOrder}
+                    {t('cart.confirmOrder')}
                   </Button>
                   <Button
                     variant="secondary"
                     onClick={() => setConfirming(false)}
                     disabled={submitting}
                   >
-                    {t.edit}
+                    {t('cart.editOrder')}
                   </Button>
                 </div>
               </div>
@@ -235,12 +217,12 @@ export default function Cart() {
                 className="w-full"
                 onClick={handleConfirm}
               >
-                {t.reviewAndPlace}
+                {t('cart.reviewAndPlace')}
               </Button>
             )}
 
             <p className="text-micro text-ink-500 text-center">
-              {t.ordersProcessed}
+              {t('cart.ordersProcessed')}
             </p>
           </div>
         </div>

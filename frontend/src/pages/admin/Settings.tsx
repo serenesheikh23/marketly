@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react';
 import { adminSettingsApi } from '@/api/client';
 import toast from 'react-hot-toast';
 import PageTransition from '@/components/PageTransition';
+import { useI18n } from '@/i18n';
 
-const GROUPS: Record<string, { label: string; keys: string[] }> = {
+const GROUPS: Record<string, { labelKey: string; keys: string[] }> = {
   vip: {
-    label: 'VIP & Membership',
+    labelKey: 'admin.vipAndMembership',
     keys: [
       'vip1_withdrawal_limit',
       'vip2_withdrawal_limit',
@@ -17,7 +18,7 @@ const GROUPS: Record<string, { label: string; keys: string[] }> = {
     ],
   },
   payment: {
-    label: 'Payment Providers',
+    labelKey: 'admin.paymentProviders',
     keys: ['binance_pay_key', 'binance_pay_secret', 'usdt_wallet_address'],
   },
 };
@@ -25,6 +26,7 @@ const GROUPS: Record<string, { label: string; keys: string[] }> = {
 export default function AdminSettings() {
   const [settings, setSettings] = useState<Record<string, any>>({});
   const [saving, setSaving] = useState(false);
+  const { t } = useI18n();
 
   useEffect(() => {
     adminSettingsApi.list()
@@ -36,24 +38,24 @@ export default function AdminSettings() {
     setSaving(true);
     try {
       await adminSettingsApi.update({ key, value, type: 'string' });
-      toast.success(`${key} updated.`);
+      toast.success(t('admin.updated', { key }));
       const r = await adminSettingsApi.list();
       setSettings(r.data.settings ?? {});
-    } catch (err: any) { toast.error(err.response?.data?.message ?? 'Failed'); }
+    } catch (err: any) { toast.error(err.response?.data?.message ?? t('common.failed')); }
     finally { setSaving(false); }
   };
 
   return (
     <PageTransition className="space-y-8">
       <div>
-        <p className="eyebrow mb-1">System</p>
-        <h1 className="text-h1 text-ink-900">Settings</h1>
+        <p className="eyebrow mb-1">{t('admin.system')}</p>
+        <h1 className="text-h1 text-ink-900">{t('admin.settings')}</h1>
       </div>
 
       <div className="space-y-6">
         {Object.entries(GROUPS).map(([group, info]) => (
           <div key={group} className="card-pad">
-            <h2 className="text-h3 text-ink-900 mb-5">{info.label}</h2>
+            <h2 className="text-h3 text-ink-900 mb-5">{t(info.labelKey)}</h2>
             <div className="space-y-4">
               {info.keys.map((key) => {
                 const value = (settings[group] ?? {})[key]?.value ?? '';

@@ -3,14 +3,7 @@ import { motion } from 'framer-motion';
 import { adminDashboardApi } from '@/api/client';
 import PageTransition from '@/components/PageTransition';
 import { formatPrice } from '@/utils/format';
-
-const TILE_COLORS: Record<string, string> = {
-  'Total Users':           'text-ink-900',
-  'Revenue':               'text-accent-400',
-  'Pending Deposits':      'text-status-pending',
-  'Pending Withdrawals':   'text-status-processing',
-  'Pending Manual Orders': 'text-status-vip',
-};
+import { useI18n } from '@/i18n';
 
 interface HealthCheck {
   status: 'ok' | 'warn' | 'error';
@@ -35,6 +28,7 @@ export default function AdminDashboard() {
   const [stats, setStats] = useState<any>(null);
   const [health, setHealth] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const { t } = useI18n();
 
   useEffect(() => {
     Promise.all([
@@ -60,32 +54,32 @@ export default function AdminDashboard() {
   const s = stats?.stats ?? {};
 
   const tiles = [
-    { label: 'Total Users',           value: s.total_users,            numeric: true },
-    { label: 'Revenue',               value: formatPrice(s.total_revenue ?? 0), numeric: false },
-    { label: 'Pending Deposits',      value: s.pending_deposits,        numeric: true },
-    { label: 'Pending Withdrawals',   value: s.pending_withdrawals,     numeric: true },
-    { label: 'Pending Manual Orders', value: s.pending_manual_orders,   numeric: true },
+    { key: 'admin.totalUsers',           value: s.total_users,            color: 'text-ink-900' },
+    { key: 'admin.revenue',              value: formatPrice(s.total_revenue ?? 0), color: 'text-accent-400' },
+    { key: 'admin.pendingDeposits',      value: s.pending_deposits,        color: 'text-status-pending' },
+    { key: 'admin.pendingWithdrawals',   value: s.pending_withdrawals,     color: 'text-status-processing' },
+    { key: 'admin.pendingManualOrders',  value: s.pending_manual_orders,   color: 'text-status-vip' },
   ];
 
   return (
     <PageTransition className="space-y-8">
       <div>
-        <p className="eyebrow mb-1">Overview</p>
-        <h1 className="text-h1 text-ink-900">Admin Dashboard</h1>
+        <p className="eyebrow mb-1">{t('admin.overview')}</p>
+        <h1 className="text-h1 text-ink-900">{t('admin.dashboard')}</h1>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-        {tiles.map((t, i) => (
+        {tiles.map((tile, i) => (
           <motion.div
-            key={t.label}
+            key={tile.key}
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.06, duration: 0.3 }}
             className="card-pad"
           >
-            <p className="text-micro text-ink-500 uppercase tracking-wide">{t.label}</p>
-            <p className={`text-h2 tabular-nums ${TILE_COLORS[t.label] ?? 'text-ink-900'}`}>
-              {t.value ?? '—'}
+            <p className="text-micro text-ink-500 uppercase tracking-wide">{t(tile.key)}</p>
+            <p className={`text-h2 tabular-nums ${tile.color}`}>
+              {tile.value ?? '—'}
             </p>
           </motion.div>
         ))}
@@ -95,30 +89,24 @@ export default function AdminDashboard() {
       <div className="card-pad">
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h2 className="text-h3 text-ink-900">System Health</h2>
+            <h2 className="text-h3 text-ink-900">{t('admin.systemHealth')}</h2>
             <p className="text-micro text-ink-500 mt-0.5">
-              Live infrastructure status · {health?.app_env ?? 'unknown'} · DEBUG:{' '}
+              {t('admin.liveInfra')} · {health?.app_env ?? 'unknown'} · DEBUG:{' '}
               <span className={health?.app_debug ? 'text-status-rejected' : 'text-accent-400'}>
                 {String(health?.app_debug ?? '—')}
               </span>
             </p>
           </div>
           {health && (
-            <span
-              className={`badge-${health.healthy ? 'completed' : 'rejected'}`}
-            >
-              {health.healthy ? 'All systems normal' : 'Issues detected'}
+            <span className={`badge-${health.healthy ? 'completed' : 'rejected'}`}>
+              {health.healthy ? t('admin.allSystemsNormal') : t('admin.issuesDetected')}
             </span>
           )}
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {(['database', 'storage', 'reverb'] as const).map((key) => {
             const check: HealthCheck = health?.checks?.[key] ?? { status: 'warn', message: 'Not yet checked' };
-            const labels: Record<string, string> = {
-              database: 'Database',
-              storage: 'Storage',
-              reverb: 'Reverb (WebSockets)',
-            };
+            const labelKey = `admin.${key}`;
             return (
               <div
                 key={key}
@@ -126,7 +114,7 @@ export default function AdminDashboard() {
               >
                 <StatusDot status={check.status} />
                 <div className="flex-1 min-w-0">
-                  <p className="text-small font-medium text-ink-900">{labels[key]}</p>
+                  <p className="text-small font-medium text-ink-900">{t(labelKey)}</p>
                   <p className="text-micro text-ink-500 truncate" title={check.message}>
                     {check.message}
                   </p>
@@ -139,17 +127,17 @@ export default function AdminDashboard() {
 
       <div className="card-pad">
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-h3 text-ink-900">Recent orders</h2>
+          <h2 className="text-h3 text-ink-900">{t('admin.recentOrders')}</h2>
         </div>
         <div className="table-wrap">
           <table className="table">
             <thead>
               <tr>
                 <th>Order #</th>
-                <th>User</th>
+                <th>{t('admin.user')}</th>
                 <th>Total</th>
-                <th>Status</th>
-                <th>Date</th>
+                <th>{t('admin.status')}</th>
+                <th>{t('admin.date')}</th>
               </tr>
             </thead>
             <tbody>
@@ -163,7 +151,7 @@ export default function AdminDashboard() {
                 </tr>
               ))}
               {(stats?.recent_orders ?? []).length === 0 && (
-                <tr><td colSpan={5} className="text-center text-ink-500 py-6">No orders yet.</td></tr>
+                <tr><td colSpan={5} className="text-center text-ink-500 py-6">{t('admin.noOrdersYet')}</td></tr>
               )}
             </tbody>
           </table>

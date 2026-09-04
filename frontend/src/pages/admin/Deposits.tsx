@@ -4,10 +4,12 @@ import toast from 'react-hot-toast';
 import Button from '@/components/Button';
 import PageTransition from '@/components/PageTransition';
 import { formatPrice } from '@/utils/format';
+import { useI18n } from '@/i18n';
 
 export default function AdminDeposits() {
   const [deposits, setDeposits] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const { t } = useI18n();
 
   const fetch = () => {
     setLoading(true);
@@ -22,19 +24,19 @@ export default function AdminDeposits() {
   const approve = async (id: number) => {
     try {
       await adminDepositApi.approve(id);
-      toast.success('Deposit approved.');
+      toast.success(t('admin.depositApproved'));
       fetch();
-    } catch (err: any) { toast.error(err.response?.data?.message ?? 'Failed'); }
+    } catch (err: any) { toast.error(err.response?.data?.message ?? t('common.failed')); }
   };
 
   const reject = async (id: number) => {
-    const reason = prompt('Reason for rejection:');
+    const reason = prompt(t('admin.reasonForRejection'));
     if (!reason) return;
     try {
       await adminDepositApi.reject(id, reason);
-      toast.success('Deposit rejected.');
+      toast.success(t('admin.depositRejected'));
       fetch();
-    } catch (err: any) { toast.error(err.response?.data?.message ?? 'Failed'); }
+    } catch (err: any) { toast.error(err.response?.data?.message ?? t('common.failed')); }
   };
 
   const hasPending = deposits.some((d) => d.status === 'pending');
@@ -42,8 +44,8 @@ export default function AdminDeposits() {
   return (
     <PageTransition className="space-y-6">
       <div>
-        <p className="eyebrow mb-1">Finance</p>
-        <h1 className="text-h1 text-ink-900">Deposits</h1>
+        <p className="eyebrow mb-1">{t('admin.finance')}</p>
+        <h1 className="text-h1 text-ink-900">{t('admin.deposits')}</h1>
       </div>
 
       <div className="card overflow-hidden p-0">
@@ -52,12 +54,12 @@ export default function AdminDeposits() {
             <thead>
               <tr>
                 <th>#</th>
-                <th>User</th>
-                <th>Amount</th>
-                <th>Method</th>
-                <th>Status</th>
-                <th>Date</th>
-                {hasPending && <th>Actions</th>}
+                <th>{t('admin.user')}</th>
+                <th>{t('admin.amount')}</th>
+                <th>{t('admin.method')}</th>
+                <th>{t('admin.status')}</th>
+                <th>{t('admin.date')}</th>
+                {hasPending && <th>{t('admin.actions')}</th>}
               </tr>
             </thead>
             <tbody>
@@ -75,8 +77,8 @@ export default function AdminDeposits() {
                     <td>
                       {d.status === 'pending' ? (
                         <div className="flex gap-2">
-                          <Button size="sm" variant="success" onClick={() => approve(d.id)}>Approve</Button>
-                          <Button size="sm" variant="danger" onClick={() => reject(d.id)}>Reject</Button>
+                          <Button size="sm" variant="success" onClick={() => approve(d.id)}>{t('admin.approve')}</Button>
+                          <Button size="sm" variant="danger" onClick={() => reject(d.id)}>{t('admin.reject')}</Button>
                         </div>
                       ) : (
                         <span className="text-micro text-ink-500">—</span>
@@ -86,7 +88,7 @@ export default function AdminDeposits() {
                 </tr>
               ))}
               {deposits.length === 0 && !loading && (
-                <tr><td colSpan={hasPending ? 7 : 6} className="text-center text-ink-500 py-8">No deposits yet.</td></tr>
+                <tr><td colSpan={hasPending ? 7 : 6} className="text-center text-ink-500 py-8">{t('admin.noDepositsYet')}</td></tr>
               )}
             </tbody>
           </table>

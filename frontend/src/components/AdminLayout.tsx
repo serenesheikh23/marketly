@@ -1,32 +1,33 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAppDispatch, logout } from '@/store';
 import { authApi } from '@/api/client';
 import Logo from './Logo';
 import PageTransition from './PageTransition';
+import { useI18n } from '@/i18n';
 
 const NAV_ITEMS = [
-  { to: '/admin', label: 'Dashboard', exact: true, icon: (
+  { to: '/admin', key: 'admin.dashboard', exact: true, icon: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
       <rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>
     </svg>
   )},
-  { to: '/admin/users', label: 'Users', icon: (
+  { to: '/admin/users', key: 'admin.users', icon: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
       <circle cx="9" cy="7" r="4"/>
       <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
     </svg>
   )},
-  { to: '/admin/products', label: 'Products', icon: (
+  { to: '/admin/products', key: 'admin.products', icon: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
       <line x1="3" y1="6" x2="21" y2="6"/>
       <path d="M16 10a4 4 0 0 1-8 0"/>
     </svg>
   )},
-  { to: '/admin/categories', label: 'Categories', icon: (
+  { to: '/admin/categories', key: 'admin.categories', icon: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <line x1="8" y1="6" x2="21" y2="6"/>
       <line x1="8" y1="12" x2="21" y2="12"/>
@@ -36,29 +37,29 @@ const NAV_ITEMS = [
       <line x1="3" y1="18" x2="3.01" y2="18"/>
     </svg>
   )},
-  { to: '/admin/orders', label: 'Orders', icon: (
+  { to: '/admin/orders', key: 'admin.orders', icon: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
       <rect x="9" y="3" width="6" height="4" rx="1"/>
     </svg>
   )},
-  { to: '/admin/orders/manual', label: 'Manual Orders', icon: (
+  { to: '/admin/orders/manual', key: 'admin.manualOrders', icon: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
       <polyline points="14 2 14 8 20 8"/>
     </svg>
   )},
-  { to: '/admin/deposits', label: 'Deposits', icon: (
+  { to: '/admin/deposits', key: 'admin.deposits', icon: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M12 5v14M5 12l7 7 7-7"/>
     </svg>
   )},
-  { to: '/admin/withdrawals', label: 'Withdrawals', icon: (
+  { to: '/admin/withdrawals', key: 'admin.withdrawals', icon: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M12 19V5M5 12l7-7 7 7"/>
     </svg>
   )},
-  { to: '/admin/settings', label: 'Settings', icon: (
+  { to: '/admin/settings', key: 'admin.settings', icon: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="12" cy="12" r="3"/>
       <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/>
@@ -70,6 +71,7 @@ export default function AdminLayout() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useI18n();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleLogout = async () => {
@@ -82,28 +84,42 @@ export default function AdminLayout() {
 
   return (
     <div className="flex min-h-screen bg-ink">
-      {/* Mobile sidebar overlay */}
+      {/* Mobile overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-30 md:hidden"
+          className="fixed inset-0 bg-black/50 z-30 lg:hidden"
           onClick={closeSidebar}
         />
       )}
 
-      {/* Sidebar */}
+      {/* Sidebar — fixed on mobile (overlay), sticky on lg+ */}
       <aside
-        className={`fixed md:relative z-40 w-64 h-full bg-ink-50 border-r border-ink-200 flex flex-col flex-shrink-0 transition-transform duration-300 ${
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
-        }`}
+        className={`
+          fixed inset-y-0 left-0 z-40 w-64 flex flex-col
+          bg-ink-50 border-r border-ink-200
+          transition-transform duration-300
+          lg:sticky lg:top-0 lg:z-20 lg:translate-x-0 lg:flex-shrink-0 lg:h-screen
+          ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+        `}
       >
-        <div className="px-4 py-5 border-b border-ink-200">
+        <div className="flex items-center justify-between px-4 py-5 border-b border-ink-200">
           <Link to="/" className="flex items-center gap-2.5" onClick={closeSidebar}>
             <Logo size="sm" />
           </Link>
-          <p className="text-micro text-ink-500 mt-1 px-0.5">Admin Panel</p>
+          <button
+            onClick={closeSidebar}
+            className="lg:hidden p-1.5 rounded-md text-ink-500 hover:text-ink-900 hover:bg-ink-100 transition-colors"
+            aria-label="Close menu"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
         </div>
+        <p className="text-micro text-ink-500 px-4 py-2">{t('nav.adminPanel')}</p>
 
-        <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto no-scrollbar">
+        <nav className="flex-1 px-3 py-2 space-y-0.5 overflow-y-auto no-scrollbar">
           {NAV_ITEMS.map((item) => {
             const isActive = item.exact
               ? location.pathname === item.to
@@ -116,7 +132,7 @@ export default function AdminLayout() {
                 className={`nav-link text-sm flex items-center gap-2 ${isActive ? 'nav-link-active' : ''}`}
               >
                 <span className={isActive ? 'text-accent-400' : 'text-ink-500'}>{item.icon}</span>
-                {item.label}
+                {t(item.key)}
               </Link>
             );
           })}
@@ -127,7 +143,7 @@ export default function AdminLayout() {
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-ink-500">
               <path d="M15 18l-6-6 6-6"/>
             </svg>
-            Back to site
+            {t('nav.backToSite')}
           </Link>
           <button
             onClick={handleLogout}
@@ -138,34 +154,27 @@ export default function AdminLayout() {
               <polyline points="16 17 21 12 16 7"/>
               <line x1="21" y1="12" x2="9" y2="12"/>
             </svg>
-            Logout
+            {t('nav.signOut')}
           </button>
         </div>
       </aside>
 
-      {/* Mobile menu button */}
+      {/* Mobile hamburger — only on mobile */}
       <button
         onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="fixed top-4 left-4 z-50 p-2 rounded-md bg-ink-50 border border-ink-200 hover:bg-ink-100 md:hidden"
+        className="fixed top-4 left-4 z-50 p-2 rounded-md bg-ink-50 border border-ink-200 hover:bg-ink-100 lg:hidden"
         aria-label="Toggle sidebar"
       >
-        {sidebarOpen ? (
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="18" y1="6" x2="6" y2="18"/>
-            <line x1="6" y1="6" x2="18" y2="18"/>
-          </svg>
-        ) : (
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="3" y1="6" x2="21" y2="6"/>
-            <line x1="3" y1="12" x2="21" y2="12"/>
-            <line x1="3" y1="18" x2="21" y2="18"/>
-          </svg>
-        )}
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
       </button>
 
-      {/* Content */}
-      <div className="flex-1 overflow-auto md:ml-0">
-        <PageTransition className="p-4 pt-16 md:p-8 pl-12 md:pl-8">
+      {/* Content — offset by sidebar on lg+ */}
+      <div className="flex-1 overflow-auto lg:ml-64">
+        <PageTransition className="p-4 pt-16 lg:p-8 lg:pt-8 pl-14 lg:pl-8">
           <Outlet />
         </PageTransition>
       </div>

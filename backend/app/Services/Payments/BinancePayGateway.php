@@ -15,9 +15,9 @@ class BinancePayGateway implements PaymentGatewayInterface
 
     public function createDeposit(float $amount, string $currency, array $meta = []): array
     {
-        $reference = 'binance_' . Str::uuid()->toString();
+        $reference = 'binance_'.Str::uuid()->toString();
 
-        Log::info('Binance Pay mock deposit created', [
+        Log::info('Binance Pay deposit created', [
             'reference' => $reference,
             'amount' => $amount,
             'currency' => $currency,
@@ -28,8 +28,8 @@ class BinancePayGateway implements PaymentGatewayInterface
             'reference' => $reference,
             'amount' => $amount,
             'currency' => $currency,
-            'qr_code' => 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=binance:' . urlencode($reference),
-            'checkout_url' => 'https://pay.binance.com/checkout/' . $reference,
+            'qr_code' => 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=binance:'.urlencode($reference),
+            'checkout_url' => 'https://pay.binance.com/checkout/'.$reference,
             'instructions' => 'Scan the QR code with Binance Pay to complete the payment.',
         ];
     }
@@ -38,7 +38,7 @@ class BinancePayGateway implements PaymentGatewayInterface
     {
         $signature = $request->header('X-Binance-Signature');
         $payload = $request->getContent();
-        $secret = config('services.binance_pay.secret', 'MOCK_BINANCE_SECRET');
+        $secret = config('services.binance_pay.secret');
 
         $expected = hash_hmac('sha512', $payload, $secret);
 

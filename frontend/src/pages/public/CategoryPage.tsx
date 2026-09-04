@@ -136,6 +136,7 @@ export default function CategoryPage() {
                   name={p.name}
                   category={category.name}
                   imageBase64={p.image_base64}
+                  imageUrl={p.image_url}
                   className="h-36 mb-4"
                 />
                 <div className="px-4 pb-4">

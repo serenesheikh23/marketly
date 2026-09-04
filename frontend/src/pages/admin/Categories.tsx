@@ -89,9 +89,9 @@ export default function AdminCategories() {
             className="card-pad flex items-center justify-between"
           >
             <div className="flex items-center gap-3">
-              {c.image_base64 ? (
+              {(c.image_url ?? c.image_base64) ? (
                 <img
-                  src={c.image_base64}
+                  src={c.image_url ?? c.image_base64}
                   alt={c.name}
                   className="w-10 h-10 rounded-lg object-cover border border-ink-200 flex-shrink-0"
                 />
