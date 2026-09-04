@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { useAppSelector, useAppDispatch, updateQuantity, removeFromCart, clearCart } from '@/store';
+import { useAppSelector, useAppDispatch, updateQuantity, removeFromCart, clearCart, translations } from '@/store';
 import { orderApi } from '@/api/client';
 import toast from 'react-hot-toast';
 import Button from '@/components/Button';
@@ -17,11 +17,13 @@ const PAYMENT_METHODS = [
 
 export default function Cart() {
   const { items } = useAppSelector((s) => s.cart);
+  const { locale } = useAppSelector((s) => s.language);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [paymentMethod, setPaymentMethod] = useState('cash_wallet');
   const [submitting, setSubmitting] = useState(false);
   const [confirming, setConfirming] = useState(false);
+  const t = translations[locale];
 
   const total = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
 
@@ -63,9 +65,9 @@ export default function Cart() {
               <path d="M16 10a4 4 0 0 1-8 0" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           }
-          title="Your cart is empty"
-          description="You haven't added any products yet. Browse our catalog to find game keys, subscriptions, and more."
-          action={{ label: 'Browse products', to: '/products' }}
+          title={t.emptyCart}
+          description={t.browseCatalog}
+          action={{ label: t.browseProductsBtn, to: '/products' }}
         />
       </PageTransition>
     );
@@ -73,7 +75,7 @@ export default function Cart() {
 
   return (
     <PageTransition>
-      <h1 className="text-h1 text-ink-900 mb-8">Your cart</h1>
+      <h1 className="text-h1 text-ink-900 mb-8">{t.yourCart}</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Items */}
@@ -138,7 +140,7 @@ export default function Cart() {
         {/* Summary */}
         <div className="lg:col-span-1">
           <div className="card-pad sticky top-24 space-y-5">
-            <h2 className="text-h3 text-ink-900">Checkout</h2>
+            <h2 className="text-h3 text-ink-900">{t.checkout}</h2>
 
             <div className="space-y-2">
               {PAYMENT_METHODS.map((m) => (
@@ -165,11 +167,11 @@ export default function Cart() {
 
             <div className="border-t border-ink-200 pt-4 space-y-1">
               <div className="flex justify-between text-small text-ink-500">
-                <span>Subtotal</span>
+                <span>{t.subtotal}</span>
                 <span>{formatPrice(total)}</span>
               </div>
               <div className="flex justify-between text-body text-ink-600">
-                <span>Total</span>
+                <span>{t.total}</span>
                 <span className="text-h3 text-accent-400">{formatPrice(total)}</span>
               </div>
             </div>
@@ -215,14 +217,14 @@ export default function Cart() {
                     loading={submitting}
                     onClick={handleCheckout}
                   >
-                    Confirm order
+                    {t.confirmOrder}
                   </Button>
                   <Button
                     variant="secondary"
                     onClick={() => setConfirming(false)}
                     disabled={submitting}
                   >
-                    Edit
+                    {t.edit}
                   </Button>
                 </div>
               </div>
@@ -233,12 +235,12 @@ export default function Cart() {
                 className="w-full"
                 onClick={handleConfirm}
               >
-                Review &amp; place order
+                {t.reviewAndPlace}
               </Button>
             )}
 
             <p className="text-micro text-ink-500 text-center">
-              Orders are processed instantly after payment confirmation.
+              {t.ordersProcessed}
             </p>
           </div>
         </div>

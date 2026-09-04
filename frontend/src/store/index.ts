@@ -4,5 +4,7 @@ export { useAppDispatch, useAppSelector } from './store';
 export { setUser, logout, updateBalance } from './authSlice';
 export { addToCart, updateQuantity, removeFromCart, clearCart } from './cartSlice';
 export { toggleSidebar } from './uiSlice';
+export { setLanguage } from './languageSlice';
+export { translations } from './translations';
 export type { User } from './authSlice';
 export type { CartItem } from './cartSlice';
