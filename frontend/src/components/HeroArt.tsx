@@ -54,7 +54,7 @@ export default function HeroArt({ variant = 'aurora', className = '' }: HeroArtP
 
   // aurora (default) — transparent background, no hardcoded #0A0A0A rect
   return (
-    <svg viewBox="0 0 600 600" className={className} aria-hidden>
+    <svg viewBox="0 0 600 600" preserveAspectRatio="none" className={className} aria-hidden>
       <defs>
         <linearGradient id="aurora" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0%" stopColor="#10B981" stopOpacity="0.30" />
