@@ -36,15 +36,15 @@
   html.light {
     color-scheme: light;
 
-    --bg-page:   #FFFFFF;
-    --bg-raised: #F8F9FA;
+    --bg-page:   #F8FAFC;
+    --bg-raised: #FFFFFF;
     --bg-card:   #FFFFFF;
-    --border:    #E9ECEF;
-    --hover:     #F1F3F5;
-    --muted:     #ADB5BD;
-    --text-sec:  #868E96;
-    --text-body: #495057;
-    --text-head: #212529;
+    --border:    #E2E8F0;
+    --hover:     #F1F5F9;
+    --muted:     #94A3B8;
+    --text-sec:  #64748B;
+    --text-body: #475569;
+    --text-head: #0F172A;
   }
 
   html, body, #root {
@@ -131,11 +131,11 @@
 
   /* ---------- Cards ---------- */
   .card {
-    @apply bg-white dark:bg-ink-50 border border-ink-200 rounded-xl
+    @apply bg-white dark:bg-ink-50 border border-gray-200 dark:border-ink-200 shadow-sm rounded-xl
            transition-all duration-300 ease-smooth;
   }
   .card-hover {
-    @apply card hover:border-ink-300 hover:shadow-lift hover:-translate-y-0.5;
+    @apply card hover:border-gray-300 dark:hover:border-ink-300 hover:shadow-lift hover:-translate-y-0.5;
   }
 
   .card-pad { @apply card p-6; }
@@ -151,7 +151,7 @@
   }
 
   .label {
-    @apply block text-xs font-semibold tracking-wide text-ink-600 uppercase mb-1.5;
+    @apply block text-xs font-semibold tracking-wide text-gray-500 dark:text-ink-600 uppercase mb-1.5;
   }
 
   /* ---------- Badges ---------- */
@@ -165,23 +165,23 @@
   .badge-completed  { @apply badge text-accent-400        border-accent-500/20        bg-accent-500/10; }
   .badge-rejected   { @apply badge text-status-rejected   border-status-rejected/20   bg-status-rejected/10; }
   .badge-vip        { @apply badge text-status-vip        border-status-vip/20        bg-status-vip/10; }
-  .badge-neutral    { @apply badge text-ink-600           border-ink-200              bg-ink-100; }
+  .badge-neutral    { @apply badge text-gray-600 dark:text-ink-600 border-gray-200 dark:border-ink-200 bg-gray-100 dark:bg-ink-100; }
 
   /* ---------- Tables ---------- */
   .table {
     @apply w-full text-sm;
   }
   .table thead th {
-    @apply text-left text-micro uppercase text-ink-600
-           border-b border-ink-200 px-4 py-3 font-semibold;
+    @apply text-left text-micro uppercase text-gray-500 dark:text-ink-600
+           border-b border-gray-200 dark:border-ink-200 px-4 py-3 font-semibold;
   }
   .table tbody tr {
-    @apply border-b border-ink-200/60 last:border-0
+    @apply border-b border-gray-100 dark:border-ink-200/60 last:border-0
            transition-colors duration-150
-           hover:bg-ink-100/60;
+           hover:bg-gray-50 dark:hover:bg-ink-100/60;
   }
   .table tbody td {
-    @apply px-4 py-3.5 text-ink-800;
+    @apply px-4 py-3.5 text-gray-900 dark:text-ink-800;
   }
   /* Responsive table wrapper — scroll horizontally on small screens */
   .table-wrap {
@@ -199,7 +199,7 @@
   /* ---------- Sidebar nav link ---------- */
   .nav-link {
     @apply flex items-center gap-3 px-3 py-2 rounded-lg
-           text-sm text-gray-700 dark:text-ink-700
+           text-sm text-gray-600 dark:text-ink-700
            transition-colors duration-150
            hover:bg-gray-100 dark:hover:bg-ink-100 hover:text-gray-900 dark:hover:text-ink-900;
   }

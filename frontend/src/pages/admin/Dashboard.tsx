@@ -133,9 +133,9 @@ export default function AdminDashboard() {
           <table className="table">
             <thead>
               <tr>
-                <th>Order #</th>
+                <th>{t('admin.orderNumber')}</th>
                 <th>{t('admin.user')}</th>
-                <th>Total</th>
+                <th>{t('admin.total')}</th>
                 <th>{t('admin.status')}</th>
                 <th>{t('admin.date')}</th>
               </tr>

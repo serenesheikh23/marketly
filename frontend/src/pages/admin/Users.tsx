@@ -3,8 +3,10 @@ import { adminUserApi } from '@/api/client';
 import toast from 'react-hot-toast';
 import PageTransition from '@/components/PageTransition';
 import { formatPrice } from '@/utils/format';
+import { useI18n } from '@/i18n';
 
 export default function AdminUsers() {
+  const { t } = useI18n();
   const [users, setUsers] = useState<any[]>([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
@@ -22,20 +24,20 @@ export default function AdminUsers() {
   const toggleBan = async (user: any) => {
     try {
       await adminUserApi.update(user.id, { banned: !user.banned_at });
-      toast.success(user.banned_at ? 'User unbanned.' : 'User banned.');
+      toast.success(user.banned_at ? t('admin.userUnbanned') : t('admin.userBanned'));
       fetchUsers();
     } catch (err: any) {
-      toast.error(err.response?.data?.message ?? 'Failed');
+      toast.error(err.response?.data?.message ?? t('common.failed'));
     }
   };
 
   const changeVip = async (user: any, level: string) => {
     try {
       await adminUserApi.update(user.id, { vip_level: level });
-      toast.success(`VIP updated to ${level}.`);
+      toast.success(t('admin.vipUpdated', { level }));
       fetchUsers();
     } catch (err: any) {
-      toast.error(err.response?.data?.message ?? 'Failed');
+      toast.error(err.response?.data?.message ?? t('common.failed'));
     }
   };
 
@@ -43,16 +45,16 @@ export default function AdminUsers() {
     <PageTransition className="space-y-6">
       <div className="flex items-end justify-between gap-4 flex-wrap">
         <div>
-          <p className="eyebrow mb-1">Users</p>
-          <h1 className="text-h1 text-gray-900 dark:text-ink-900">All users</h1>
+          <p className="eyebrow mb-1">{t('admin.system')}</p>
+          <h1 className="text-h1 text-gray-900 dark:text-ink-900">{t('admin.allUsers')}</h1>
         </div>
         <div className="relative w-72 max-w-full">
-          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600 dark:text-ink-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 dark:text-ink-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
           </svg>
           <input
             type="search"
-            placeholder="Search users…"
+            placeholder={t('admin.searchUsers')}
             className="input pl-10"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -65,26 +67,26 @@ export default function AdminUsers() {
           <table className="table">
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Email</th>
+                <th>{t('admin.name')}</th>
+                <th>{t('admin.email')}</th>
                 <th>VIP</th>
-                <th>Balance</th>
-                <th>Status</th>
-                <th>Actions</th>
+                <th>{t('account.balance')}</th>
+                <th>{t('admin.status')}</th>
+                <th>{t('admin.actions')}</th>
               </tr>
             </thead>
             <tbody>
               {users.map((u) => (
                 <tr key={u.id}>
                   <td className="font-medium text-gray-900 dark:text-ink-900">{u.name}</td>
-                  <td className="text-gray-600 dark:text-ink-500">{u.email}</td>
+                  <td className="text-gray-500 dark:text-ink-500">{u.email}</td>
                   <td>
                     <select
                       className="input py-1 text-xs w-28"
                       value={u.vip_level}
                       onChange={(e) => changeVip(u, e.target.value)}
                     >
-                      <option value="none">Regular</option>
+                      <option value="none">{t('admin.regular')}</option>
                       <option value="vip1">VIP1</option>
                       <option value="vip2">VIP2</option>
                     </select>
@@ -92,8 +94,8 @@ export default function AdminUsers() {
                   <td className="font-medium tabular-nums">{formatPrice(u.balance)}</td>
                   <td>
                     {u.banned_at
-                      ? <span className="badge-rejected">Banned</span>
-                      : <span className="badge-completed">Active</span>}
+                      ? <span className="badge-rejected">{t('admin.banned')}</span>
+                      : <span className="badge-completed">{t('admin.active')}</span>}
                   </td>
                   <td>
                     <button
@@ -104,13 +106,13 @@ export default function AdminUsers() {
                           : 'text-status-rejected hover:text-status-rejected/80'
                       }`}
                     >
-                      {u.banned_at ? 'Unban' : 'Ban'}
+                      {u.banned_at ? t('admin.unban') : t('admin.ban')}
                     </button>
                   </td>
                 </tr>
               ))}
               {users.length === 0 && !loading && (
-                <tr><td colSpan={6} className="text-center text-gray-600 dark:text-ink-500 py-8">No users found.</td></tr>
+                <tr><td colSpan={6} className="text-center text-gray-500 dark:text-ink-500 py-8">{t('admin.noUsersFound')}</td></tr>
               )}
             </tbody>
           </table>

@@ -23,9 +23,9 @@ export default function Layout() {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-ink flex flex-col">
+    <div className="min-h-screen bg-gray-50 dark:bg-ink flex flex-col">
       {/* ── Header ─────────────────────────────────────────── */}
-      <header className="sticky top-0 z-50 border-b border-ink-200 bg-white/80 dark:bg-ink/80 backdrop-blur-md">
+      <header className="sticky top-0 z-50 border-b border-gray-200 dark:border-ink-200 bg-white/80 dark:bg-ink/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2.5">
@@ -82,7 +82,7 @@ export default function Layout() {
       </main>
 
       {/* ── Footer ─────────────────────────────────────────── */}
-      <footer className="border-t border-ink-200 py-8 mt-auto">
+      <footer className="border-t border-gray-200 dark:border-ink-200 py-8 mt-auto">
         <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <Logo size="sm" showText={false} />

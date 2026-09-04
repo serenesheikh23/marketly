@@ -28,7 +28,7 @@ const CATEGORY_ICON: Record<string, string> = {
 };
 
 export default function AdminCategories() {
-  const { locale } = useI18n();
+  const { locale, t } = useI18n();
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -42,7 +42,7 @@ export default function AdminCategories() {
       .then((r) => setCategories(r.data.categories ?? []))
       .catch((err: any) => {
         console.error(err);
-        setError(err.response?.data?.message ?? 'Failed to load categories.');
+        setError(err.response?.data?.message ?? t('common.failed'));
       })
       .finally(() => setLoading(false));
   };
@@ -50,34 +50,34 @@ export default function AdminCategories() {
   useEffect(() => { fetch(); }, []);
 
   const handleDelete = async (cat: any) => {
-    if (!confirm(`Delete category "${cat.name}"? This cannot be undone.`)) return;
+    if (!confirm(t('admin.categoryDeleteConfirm', { name: cat.name }))) return;
     try {
       await adminCategoryApi.delete(cat.id);
-      toast.success('Category deleted.');
+      toast.success(t('admin.categoryDeleted'));
       fetch();
-    } catch (err: any) { toast.error(err.response?.data?.message ?? 'Failed'); }
+    } catch (err: any) { toast.error(err.response?.data?.message ?? t('common.failed')); }
   };
 
   const openEdit = (cat: any) => { setEditCategory(cat); setShowModal(true); };
   const openNew = () => { setEditCategory(undefined); setShowModal(true); };
-  const onSaved = () => { toast.success(editCategory ? 'Category updated.' : 'Category created.'); fetch(); };
+  const onSaved = () => { toast.success(editCategory ? t('admin.categoryUpdated') : t('admin.categoryCreated')); fetch(); };
 
   return (
     <PageTransition className="space-y-8">
       <div className="flex items-end justify-between">
         <div>
-          <p className="eyebrow mb-1">MARKETLY</p>
-          <h1 className="text-h1 text-gray-900 dark:text-ink-900">Categories</h1>
+          <p className="eyebrow mb-1">{t('admin.system')}</p>
+          <h1 className="text-h1 text-gray-900 dark:text-ink-900">{t('admin.categories')}</h1>
         </div>
         <button onClick={openNew} className="btn-accent">
-          + New Category
+          + {t('admin.newCategory')}
         </button>
       </div>
 
       {error && (
         <div className="card-pad text-center">
           <p className="text-body text-status-rejected mb-3">{error}</p>
-          <button onClick={fetch} className="btn-accent">Retry</button>
+          <button onClick={fetch} className="btn-accent">{t('admin.retry')}</button>
         </div>
       )}
 
@@ -95,32 +95,32 @@ export default function AdminCategories() {
                 <img
                   src={c.image_url ?? c.image_base64}
                   alt={c.name}
-                  className="w-10 h-10 rounded-lg object-cover border border-ink-200 flex-shrink-0"
+                  className="w-10 h-10 rounded-lg object-cover border border-gray-200 dark:border-ink-200 flex-shrink-0"
                 />
               ) : (
-                <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-ink-100 border border-ink-200 flex items-center justify-center text-xl flex-shrink-0">
+                <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-ink-100 border border-gray-200 dark:border-ink-200 flex items-center justify-center text-xl flex-shrink-0">
                   {CATEGORY_ICON[c.icon] ?? c.icon?.charAt(0).toUpperCase() ?? '📦'}
                 </div>
               )}
               <div>
                 <p className="text-sm font-semibold text-gray-900 dark:text-ink-900">{locale === 'ar' && c.name_ar ? c.name_ar : c.name}</p>
-                <p className="text-micro text-gray-600 dark:text-ink-500">
+                <p className="text-micro text-gray-500 dark:text-ink-500">
                   {c.slug} · <span className="text-gray-500 dark:text-ink-600">{c.type}</span>
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <button onClick={() => openEdit(c)} className="btn-secondary btn-sm">
-                Edit
+                {t('common.edit')}
               </button>
               <button onClick={() => handleDelete(c)} className="btn-danger btn-sm">
-                Delete
+                {t('common.delete')}
               </button>
             </div>
           </motion.div>
         ))}
         {categories.length === 0 && !loading && (
-          <p className="text-center text-gray-600 dark:text-ink-500 py-8">No categories yet.</p>
+          <p className="text-center text-gray-500 dark:text-ink-500 py-8">{t('admin.noCategoriesYet')}</p>
         )}
       </div>
 
