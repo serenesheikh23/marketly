@@ -103,40 +103,63 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Right: modern floating visual - NO TEXT */}
-          <div className="flex flex-col items-center justify-center flex-shrink-0 mt-8 lg:mt-0">
-            {/* Main glassmorphic product showcase card */}
+          {/* Right: floating icon visual */}
+          <div className="relative w-48 lg:w-64 h-48 lg:h-64 flex-shrink-0 mt-8 lg:mt-0">
+            {/* Glow orb behind the cluster */}
+            <div className="absolute inset-0 rounded-full bg-accent-400/20 blur-3xl pointer-events-none" />
+
+            {/* Gamepad2 — top-left */}
             <motion.div
-              animate={{ y: [0, -10, 0] }}
-              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-              className="relative w-48 lg:w-64"
+              animate={{ y: [0, -8, 0], opacity: [0.8, 1, 0.8] }}
+              transition={{ duration: 3.5, delay: 0, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute top-2 left-4"
             >
-              {/* Glow orb behind card */}
-              <div className="absolute -inset-6 rounded-3xl bg-accent-400/20 blur-2xl pointer-events-none" />
-              {/* Glass card */}
-              <div className="relative backdrop-blur-xl bg-white/10 dark:bg-ink-50/10 border border-white/20 dark:border-ink-50/20 rounded-2xl p-6 shadow-glow">
-                {/* Product icon row - only icons, no text */}
-                <div className="grid grid-cols-3 gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-white/20 dark:bg-ink-50/20 backdrop-blur-sm border border-white/20 dark:border-ink-50/20 flex items-center justify-center text-lg shadow-sm">
-                    <Gamepad2 size={20} className="text-accent-400" />
-                  </div>
-                  <div className="w-10 h-10 rounded-xl bg-white/20 dark:bg-ink-50/20 backdrop-blur-sm border border-white/20 dark:border-ink-50/20 flex items-center justify-center text-lg shadow-sm">
-                    <MessageCircle size={20} className="text-accent-400" />
-                  </div>
-                  <div className="w-10 h-10 rounded-xl bg-white/20 dark:bg-ink-50/20 backdrop-blur-sm border border-white/20 dark:border-ink-50/20 flex items-center justify-center text-lg shadow-sm">
-                    <CreditCard size={20} className="text-accent-400" />
-                  </div>
-                  <div className="w-10 h-10 rounded-xl bg-white/20 dark:bg-ink-50/20 backdrop-blur-sm border border-white/20 dark:border-ink-50/20 flex items-center justify-center text-lg shadow-sm">
-                    <Wallet size={20} className="text-accent-400" />
-                  </div>
-                  <div className="w-10 h-10 rounded-xl bg-white/20 dark:bg-ink-50/20 backdrop-blur-sm border border-white/20 dark:border-ink-50/20 flex items-center justify-center text-lg shadow-sm">
-                    <Palette size={20} className="text-accent-400" />
-                  </div>
-                  <div className="w-10 h-10 rounded-xl bg-white/20 dark:bg-ink-50/20 backdrop-blur-sm border border-white/20 dark:border-ink-50/20 flex items-center justify-center text-lg shadow-sm">
-                    <Bot size={20} className="text-accent-400" />
-                  </div>
-                </div>
-              </div>
+              <Gamepad2 size={22} className="text-accent-400 drop-shadow-lg" />
+            </motion.div>
+
+            {/* MessageCircle — top-right */}
+            <motion.div
+              animate={{ y: [0, -10, 0], opacity: [0.7, 1, 0.7] }}
+              transition={{ duration: 4.2, delay: 0.4, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute top-4 right-2"
+            >
+              <MessageCircle size={18} className="text-accent-400 drop-shadow-lg" />
+            </motion.div>
+
+            {/* CreditCard — middle-left */}
+            <motion.div
+              animate={{ y: [0, 8, 0], opacity: [0.75, 1, 0.75] }}
+              transition={{ duration: 3.8, delay: 0.8, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute top-1/2 -translate-y-1/2 left-0"
+            >
+              <CreditCard size={20} className="text-accent-400 drop-shadow-lg" />
+            </motion.div>
+
+            {/* Wallet — middle-right */}
+            <motion.div
+              animate={{ y: [0, -7, 0], opacity: [0.8, 1, 0.8] }}
+              transition={{ duration: 4.5, delay: 0.3, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute top-1/2 -translate-y-1/2 right-0"
+            >
+              <Wallet size={20} className="text-accent-400 drop-shadow-lg" />
+            </motion.div>
+
+            {/* Palette — bottom-left */}
+            <motion.div
+              animate={{ y: [0, 9, 0], opacity: [0.7, 1, 0.7] }}
+              transition={{ duration: 3.2, delay: 1.1, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute bottom-4 left-6"
+            >
+              <Palette size={18} className="text-accent-400 drop-shadow-lg" />
+            </motion.div>
+
+            {/* Bot — bottom-right */}
+            <motion.div
+              animate={{ y: [0, -6, 0], opacity: [0.8, 1, 0.8] }}
+              transition={{ duration: 4.0, delay: 0.6, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute bottom-2 right-4"
+            >
+              <Bot size={22} className="text-accent-400 drop-shadow-lg" />
             </motion.div>
           </div>
         </div>
