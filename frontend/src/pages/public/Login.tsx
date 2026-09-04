@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import axios from 'axios';
 import { authApi } from '@/api/client';
 import { useAppDispatch, setUser } from '@/store';
 import toast from 'react-hot-toast';
@@ -22,6 +23,10 @@ export default function Login() {
     e.preventDefault();
     setLoading(true);
     try {
+      // Fetch CSRF cookie first (required for Sanctum SPA auth on cross-origin)
+      // Strip /api suffix from VITE_API_URL since /sanctum/csrf-cookie is a web route
+      const apiBase = import.meta.env.VITE_API_URL.replace(/\/api$/, '');
+      await axios.get(`${apiBase}/sanctum/csrf-cookie`, { withCredentials: true });
       const res = await authApi.login({ email, password });
       const userData = res.data.user;
       const roles = userData.roles ?? [];
