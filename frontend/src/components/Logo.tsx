@@ -18,10 +18,15 @@ export default function Logo({ size = 'md', showText = true }: LogoProps) {
         fill="none"
       >
         <rect width="32" height="32" rx="8" fill="#10B981" />
-        <path
-          d="M8 22V10h2.6v9h7.8V10H21v12h-2.6v-9.6H10.6V22H8z"
+        <text
+          x="16"
+          y="23"
+          textAnchor="middle"
+          fontFamily="Inter, ui-sans-serif, system-ui, sans-serif"
+          fontWeight="800"
+          fontSize="20"
           fill="#0A0A0A"
-        />
+        >M</text>
       </motion.svg>
       {showText && (
         <span className="text-ink-900 font-bold tracking-tighter text-lg">

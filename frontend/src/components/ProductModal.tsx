@@ -16,7 +16,9 @@ export default function ProductModal({ product, onClose, onSaved }: ProductModal
   const [catError, setCatError] = useState(false);
   const [form, setForm] = useState({
     name: product?.name ?? '',
+    name_ar: product?.name_ar ?? '',
     description: product?.description ?? '',
+    description_ar: product?.description_ar ?? '',
     price: product?.price ?? '',
     stock: product?.stock ?? 0,
     category_id: product?.category_id ?? '',
@@ -68,7 +70,7 @@ export default function ProductModal({ product, onClose, onSaved }: ProductModal
       <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="label">Name *</label>
+              <label className="label">Name (EN) *</label>
               <input
                 className="input"
                 value={form.name}
@@ -77,6 +79,18 @@ export default function ProductModal({ product, onClose, onSaved }: ProductModal
                 placeholder="Product name"
               />
             </div>
+            <div>
+              <label className="label">Name (AR)</label>
+              <input
+                className="input"
+                dir="rtl"
+                value={form.name_ar}
+                onChange={(e) => set('name_ar')(e.target.value)}
+                placeholder="اسم المنتج"
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="label">Category *</label>
               <select
@@ -94,13 +108,24 @@ export default function ProductModal({ product, onClose, onSaved }: ProductModal
             </div>
           </div>
           <div>
-            <label className="label">Description</label>
+            <label className="label">Description (EN)</label>
             <textarea
               className="input"
               rows={3}
               value={form.description}
               onChange={(e) => set('description')(e.target.value)}
               placeholder="Product description"
+            />
+          </div>
+          <div>
+            <label className="label">Description (AR)</label>
+            <textarea
+              className="input"
+              rows={3}
+              dir="rtl"
+              value={form.description_ar}
+              onChange={(e) => set('description_ar')(e.target.value)}
+              placeholder="وصف المنتج"
             />
           </div>
           <div className="grid grid-cols-3 gap-4">

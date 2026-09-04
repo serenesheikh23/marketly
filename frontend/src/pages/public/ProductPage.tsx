@@ -8,12 +8,13 @@ import ProductImage from '@/components/ProductImage';
 import { formatPrice } from '@/utils/format';
 import PageTransition from '@/components/PageTransition';
 import { useI18n } from '@/i18n';
+import { localized } from '@/utils/localize';
 
 export default function ProductPage() {
   const { slug } = useParams();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [product, setProduct] = useState<any>(null);
   const [quantity, setQuantity] = useState(1);
   const [payload, setPayload] = useState<Record<string, string>>({});
@@ -100,10 +101,10 @@ export default function ProductPage() {
           to={`/category/${product.category?.slug}`}
           className="hover:text-accent-300 transition-colors"
         >
-          {product.category?.name}
+{localized(product.category, 'name', 'name_ar', locale)}
         </Link>
         {' / '}
-        {product.name}
+        {localized(product, 'name', 'name_ar', locale)}
       </p>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
@@ -113,8 +114,8 @@ export default function ProductPage() {
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
         >
           <ProductImage
-            name={product.name}
-            category={product.category?.name}
+            name={localized(product, 'name', 'name_ar', locale)}
+            category={localized(product.category, 'name', 'name_ar', locale)}
             imageBase64={product.image_base64}
             imageUrl={product.image_url}
             className="w-full h-80 rounded-2xl"
@@ -136,16 +137,16 @@ export default function ProductPage() {
                 {isManual ? t('product.manualService') : t('product.autoDelivery')}
               </span>
             </div>
-            <h1 className="text-h1 text-ink-900 mb-2">{product.name}</h1>
+            <h1 className="text-h1 text-ink-900 mb-2">{localized(product, 'name', 'name_ar', locale)}</h1>
             <div className="text-small text-ink-500">
-              <span>{t('product.category')}: <Link to={`/category/${product.category?.slug}`} className="text-accent-400 hover:underline">{product.category?.name}</Link></span>
+              <span>{t('product.category')}: <Link to={`/category/${product.category?.slug}`} className="text-accent-400 hover:underline">{localized(product.category, 'name', 'name_ar', locale)}</Link></span>
               <span className="mx-2">·</span>
               <span>{t('product.inStock')}: <strong className="text-ink-700">{product.stock}</strong></span>
             </div>
           </div>
 
           <p className="text-body text-ink-600 whitespace-pre-line leading-relaxed">
-            {product.description}
+            {localized(product, 'description', 'description_ar', locale)}
           </p>
 
           <div className="card-pad space-y-5">

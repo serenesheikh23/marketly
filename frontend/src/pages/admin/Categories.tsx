@@ -4,6 +4,7 @@ import { adminCategoryApi } from '@/api/client';
 import toast from 'react-hot-toast';
 import CategoryModal from '@/components/CategoryModal';
 import PageTransition from '@/components/PageTransition';
+import { useI18n } from '@/i18n';
 
 const CATEGORY_ICON: Record<string, string> = {
   'gamepad-2':'🎮','zap':'⚡','shield':'🛡️','globe':'🌐','server':'🖥️',
@@ -27,6 +28,7 @@ const CATEGORY_ICON: Record<string, string> = {
 };
 
 export default function AdminCategories() {
+  const { locale } = useI18n();
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -64,7 +66,7 @@ export default function AdminCategories() {
     <PageTransition className="space-y-8">
       <div className="flex items-end justify-between">
         <div>
-          <p className="eyebrow mb-1">Taxonomy</p>
+          <p className="eyebrow mb-1">MARKETLY</p>
           <h1 className="text-h1 text-ink-900">Categories</h1>
         </div>
         <button onClick={openNew} className="btn-accent">
@@ -101,7 +103,7 @@ export default function AdminCategories() {
                 </div>
               )}
               <div>
-                <p className="text-sm font-semibold text-ink-900">{c.name}</p>
+                <p className="text-sm font-semibold text-ink-900">{locale === 'ar' && c.name_ar ? c.name_ar : c.name}</p>
                 <p className="text-micro text-ink-500">
                   {c.slug} · <span className="text-ink-600">{c.type}</span>
                 </p>

@@ -4,6 +4,8 @@ import { categoryApi, orderApi } from '@/api/client';
 import toast from 'react-hot-toast';
 import Button from '@/components/Button';
 import PageTransition from '@/components/PageTransition';
+import { useI18n } from '@/i18n';
+import { localized } from '@/utils/localize';
 
 const CATEGORY_ICON: Record<string, string> = {
   gamepad: '🎮', message: '💬', 'credit-card': '💳', wallet: '💰',
@@ -12,6 +14,7 @@ const CATEGORY_ICON: Record<string, string> = {
 };
 
 export default function ManualServices() {
+  const { locale } = useI18n();
   const [categories, setCategories] = useState<any[]>([]);
   const [selected, setSelected] = useState<any>(null);
   const [fields, setFields] = useState<any[]>([]);
@@ -80,8 +83,8 @@ export default function ManualServices() {
                 <span className="text-2xl mb-3 block" role="img">
                   {CATEGORY_ICON[cat.icon] ?? '📦'}
                 </span>
-                <h3 className="text-sm font-semibold text-ink-900">{cat.name}</h3>
-                <p className="text-micro text-ink-500 mt-1 line-clamp-2">{cat.description}</p>
+                <h3 className="text-sm font-semibold text-ink-900">{localized(cat, 'name', 'name_ar', locale)}</h3>
+                <p className="text-micro text-ink-500 mt-1 line-clamp-2">{localized(cat, 'description', 'description_ar', locale)}</p>
               </button>
             </motion.div>
           ))}
@@ -102,10 +105,10 @@ export default function ManualServices() {
 
           <div className="card-pad max-w-lg space-y-5">
             <div>
-              <p className="eyebrow mb-1">{selected.name}</p>
+              <p className="eyebrow mb-1">{localized(selected, 'name', 'name_ar', locale)}</p>
               <h2 className="text-h2 text-ink-900">Service Details</h2>
               {selected.description && (
-                <p className="text-body text-ink-600 mt-2">{selected.description}</p>
+                <p className="text-body text-ink-600 mt-2">{localized(selected, 'description', 'description_ar', locale)}</p>
               )}
             </div>
 
