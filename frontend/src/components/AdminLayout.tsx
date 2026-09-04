@@ -165,7 +165,7 @@ export default function AdminLayout() {
 
       {/* Content */}
       <div className="flex-1 overflow-auto md:ml-0">
-        <PageTransition className="p-4 md:p-8 pl-12 md:pl-8">
+        <PageTransition className="p-4 pt-16 md:p-8 pl-12 md:pl-8">
           <Outlet />
         </PageTransition>
       </div>
