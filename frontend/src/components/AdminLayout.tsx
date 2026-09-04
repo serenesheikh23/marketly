@@ -81,10 +81,11 @@ export default function AdminLayout() {
   };
 
   const closeSidebar = () => setSidebarOpen(false);
+  const toggleSidebar = () => setSidebarOpen((v: boolean) => !v);
 
   return (
     <div className="flex min-h-screen bg-white dark:bg-ink">
-      {/* Mobile overlay */}
+      {/* ── Mobile overlay (behind sidebar, z-30) ── */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-30 lg:hidden"
@@ -92,20 +93,32 @@ export default function AdminLayout() {
         />
       )}
 
-      {/* Sidebar — fixed on mobile (overlay), sticky on lg+ */}
+      {/* ── Sidebar ──
+          Mobile:  fixed/overlay, slides in/out (z-50, above overlay z-30)
+          Desktop: fixed, always visible on the side (z-40)
+      ── */}
       <aside
         className={`
-          fixed inset-y-0 ltr:left-0 rtl:right-0 z-40 w-64 flex flex-col
-          bg-gray-50 dark:bg-ink-50 border-ink-200 ltr:border-r rtl:border-l
+          fixed inset-y-0 start-0 z-50 w-64 flex flex-col
+          bg-white dark:bg-ink-50
+          border-ink-200 ltr:border-r rtl:border-l
           transition-transform duration-300
-          lg:sticky lg:top-0 lg:z-20 lg:flex-shrink-0 lg:h-screen
-          ${sidebarOpen ? 'ltr:translate-x-0 rtl:translate-x-0' : 'ltr:-translate-x-full rtl:translate-x-full'}
+          lg:z-40 lg:flex-shrink-0 lg:h-screen
+          ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+          ltr:-translate-x-full rtl:translate-x-full
+          lg:ltr:translate-x-0 lg:rtl:translate-x-0
         `}
       >
-        <div className="flex items-center justify-between px-4 py-5 border-b border-ink-200">
-          <Link to="/" className="flex items-center gap-2.5" onClick={closeSidebar}>
+        {/* Sidebar header with logo + close button */}
+        <div className="flex items-center justify-between px-4 py-4 border-b border-ink-200">
+          <Link
+            to="/"
+            className="flex items-center gap-2.5"
+            onClick={closeSidebar}
+          >
             <Logo size="sm" />
           </Link>
+          {/* Close button — inside sidebar, mobile only */}
           <button
             onClick={closeSidebar}
             className="lg:hidden p-1.5 rounded-md text-gray-600 dark:text-ink-500 hover:text-gray-900 dark:hover:text-ink-900 hover:bg-gray-100 dark:hover:bg-ink-100 transition-colors"
@@ -117,8 +130,12 @@ export default function AdminLayout() {
             </svg>
           </button>
         </div>
-        <p className="text-micro text-gray-600 dark:text-ink-500 px-4 py-2">{t('nav.adminPanel')}</p>
 
+        <p className="text-micro text-gray-600 dark:text-ink-500 px-4 py-2">
+          {t('nav.adminPanel')}
+        </p>
+
+        {/* Nav items */}
         <nav className="flex-1 px-3 py-2 space-y-0.5 overflow-y-auto no-scrollbar">
           {NAV_ITEMS.map((item) => {
             const isActive = item.exact
@@ -131,15 +148,22 @@ export default function AdminLayout() {
                 onClick={closeSidebar}
                 className={`nav-link text-sm flex items-center gap-2 ${isActive ? 'nav-link-active' : ''}`}
               >
-                <span className={isActive ? 'text-accent-400' : 'text-gray-600 dark:text-ink-500'}>{item.icon}</span>
+                <span className={isActive ? 'text-accent-400' : 'text-gray-600 dark:text-ink-500'}>
+                  {item.icon}
+                </span>
                 {t(item.key)}
               </Link>
             );
           })}
         </nav>
 
+        {/* Bottom actions */}
         <div className="px-3 py-4 border-t border-ink-200 space-y-0.5">
-          <Link to="/dashboard" className="nav-link text-sm" onClick={closeSidebar}>
+          <Link
+            to="/dashboard"
+            className="nav-link text-sm"
+            onClick={closeSidebar}
+          >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-600 dark:text-ink-500">
               <path d="M15 18l-6-6 6-6"/>
             </svg>
@@ -159,10 +183,10 @@ export default function AdminLayout() {
         </div>
       </aside>
 
-      {/* Mobile hamburger — only on mobile */}
+      {/* ── Hamburger button — mobile only (z-40, below sidebar z-50) ── */}
       <button
-        onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="fixed top-4 ltr:left-4 rtl:right-4 z-50 p-2 rounded-md bg-white dark:bg-ink-50 border border-ink-200 hover:bg-gray-100 dark:hover:bg-ink-100 lg:hidden"
+        onClick={toggleSidebar}
+        className="fixed top-4 start-4 z-40 p-2 rounded-md bg-white dark:bg-ink-50 border border-ink-200 hover:bg-gray-100 dark:hover:bg-ink-100 lg:hidden"
         aria-label="Toggle sidebar"
       >
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -172,9 +196,9 @@ export default function AdminLayout() {
         </svg>
       </button>
 
-      {/* Content — offset by sidebar on lg+ */}
-      <div className="flex-1 overflow-auto lg:ltr:ml-64 lg:rtl:mr-64">
-        <PageTransition className="p-4 pt-16 lg:p-8 lg:pt-8 lg:ltr:pl-8 lg:rtl:pr-8 ltr:pl-14 rtl:pr-14 max-w-7xl mx-auto w-full">
+      {/* ── Main content — offset by sidebar width on lg+ ── */}
+      <div className="flex-1 overflow-auto lg:start-64">
+        <PageTransition className="p-4 pt-16 lg:p-8 lg:pt-8 max-w-7xl mx-auto w-full">
           <Outlet />
         </PageTransition>
       </div>

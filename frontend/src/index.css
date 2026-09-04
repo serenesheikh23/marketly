@@ -107,13 +107,13 @@
   }
 
   .btn-secondary {
-    @apply btn bg-ink-100 text-ink-800 border border-ink-200
-           hover:bg-ink-200 hover:border-ink-300;
+    @apply btn bg-gray-100 dark:bg-ink-100 text-gray-800 dark:text-ink-800 border border-gray-200 dark:border-ink-200
+           hover:bg-gray-200 dark:hover:bg-ink-200 hover:border-gray-300 dark:hover:border-ink-300;
   }
 
   .btn-ghost {
-    @apply btn bg-transparent text-ink-700
-           hover:bg-ink-100 hover:text-ink-900;
+    @apply btn bg-transparent text-gray-700 dark:text-ink-700
+           hover:bg-gray-100 dark:hover:bg-ink-100 hover:text-gray-900 dark:hover:text-ink-900;
   }
 
   .btn-danger {
@@ -131,7 +131,7 @@
 
   /* ---------- Cards ---------- */
   .card {
-    @apply bg-ink-50 border border-ink-200 rounded-xl
+    @apply bg-white dark:bg-ink-50 border border-ink-200 rounded-xl
            transition-all duration-300 ease-smooth;
   }
   .card-hover {
@@ -143,10 +143,10 @@
 
   /* ---------- Form inputs ---------- */
   .input {
-    @apply w-full bg-ink-100 border border-ink-200 rounded-lg
-           px-3.5 py-2.5 text-sm text-ink-900 placeholder:text-ink-500
+    @apply w-full bg-white dark:bg-ink-100 border border-gray-200 dark:border-ink-200 rounded-lg
+           px-3.5 py-2.5 text-sm text-gray-900 dark:text-ink-900 placeholder:text-gray-400 dark:placeholder:text-ink-500
            transition-all duration-200
-           focus:outline-none focus:border-accent-500/60 focus:bg-ink-50
+           focus:outline-none focus:border-accent-500/60 focus:bg-white dark:focus:bg-ink-50
            focus:ring-4 focus:ring-accent-500/10;
   }
 
@@ -199,13 +199,13 @@
   /* ---------- Sidebar nav link ---------- */
   .nav-link {
     @apply flex items-center gap-3 px-3 py-2 rounded-lg
-           text-sm text-ink-700
+           text-sm text-gray-700 dark:text-ink-700
            transition-colors duration-150
-           hover:bg-ink-100 hover:text-ink-900;
+           hover:bg-gray-100 dark:hover:bg-ink-100 hover:text-gray-900 dark:hover:text-ink-900;
   }
   .nav-link-active {
-    @apply nav-link bg-ink-100 text-ink-900
-           before:absolute before:left-0 before:w-0.5 before:h-5
+    @apply nav-link bg-gray-100 dark:bg-ink-100 text-gray-900 dark:text-ink-900
+           before:absolute before:ltr:left-0 before:rtl:right-0 before:w-0.5 before:h-5
            before:bg-accent-500 before:rounded-r relative;
   }
 
