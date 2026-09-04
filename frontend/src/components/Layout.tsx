@@ -7,6 +7,7 @@ import LanguageSwitcher from './LanguageSwitcher';
 import ThemeToggle from './ThemeToggle';
 import SocialLinks from './SocialLinks';
 import { useI18n } from '@/i18n';
+import { formatPrice } from '@/utils/format';
 
 export default function Layout() {
   const { user, isAuthenticated } = useAppSelector((s) => s.auth);
@@ -45,7 +46,7 @@ export default function Layout() {
                 )}
                 <div className="mx-3 w-px h-5 bg-ink-200" />
                 <span className="text-sm text-ink-600 font-medium tabular-nums">
-                  ${Number(user?.balance ?? 0).toFixed(2)}
+                  {formatPrice(user?.balance)}
                 </span>
                 <button
                   onClick={handleLogout}
