@@ -26,7 +26,7 @@ export default function Orders() {
 
   return (
     <PageTransition className="space-y-6">
-      <h1 className="text-h1 text-ink-900">My Orders</h1>
+      <h1 className="text-h1 text-gray-900 dark:text-ink-900">My Orders</h1>
 
       {orders.length === 0 ? (
         <EmptyState
@@ -52,10 +52,10 @@ export default function Orders() {
             >
               <div className="flex items-start justify-between gap-4 mb-4">
                 <div>
-                  <h3 className="text-body font-semibold text-ink-900">
+                  <h3 className="text-body font-semibold text-gray-900 dark:text-ink-900">
                     Order #{order.id}
                   </h3>
-                  <p className="text-small text-ink-500">
+                  <p className="text-small text-gray-600 dark:text-ink-500">
                     {new Date(order.created_at).toLocaleString()}
                   </p>
                 </div>
@@ -71,10 +71,10 @@ export default function Orders() {
                 <div className="border-t border-ink-200 pt-3 space-y-2">
                   {order.items.map((item: any) => (
                     <div key={item.id} className="flex justify-between text-small">
-                      <span className="text-ink-700">
+                      <span className="text-gray-700 dark:text-ink-700">
                         {item.product?.name ?? 'Product'} × {item.quantity}
                       </span>
-                      <span className="text-ink-600 tabular-nums">
+                      <span className="text-gray-600 dark:text-ink-600 tabular-nums">
                         {formatPrice(Number(item.unit_price) * item.quantity)}
                       </span>
                     </div>
@@ -83,7 +83,7 @@ export default function Orders() {
               )}
 
               {order.notes && (
-                <p className="text-micro text-ink-500 mt-2 pt-2 border-t border-ink-200">
+                <p className="text-micro text-gray-600 dark:text-ink-500 mt-2 pt-2 border-t border-ink-200">
                   Note: {order.notes}
                 </p>
               )}

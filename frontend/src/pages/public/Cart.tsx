@@ -75,7 +75,7 @@ export default function Cart() {
 
   return (
     <PageTransition>
-      <h1 className="text-h1 text-ink-900 mb-8">{t('cart.yourCart')}</h1>
+      <h1 className="text-h1 text-gray-900 dark:text-ink-900 mb-8">{t('cart.yourCart')}</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Items */}
@@ -89,9 +89,9 @@ export default function Cart() {
               transition={{ delay: i * 0.05, duration: 0.3 }}
             >
               <div className="flex-1 min-w-0">
-                <h3 className="text-sm font-semibold text-ink-900 truncate">{item.name}</h3>
+                <h3 className="text-sm font-semibold text-gray-900 dark:text-ink-900 truncate">{item.name}</h3>
                 {item.payload && (
-                  <p className="text-micro text-ink-500 mt-0.5 truncate">
+                  <p className="text-micro text-gray-600 dark:text-ink-500 mt-0.5 truncate">
                     {Object.entries(item.payload).map(([k, v]) => `${k}: ${v}`).join(' · ')}
                   </p>
                 )}
@@ -106,7 +106,7 @@ export default function Cart() {
                 >
                   −
                 </button>
-                <span className="text-sm font-medium text-ink-900 w-6 text-center tabular-nums">
+                <span className="text-sm font-medium text-gray-900 dark:text-ink-900 w-6 text-center tabular-nums">
                   {item.quantity}
                 </span>
                 <button
@@ -139,7 +139,7 @@ export default function Cart() {
         {/* Summary */}
         <div className="lg:col-span-1">
           <div className="card-pad sticky top-24 space-y-5">
-            <h2 className="text-h3 text-ink-900">{t('cart.checkout')}</h2>
+            <h2 className="text-h3 text-gray-900 dark:text-ink-900">{t('cart.checkout')}</h2>
 
             <div className="space-y-2">
               {PAYMENT_METHODS.map((m) => (
@@ -148,7 +148,7 @@ export default function Cart() {
                   className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all duration-150 ${
                     paymentMethod === m.value
                       ? 'border-accent-500 bg-accent-500/5'
-                      : 'border-ink-200 bg-ink-100 hover:border-ink-300'
+                      : 'border-ink-200 bg-gray-100 dark:bg-ink-100 hover:border-ink-300'
                   }`}
                 >
                   <input
@@ -159,17 +159,17 @@ export default function Cart() {
                     onChange={(e) => setPaymentMethod(e.target.value)}
                     className="accent-accent-500"
                   />
-                  <span className="text-sm text-ink-800">{m.label}</span>
+                  <span className="text-sm text-gray-800 dark:text-ink-800">{m.label}</span>
                 </label>
               ))}
             </div>
 
             <div className="border-t border-ink-200 pt-4 space-y-1">
-              <div className="flex justify-between text-small text-ink-500">
+              <div className="flex justify-between text-small text-gray-600 dark:text-ink-500">
                 <span>{t('cart.subtotal')}</span>
                 <span>{formatPrice(total)}</span>
               </div>
-              <div className="flex justify-between text-body text-ink-600">
+              <div className="flex justify-between text-body text-gray-600 dark:text-ink-600">
                 <span>{t('cart.total')}</span>
                 <span className="text-h3 text-accent-400">{formatPrice(total)}</span>
               </div>
@@ -177,16 +177,16 @@ export default function Cart() {
 
             {confirming ? (
               <div className="space-y-3">
-                <div className="card-pad bg-ink-100/40 p-4 space-y-1 text-small">
-                  <p className="text-ink-700">
-                    <strong className="text-ink-900">{items.length}</strong>{' '}
+                <div className="card-pad bg-gray-100 dark:bg-ink-100/40 p-4 space-y-1 text-small">
+                  <p className="text-gray-700 dark:text-ink-700">
+                    <strong className="text-gray-900 dark:text-ink-900">{items.length}</strong>{' '}
                     {items.length === 1 ? t('cart.item') : t('cart.items')}{' '}
                     {t('cart.for')}{' '}
                     <strong className="text-accent-400">{formatPrice(total)}</strong>
                   </p>
-                  <p className="text-ink-500">
+                  <p className="text-gray-600 dark:text-ink-500">
                     {t('cart.payWith')}{' '}
-                    <strong className="text-ink-700">
+                    <strong className="text-gray-700 dark:text-ink-700">
                       {PAYMENT_METHODS.find((m) => m.value === paymentMethod)?.label}
                     </strong>
                   </p>
@@ -221,7 +221,7 @@ export default function Cart() {
               </Button>
             )}
 
-            <p className="text-micro text-ink-500 text-center">
+            <p className="text-micro text-gray-600 dark:text-ink-500 text-center">
               {t('cart.ordersProcessed')}
             </p>
           </div>

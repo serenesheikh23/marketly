@@ -43,7 +43,7 @@ export default function Register() {
           <Logo size="md" />
           <div className="space-y-6">
             <p className="eyebrow">Join marketly</p>
-            <h1 className="text-h1 text-ink-900 leading-tight text-balance">
+            <h1 className="text-h1 text-gray-900 dark:text-ink-900 leading-tight text-balance">
               Start trading<br />
               <span className="text-accent-400">today.</span>
             </h1>
@@ -53,7 +53,7 @@ export default function Register() {
                 'Manual & custom services',
                 'VIP tiers with withdrawal limits',
               ].map((f) => (
-                <li key={f} className="flex items-center gap-3 text-body text-ink-600">
+                <li key={f} className="flex items-center gap-3 text-body text-gray-600 dark:text-ink-600">
                   <span className="inline-flex w-5 h-5 rounded-full bg-accent-500/15 border border-accent-500/25 flex items-center justify-center flex-shrink-0">
                     <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
                       <path d="M2 5l2.5 2.5L8 3" stroke="#10B981" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -64,7 +64,7 @@ export default function Register() {
               ))}
             </ul>
           </div>
-          <p className="text-micro text-ink-500">
+          <p className="text-micro text-gray-600 dark:text-ink-500">
             &copy; {new Date().getFullYear()} marketly. All rights reserved.
           </p>
         </div>
@@ -81,8 +81,8 @@ export default function Register() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           >
-            <h2 className="text-h2 text-ink-900 mb-2">{t('auth.createAccount')}</h2>
-            <p className="text-body text-ink-600 mb-8">
+            <h2 className="text-h2 text-gray-900 dark:text-ink-900 mb-2">{t('auth.createAccount')}</h2>
+            <p className="text-body text-gray-600 dark:text-ink-600 mb-8">
               {t('auth.haveAccount')}{' '}
               <Link to="/login" className="text-accent-400 hover:text-accent-300 transition-colors">
                 {t('auth.signIn')}
@@ -118,7 +118,7 @@ export default function Register() {
                   aria-describedby={key === 'password' ? 'password-hint' : undefined}
                 />
                 {key === 'password' && (
-                  <p id="password-hint" className="text-micro text-ink-500 mt-1.5">
+                  <p id="password-hint" className="text-micro text-gray-600 dark:text-ink-500 mt-1.5">
                     At least 10 characters with letters, numbers, and a symbol.
                   </p>
                 )}
@@ -135,9 +135,9 @@ export default function Register() {
               {t('auth.createAccount')}
             </Button>
 
-            <p className="text-micro text-ink-500 text-center">
+            <p className="text-micro text-gray-600 dark:text-ink-500 text-center">
               By creating an account you agree to our{' '}
-              <span className="text-ink-600">Terms of Service</span>.
+              <span className="text-gray-600 dark:text-ink-600">Terms of Service</span>.
             </p>
           </motion.form>
         </div>

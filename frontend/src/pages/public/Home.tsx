@@ -61,18 +61,18 @@ export default function Home() {
     <PageTransition className="space-y-16">
 
       {/* ── Hero ──────────────────────────────────────────── */}
-      <section className="relative overflow-hidden rounded-2xl border border-ink-200 bg-ink-50">
+      <section className="relative overflow-hidden rounded-2xl border border-ink-200 bg-gray-50 dark:bg-ink-50">
         <div className="absolute inset-0 opacity-40">
           <HeroArt variant="aurora" className="w-full h-full" />
         </div>
         <div className="relative z-10 px-10 py-16 flex flex-col md:flex-row items-center gap-10">
           <div className="flex-1">
             <p className="eyebrow mb-4">{t('home.digitalMarketplace')}</p>
-            <h1 className="text-display-2 text-ink-900 mb-4 text-balance">
+            <h1 className="text-display-2 text-gray-900 dark:text-ink-900 mb-4 text-balance">
               {t('home.heroTitle1')}<br />
               <span className="text-accent-400">{t('home.heroTitle2')}</span>
             </h1>
-            <p className="text-body-lg text-ink-600 mb-8 max-w-lg">
+            <p className="text-body-lg text-gray-600 dark:text-ink-600 mb-8 max-w-lg">
               {t('home.heroDescription')}
             </p>
             <div className="flex flex-wrap gap-3">
@@ -113,7 +113,7 @@ export default function Home() {
                 transition={{ delay: 0.3 + i * 0.1, duration: 0.3 }}
               >
                 <p className="text-h3 text-accent-400">{s.value}</p>
-                <p className="text-micro text-ink-500 uppercase">{s.label}</p>
+                <p className="text-micro text-gray-600 dark:text-ink-500 uppercase">{s.label}</p>
               </motion.div>
             ))}
           </div>
@@ -125,7 +125,7 @@ export default function Home() {
         <div className="flex items-end justify-between mb-6">
           <div>
             <p className="eyebrow mb-1">Browse</p>
-            <h2 className="text-h2 text-ink-900">{t('home.categories')}</h2>
+            <h2 className="text-h2 text-gray-900 dark:text-ink-900">{t('home.categories')}</h2>
           </div>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
@@ -138,10 +138,10 @@ export default function Home() {
                 <span className="text-3xl mb-3 block" role="img" aria-hidden>
                   {CATEGORY_ICON[cat.icon] ?? '📦'}
                 </span>
-                <h3 className="text-sm font-semibold text-ink-900 group-hover:text-accent-400 transition-colors">
+                <h3 className="text-sm font-semibold text-gray-900 dark:text-ink-900 group-hover:text-accent-400 transition-colors">
                   {localized(cat, 'name', 'name_ar', locale)}
                 </h3>
-                <p className="text-micro text-ink-500 uppercase mt-1">{cat.type}</p>
+                <p className="text-micro text-gray-600 dark:text-ink-500 uppercase mt-1">{cat.type}</p>
               </Link>
             </motion.div>
           ))}
@@ -153,7 +153,7 @@ export default function Home() {
         <div className="flex items-end justify-between mb-6">
           <div>
             <p className="eyebrow mb-1">{t('home.hotRightNow')}</p>
-            <h2 className="text-h2 text-ink-900">{t('home.featuredProducts')}</h2>
+            <h2 className="text-h2 text-gray-900 dark:text-ink-900">{t('home.featuredProducts')}</h2>
           </div>
           <Link
             to="/products"
@@ -177,10 +177,10 @@ export default function Home() {
                   className="h-40 mb-4"
                 />
                 <div className="px-4 pb-4">
-                  <h3 className="text-sm font-semibold text-ink-900 group-hover:text-accent-400 transition-colors line-clamp-2 mb-1">
+                  <h3 className="text-sm font-semibold text-gray-900 dark:text-ink-900 group-hover:text-accent-400 transition-colors line-clamp-2 mb-1">
                     {localized(p, 'name', 'name_ar', locale)}
                   </h3>
-                  <p className="text-micro text-ink-500 line-clamp-1 mb-3">
+                  <p className="text-micro text-gray-600 dark:text-ink-500 line-clamp-1 mb-3">
                     {localized(p, 'description', 'description_ar', locale)}
                   </p>
                   <div className="flex items-center justify-between">

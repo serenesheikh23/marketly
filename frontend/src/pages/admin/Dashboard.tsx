@@ -54,7 +54,7 @@ export default function AdminDashboard() {
   const s = stats?.stats ?? {};
 
   const tiles = [
-    { key: 'admin.totalUsers',           value: s.total_users,            color: 'text-ink-900' },
+    { key: 'admin.totalUsers',           value: s.total_users,            color: 'text-gray-900 dark:text-ink-900' },
     { key: 'admin.revenue',              value: formatPrice(s.total_revenue ?? 0), color: 'text-accent-400' },
     { key: 'admin.pendingDeposits',      value: s.pending_deposits,        color: 'text-status-pending' },
     { key: 'admin.pendingWithdrawals',   value: s.pending_withdrawals,     color: 'text-status-processing' },
@@ -65,7 +65,7 @@ export default function AdminDashboard() {
     <PageTransition className="space-y-8">
       <div>
         <p className="eyebrow mb-1">{t('admin.overview')}</p>
-        <h1 className="text-h1 text-ink-900">{t('admin.dashboard')}</h1>
+        <h1 className="text-h1 text-gray-900 dark:text-ink-900">{t('admin.dashboard')}</h1>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
@@ -77,7 +77,7 @@ export default function AdminDashboard() {
             transition={{ delay: i * 0.06, duration: 0.3 }}
             className="card-pad"
           >
-            <p className="text-micro text-ink-500 uppercase tracking-wide">{t(tile.key)}</p>
+            <p className="text-micro text-gray-600 dark:text-ink-500 uppercase tracking-wide">{t(tile.key)}</p>
             <p className={`text-h2 tabular-nums ${tile.color}`}>
               {tile.value ?? '—'}
             </p>
@@ -89,8 +89,8 @@ export default function AdminDashboard() {
       <div className="card-pad">
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h2 className="text-h3 text-ink-900">{t('admin.systemHealth')}</h2>
-            <p className="text-micro text-ink-500 mt-0.5">
+            <h2 className="text-h3 text-gray-900 dark:text-ink-900">{t('admin.systemHealth')}</h2>
+            <p className="text-micro text-gray-600 dark:text-ink-500 mt-0.5">
               {t('admin.liveInfra')} · {health?.app_env ?? 'unknown'} · DEBUG:{' '}
               <span className={health?.app_debug ? 'text-status-rejected' : 'text-accent-400'}>
                 {String(health?.app_debug ?? '—')}
@@ -110,12 +110,12 @@ export default function AdminDashboard() {
             return (
               <div
                 key={key}
-                className="flex items-start gap-3 p-3 rounded-lg bg-ink-100/40 border border-ink-200"
+                className="flex items-start gap-3 p-3 rounded-lg bg-gray-100 dark:bg-ink-100/40 border border-ink-200"
               >
                 <StatusDot status={check.status} />
                 <div className="flex-1 min-w-0">
-                  <p className="text-small font-medium text-ink-900">{t(labelKey)}</p>
-                  <p className="text-micro text-ink-500 truncate" title={check.message}>
+                  <p className="text-small font-medium text-gray-900 dark:text-ink-900">{t(labelKey)}</p>
+                  <p className="text-micro text-gray-600 dark:text-ink-500 truncate" title={check.message}>
                     {check.message}
                   </p>
                 </div>
@@ -127,7 +127,7 @@ export default function AdminDashboard() {
 
       <div className="card-pad">
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-h3 text-ink-900">{t('admin.recentOrders')}</h2>
+          <h2 className="text-h3 text-gray-900 dark:text-ink-900">{t('admin.recentOrders')}</h2>
         </div>
         <div className="table-wrap">
           <table className="table">
@@ -143,15 +143,15 @@ export default function AdminDashboard() {
             <tbody>
               {(stats?.recent_orders ?? []).map((o: any) => (
                 <tr key={o.id}>
-                  <td className="font-medium text-ink-900 whitespace-nowrap">#{o.id}</td>
+                  <td className="font-medium text-gray-900 dark:text-ink-900 whitespace-nowrap">#{o.id}</td>
                   <td className="whitespace-nowrap">{o.user?.name ?? '—'}</td>
                   <td className="tabular-nums whitespace-nowrap">{formatPrice(o.total)}</td>
                   <td><span className={`badge-${o.status}`}>{o.status}</span></td>
-                  <td className="text-ink-500 whitespace-nowrap">{new Date(o.created_at).toLocaleDateString()}</td>
+                  <td className="text-gray-600 dark:text-ink-500 whitespace-nowrap">{new Date(o.created_at).toLocaleDateString()}</td>
                 </tr>
               ))}
               {(stats?.recent_orders ?? []).length === 0 && (
-                <tr><td colSpan={5} className="text-center text-ink-500 py-6">{t('admin.noOrdersYet')}</td></tr>
+                <tr><td colSpan={5} className="text-center text-gray-600 dark:text-ink-500 py-6">{t('admin.noOrdersYet')}</td></tr>
               )}
             </tbody>
           </table>

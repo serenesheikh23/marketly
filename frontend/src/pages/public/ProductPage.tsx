@@ -40,7 +40,7 @@ export default function ProductPage() {
   if (!product) {
     return (
       <PageTransition className="text-center py-24">
-        <p className="text-h3 text-ink-600 mb-4">{t('product.productNotFound')}</p>
+        <p className="text-h3 text-gray-600 dark:text-ink-600 mb-4">{t('product.productNotFound')}</p>
         <Link to="/" className="btn-accent">{t('product.backToHome')}</Link>
       </PageTransition>
     );
@@ -137,15 +137,15 @@ export default function ProductPage() {
                 {isManual ? t('product.manualService') : t('product.autoDelivery')}
               </span>
             </div>
-            <h1 className="text-h1 text-ink-900 mb-2">{localized(product, 'name', 'name_ar', locale)}</h1>
-            <div className="text-small text-ink-500">
+            <h1 className="text-h1 text-gray-900 dark:text-ink-900 mb-2">{localized(product, 'name', 'name_ar', locale)}</h1>
+            <div className="text-small text-gray-600 dark:text-ink-500">
               <span>{t('product.category')}: <Link to={`/category/${product.category?.slug}`} className="text-accent-400 hover:underline">{localized(product.category, 'name', 'name_ar', locale)}</Link></span>
               <span className="mx-2">·</span>
-              <span>{t('product.inStock')}: <strong className="text-ink-700">{product.stock}</strong></span>
+              <span>{t('product.inStock')}: <strong className="text-gray-700 dark:text-ink-700">{product.stock}</strong></span>
             </div>
           </div>
 
-          <p className="text-body text-ink-600 whitespace-pre-line leading-relaxed">
+          <p className="text-body text-gray-600 dark:text-ink-600 whitespace-pre-line leading-relaxed">
             {localized(product, 'description', 'description_ar', locale)}
           </p>
 
@@ -154,7 +154,7 @@ export default function ProductPage() {
               <span className="text-display-1 text-accent-400 font-bold">
                 {formatPrice(product.price)}
               </span>
-              <span className="text-body text-ink-500">{t('product.perUnit')}</span>
+              <span className="text-body text-gray-600 dark:text-ink-500">{t('product.perUnit')}</span>
             </div>
 
             {!isManual && (
@@ -189,7 +189,7 @@ export default function ProductPage() {
 
             {isManual && (
               <div className="space-y-3">
-                <p className="text-micro text-ink-500 uppercase tracking-wide">
+                <p className="text-micro text-gray-600 dark:text-ink-500 uppercase tracking-wide">
                   {t('product.serviceDetails')}
                 </p>
                 {manualFields.map((label) => (
@@ -213,9 +213,9 @@ export default function ProductPage() {
             )}
 
             <div className="flex items-center justify-between">
-              <span className="text-body text-ink-600">
+              <span className="text-body text-gray-600 dark:text-ink-600">
                 {t('product.total')}:{' '}
-                <strong className="text-ink-900">
+                <strong className="text-gray-900 dark:text-ink-900">
                   {formatPrice(Number(product.price) * quantity)}
                 </strong>
               </span>

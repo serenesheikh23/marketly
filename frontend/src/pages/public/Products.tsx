@@ -36,7 +36,7 @@ export default function Products() {
       <PageTransition className="space-y-8">
         <div>
           <p className="eyebrow mb-2">Catalog</p>
-          <h1 className="text-h1 text-ink-900">All Products</h1>
+          <h1 className="text-h1 text-gray-900 dark:text-ink-900">All Products</h1>
         </div>
         <ProductGridSkeleton count={8} />
       </PageTransition>
@@ -47,11 +47,11 @@ export default function Products() {
     <PageTransition className="space-y-8">
       <div>
         <p className="eyebrow mb-2">Catalog</p>
-        <h1 className="text-h1 text-ink-900">All Products</h1>
+        <h1 className="text-h1 text-gray-900 dark:text-ink-900">All Products</h1>
       </div>
 
       <div className="relative max-w-sm">
-        <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600 dark:text-ink-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
         </svg>
         <input
@@ -75,10 +75,10 @@ export default function Products() {
               <Link to={`/product/${p.slug}`} className="card-hover group block overflow-hidden">
                 <ProductImage name={localized(p, 'name', 'name_ar', locale)} category={localized(p.category, 'name', 'name_ar', locale)} imageBase64={p.image_base64} imageUrl={p.image_url} className="h-40 mb-4" />
                 <div className="px-4 pb-4">
-                  <h3 className="text-sm font-semibold text-ink-900 group-hover:text-accent-400 transition-colors line-clamp-2 mb-1">
+                  <h3 className="text-sm font-semibold text-gray-900 dark:text-ink-900 group-hover:text-accent-400 transition-colors line-clamp-2 mb-1">
                     {localized(p, 'name', 'name_ar', locale)}
                   </h3>
-                  <p className="text-micro text-ink-500 line-clamp-2 mb-3">
+                  <p className="text-micro text-gray-600 dark:text-ink-500 line-clamp-2 mb-3">
                     {localized(p, 'description', 'description_ar', locale)}
                   </p>
                   <div className="flex items-center justify-between">
@@ -96,7 +96,7 @@ export default function Products() {
         </div>
       ) : (
         <div className="text-center py-20 card-pad">
-          <p className="text-body text-ink-600">
+          <p className="text-body text-gray-600 dark:text-ink-600">
             {search ? 'No products match your search.' : 'No products available.'}
           </p>
           {search && (

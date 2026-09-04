@@ -78,10 +78,10 @@ export default function Dashboard() {
       <div className="flex items-start justify-between">
         <div>
           <p className="eyebrow mb-1">Welcome back</p>
-          <h1 className="text-h1 text-ink-900">{user?.name ?? 'User'}</h1>
+          <h1 className="text-h1 text-gray-900 dark:text-ink-900">{user?.name ?? 'User'}</h1>
         </div>
         <div className="text-right">
-          <p className="text-micro text-ink-500 uppercase">Balance</p>
+          <p className="text-micro text-gray-600 dark:text-ink-500 uppercase">Balance</p>
           <p className="text-h2 text-accent-400 tabular-nums">
             {formatPrice(user?.balance ?? 0)}
           </p>
@@ -115,26 +115,26 @@ export default function Dashboard() {
             {...stagger(i)}
             className="card-pad"
           >
-            <p className="text-micro text-ink-500 uppercase tracking-wide mb-2">{kpi.label}</p>
+            <p className="text-micro text-gray-600 dark:text-ink-500 uppercase tracking-wide mb-2">{kpi.label}</p>
             <p
               className={`text-h2 ${
                 kpi.color === 'accent'
                   ? 'text-accent-400'
                   : kpi.color === 'vip'
                   ? 'text-status-vip'
-                  : 'text-ink-900'
+                  : 'text-gray-900 dark:text-ink-900'
               }`}
             >
               {kpi.value}
             </p>
-            {kpi.sub && <p className="text-micro text-ink-500 mt-1">{kpi.sub}</p>}
+            {kpi.sub && <p className="text-micro text-gray-600 dark:text-ink-500 mt-1">{kpi.sub}</p>}
           </motion.div>
         ))}
       </div>
 
       {/* Quick actions */}
       <div>
-        <h2 className="text-h3 text-ink-900 mb-4">Quick actions</h2>
+        <h2 className="text-h3 text-gray-900 dark:text-ink-900 mb-4">Quick actions</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {QUICK_ACTIONS.map((a, i) => (
             <motion.div key={a.to} {...stagger(i)}>
@@ -144,10 +144,10 @@ export default function Dashboard() {
                   a.color === 'accent' ? 'border-accent-500/30 bg-accent-500/5' : ''
                 }`}
               >
-                <span className={a.color === 'accent' ? 'text-accent-400' : 'text-ink-600'}>
+                <span className={a.color === 'accent' ? 'text-accent-400' : 'text-gray-600 dark:text-ink-600'}>
                   {ACTION_ICONS[a.icon]}
                 </span>
-                <span className="text-small font-medium text-ink-900">{a.label}</span>
+                <span className="text-small font-medium text-gray-900 dark:text-ink-900">{a.label}</span>
               </Link>
             </motion.div>
           ))}
@@ -157,7 +157,7 @@ export default function Dashboard() {
       {/* Recent transactions */}
       <div className="card-pad">
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-h3 text-ink-900">Recent transactions</h2>
+          <h2 className="text-h3 text-gray-900 dark:text-ink-900">Recent transactions</h2>
           <Link to="/dashboard/orders" className="text-micro text-accent-400 hover:text-accent-300">
             View all →
           </Link>
@@ -177,12 +177,12 @@ export default function Dashboard() {
                 const isPositive = ['deposit', 'refund', 'vip_upgrade'].includes(t.type);
                 return (
                   <tr key={t.id}>
-                    <td className="capitalize text-ink-800">{t.type.replace('_', ' ')}</td>
+                    <td className="capitalize text-gray-800 dark:text-ink-800">{t.type.replace('_', ' ')}</td>
                     <td className={`font-semibold tabular-nums ${isPositive ? 'text-accent-400' : 'text-status-rejected'}`}>
                       {isPositive ? '+' : '-'}{formatPrice(t.amount)}
                     </td>
                     <td><span className={`badge-${t.status}`}>{t.status}</span></td>
-                    <td className="text-ink-500">{new Date(t.created_at).toLocaleDateString()}</td>
+                    <td className="text-gray-600 dark:text-ink-500">{new Date(t.created_at).toLocaleDateString()}</td>
                   </tr>
                 );
               })}

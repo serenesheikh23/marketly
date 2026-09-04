@@ -72,7 +72,7 @@ export default function CategoryPage() {
   if (!category) {
     return (
       <PageTransition className="text-center py-24 card-pad">
-        <p className="text-h3 text-ink-600 mb-4">Category not found.</p>
+        <p className="text-h3 text-gray-600 dark:text-ink-600 mb-4">Category not found.</p>
         <Link to="/" className="btn-accent">Back to home</Link>
       </PageTransition>
     );
@@ -89,9 +89,9 @@ export default function CategoryPage() {
         </p>
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-h1 text-ink-900 mb-2">{localized(category, 'name', 'name_ar', locale)}</h1>
+            <h1 className="text-h1 text-gray-900 dark:text-ink-900 mb-2">{localized(category, 'name', 'name_ar', locale)}</h1>
             {category.description && (
-              <p className="text-body text-ink-600">{localized(category, 'description', 'description_ar', locale)}</p>
+              <p className="text-body text-gray-600 dark:text-ink-600">{localized(category, 'description', 'description_ar', locale)}</p>
             )}
           </div>
           <span className="badge-neutral mt-1 shrink-0">{category.type}</span>
@@ -101,7 +101,7 @@ export default function CategoryPage() {
       {/* Search */}
       <div className="relative max-w-sm">
         <svg
-          className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-500"
+          className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600 dark:text-ink-500"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -143,10 +143,10 @@ export default function CategoryPage() {
                   className="h-36 mb-4"
                 />
                 <div className="px-4 pb-4">
-                  <h3 className="text-sm font-semibold text-ink-900 group-hover:text-accent-400 transition-colors line-clamp-2 mb-1">
+                  <h3 className="text-sm font-semibold text-gray-900 dark:text-ink-900 group-hover:text-accent-400 transition-colors line-clamp-2 mb-1">
                     {localized(p, 'name', 'name_ar', locale)}
                   </h3>
-                  <p className="text-micro text-ink-500 line-clamp-2 mb-3">
+                  <p className="text-micro text-gray-600 dark:text-ink-500 line-clamp-2 mb-3">
                     {localized(p, 'description', 'description_ar', locale)}
                   </p>
                   <div className="flex items-center justify-between">
@@ -164,10 +164,10 @@ export default function CategoryPage() {
         </div>
       ) : (
         <div className="text-center py-20 card-pad">
-          <svg className="w-12 h-12 mx-auto mb-4 text-ink-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <svg className="w-12 h-12 mx-auto mb-4 text-gray-300 dark:text-ink-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
             <path d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" strokeLinecap="round" />
           </svg>
-          <p className="text-body text-ink-600">
+          <p className="text-body text-gray-600 dark:text-ink-600">
             {search ? 'No products match your search.' : 'No products in this category yet.'}
           </p>
           {search && (
