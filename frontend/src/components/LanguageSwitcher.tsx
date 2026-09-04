@@ -13,6 +13,7 @@ export default function LanguageSwitcher() {
             ? 'bg-ink-900 text-ink'
             : 'text-ink-600 hover:text-ink-900'
         }`}
+        aria-label="Switch to English"
       >
         EN
       </button>
@@ -23,6 +24,7 @@ export default function LanguageSwitcher() {
             ? 'bg-ink-900 text-ink'
             : 'text-ink-600 hover:text-ink-900'
         }`}
+        aria-label="التبديل إلى العربية"
       >
         AR
       </button>

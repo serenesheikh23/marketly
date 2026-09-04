@@ -1,17 +1,18 @@
 import { Outlet, Link, useNavigate } from 'react-router-dom';
-import { useAppSelector, useAppDispatch, logout, translations } from '@/store';
+import { useAppSelector, useAppDispatch, logout } from '@/store';
 import { authApi } from '@/api/client';
 import Logo from './Logo';
 import PageTransition from './PageTransition';
 import LanguageSwitcher from './LanguageSwitcher';
+import ThemeToggle from './ThemeToggle';
 import SocialLinks from './SocialLinks';
+import { useI18n } from '@/i18n';
 
 export default function Layout() {
   const { user, isAuthenticated } = useAppSelector((s) => s.auth);
-  const { locale } = useAppSelector((s) => s.language);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const t = translations[locale];
+  const { t } = useI18n();
   const roles = (user as unknown as { roles?: Array<{ name: string }> })?.roles?.map((r) => r.name) ?? [];
 
   const handleLogout = async () => {
@@ -35,11 +36,11 @@ export default function Layout() {
             {isAuthenticated ? (
               <>
                 <Link to="/dashboard" className="nav-link text-sm">
-                  {t.dashboard}
+                  {t('nav.dashboard')}
                 </Link>
                 {(roles.includes('admin') || roles.includes('moderator')) && (
                   <Link to="/admin" className="nav-link text-sm text-accent-400">
-                    {t.admin}
+                    {t('nav.admin')}
                   </Link>
                 )}
                 <div className="mx-3 w-px h-5 bg-ink-200" />
@@ -50,20 +51,22 @@ export default function Layout() {
                   onClick={handleLogout}
                   className="nav-link text-sm ml-1 text-status-rejected/80 hover:text-status-rejected hover:bg-status-rejected/10"
                 >
-                  {t.logout}
+                  {t('nav.signOut')}
                 </button>
                 <LanguageSwitcher />
+                <ThemeToggle />
               </>
             ) : (
               <>
-                <Link to="/login" className="nav-link text-sm">{t.signIn}</Link>
+                <Link to="/login" className="nav-link text-sm">{t('nav.signIn')}</Link>
                 <Link
                   to="/register"
                   className="btn-accent btn-sm ml-2"
                 >
-                  {t.getStarted}
+                  {t('nav.getStarted')}
                 </Link>
                 <LanguageSwitcher />
+                <ThemeToggle />
               </>
             )}
           </nav>
@@ -83,12 +86,12 @@ export default function Layout() {
           <div className="flex items-center gap-2">
             <Logo size="sm" showText={false} />
             <span className="text-micro text-ink-500">
-              &copy; {new Date().getFullYear()} marketly
+              {t('footer.copyright', { year: new Date().getFullYear() })}
             </span>
           </div>
           <SocialLinks />
           <p className="text-micro text-ink-500 text-center sm:text-right">
-            All products delivered instantly. Secure payments via Binance Pay &amp; USDT.
+            {t('footer.tagline')}
           </p>
         </div>
       </footer>

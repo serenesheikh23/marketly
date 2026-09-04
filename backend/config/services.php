@@ -9,4 +9,7 @@ return [
         'wallet' => env('USDT_WALLET_ADDRESS'),
         'secret' => env('USDT_WEBHOOK_SECRET'),
     ],
+    'cloudinary' => [
+        'url' => env('CLOUDINARY_URL'),
+    ],
 ];

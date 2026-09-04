@@ -7,11 +7,14 @@ use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Category;
 use App\Models\ManualOrderField;
+use App\Services\CloudinaryService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class AdminCategoryController extends Controller
 {
+    public function __construct(private readonly CloudinaryService $cloudinary) {}
+
     public function index(): JsonResponse
     {
         try {
@@ -31,7 +34,14 @@ class AdminCategoryController extends Controller
     public function store(StoreCategoryRequest $request): JsonResponse
     {
         try {
-            $category = Category::create($request->validated());
+            $data = $request->validated();
+
+            if (! empty($data['image_base64'])) {
+                $data['image_url'] = $this->cloudinary->upload($data['image_base64'], 'marketly/categories');
+                unset($data['image_base64']);
+            }
+
+            $category = Category::create($data);
 
             return response()->json(['category' => $category], 201);
         } catch (\Throwable $e) {
@@ -44,7 +54,14 @@ class AdminCategoryController extends Controller
     public function update(UpdateCategoryRequest $request, Category $category): JsonResponse
     {
         try {
-            $category->update($request->validated());
+            $data = $request->validated();
+
+            if (! empty($data['image_base64'])) {
+                $data['image_url'] = $this->cloudinary->upload($data['image_base64'], 'marketly/categories');
+                unset($data['image_base64']);
+            }
+
+            $category->update($data);
 
             return response()->json(['category' => $category->fresh(['manualOrderFields'])]);
         } catch (\Throwable $e) {

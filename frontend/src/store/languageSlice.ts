@@ -9,6 +9,12 @@ interface LanguageState {
 
 const stored = (localStorage.getItem('language') as Language) || 'en';
 
+// Apply dir/lang on initial load
+if (typeof document !== 'undefined') {
+  document.documentElement.dir = stored === 'ar' ? 'rtl' : 'ltr';
+  document.documentElement.lang = stored;
+}
+
 const initialState: LanguageState = {
   locale: stored,
   dir: stored === 'ar' ? 'rtl' : 'ltr',

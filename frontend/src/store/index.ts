@@ -5,6 +5,6 @@ export { setUser, logout, updateBalance } from './authSlice';
 export { addToCart, updateQuantity, removeFromCart, clearCart } from './cartSlice';
 export { toggleSidebar } from './uiSlice';
 export { setLanguage } from './languageSlice';
-export { translations } from './translations';
+export { setTheme, toggleTheme } from './themeSlice';
 export type { User } from './authSlice';
 export type { CartItem } from './cartSlice';

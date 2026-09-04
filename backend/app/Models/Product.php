@@ -20,6 +20,7 @@ class Product extends Model
         'slug',
         'description',
         'image_base64',
+        'image_url',
         'price',
         'stock',
         'type',

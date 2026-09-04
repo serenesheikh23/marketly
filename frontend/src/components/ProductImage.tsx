@@ -4,17 +4,19 @@ interface ProductImageProps {
   name: string;
   category?: string;
   imageBase64?: string;
+  imageUrl?: string;
   className?: string;
 }
 
-/** Deterministic, locally-rendered product thumbnail — no external images.
- *  If imageBase64 is provided, renders the uploaded image instead. */
-export default function ProductImage({ name, category, imageBase64, className = '' }: ProductImageProps): ReactNode {
-  if (imageBase64) {
+/** Product thumbnail: prefers Cloudinary imageUrl, falls back to imageBase64, then renders placeholder. */
+export default function ProductImage({ name, category, imageBase64, imageUrl, className = '' }: ProductImageProps): ReactNode {
+  const src = imageUrl ?? imageBase64;
+
+  if (src) {
     return (
       <div className={`relative w-full overflow-hidden rounded-lg bg-ink-100 ${className}`}>
         <img
-          src={imageBase64}
+          src={src}
           alt={name}
           className="w-full h-full object-cover"
           loading="lazy"

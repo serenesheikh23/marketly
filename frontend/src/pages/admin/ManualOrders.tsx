@@ -4,10 +4,12 @@ import { adminOrderApi } from '@/api/client';
 import toast from 'react-hot-toast';
 import Button from '@/components/Button';
 import PageTransition from '@/components/PageTransition';
+import { useI18n } from '@/i18n';
 
 export default function AdminManualOrders() {
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const { t } = useI18n();
 
   const fetch = () => {
     setLoading(true);
@@ -22,23 +24,23 @@ export default function AdminManualOrders() {
   const updateStatus = async (id: number, status: string, notes?: string) => {
     try {
       await adminOrderApi.updateStatus(id, { status, notes });
-      toast.success(`Order #${id} marked as ${status}.`);
+      toast.success(t('admin.orderUpdated', { id, status }));
       fetch();
-    } catch (err: any) { toast.error(err.response?.data?.message ?? 'Failed'); }
+    } catch (err: any) { toast.error(err.response?.data?.message ?? t('common.failed')); }
   };
 
   return (
     <PageTransition className="space-y-6">
       <div>
-        <p className="eyebrow mb-1">Operations</p>
-        <h1 className="text-h1 text-ink-900">Manual orders</h1>
-        <p className="text-body text-ink-600 mt-1">Pending requests that need attention.</p>
+        <p className="eyebrow mb-1">{t('admin.operations')}</p>
+        <h1 className="text-h1 text-ink-900">{t('admin.manualOrders')}</h1>
+        <p className="text-body text-ink-600 mt-1">{t('admin.noPendingManual')}</p>
       </div>
 
       <div className="space-y-3">
         {orders.length === 0 && !loading && (
           <div className="card-pad text-center py-12">
-            <p className="text-body text-ink-500">No pending manual orders.</p>
+            <p className="text-body text-ink-500">{t('admin.noPendingManual')}</p>
           </div>
         )}
         {orders.map((order, i) => (
@@ -78,15 +80,15 @@ export default function AdminManualOrders() {
             <div className="flex flex-wrap gap-2">
               <Button variant="secondary" size="sm"
                 onClick={() => updateStatus(order.id, 'processing')}>
-                Mark Processing
+                {t('admin.markProcessing')}
               </Button>
               <Button variant="success" size="sm"
                 onClick={() => updateStatus(order.id, 'completed')}>
-                Complete
+                {t('admin.complete')}
               </Button>
               <Button variant="danger" size="sm"
                 onClick={() => updateStatus(order.id, 'rejected')}>
-                Reject
+                {t('admin.reject')}
               </Button>
             </div>
           </motion.div>

@@ -21,6 +21,7 @@ class Category extends Model
         'description',
         'icon',
         'image_base64',
+        'image_url',
         'sort_order',
     ];
 

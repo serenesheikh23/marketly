@@ -8,10 +8,12 @@ import HeroArt from '@/components/HeroArt';
 import Logo from '@/components/Logo';
 import Button from '@/components/Button';
 import PageTransition from '@/components/PageTransition';
+import { useI18n } from '@/i18n';
 
 export default function Login() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { t } = useI18n();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -38,19 +40,18 @@ export default function Login() {
 
   return (
     <PageTransition className="min-h-screen flex">
-      {/* ── Left panel: brand / art ─────────────────────────── */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
         <HeroArt variant="aurora" className="absolute inset-0 w-full h-full" />
         <div className="relative z-10 flex flex-col justify-between p-12 w-full">
           <Logo size="md" />
           <div className="space-y-6">
-            <p className="eyebrow">Digital Marketplace</p>
+            <p className="eyebrow">{t('home.digitalMarketplace')}</p>
             <h1 className="text-h1 text-ink-900 leading-tight text-balance">
               Buy, sell &amp; trade<br />
               <span className="text-accent-400">instantly.</span>
             </h1>
             <p className="text-body text-ink-600 max-w-sm">
-              Thousands of digital products, auto-delivery, and manual services — all in one place.
+              {t('home.heroDescription')}
             </p>
           </div>
           <p className="text-micro text-ink-500">
@@ -59,10 +60,8 @@ export default function Login() {
         </div>
       </div>
 
-      {/* ── Right panel: form ─────────────────────────────────── */}
       <div className="flex-1 flex items-center justify-center px-6 py-12 lg:px-16">
         <div className="w-full max-w-md">
-          {/* Mobile logo */}
           <div className="lg:hidden mb-10 flex justify-center">
             <Logo size="lg" />
           </div>
@@ -72,11 +71,11 @@ export default function Login() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           >
-            <h2 className="text-h2 text-ink-900 mb-2">Sign in</h2>
+            <h2 className="text-h2 text-ink-900 mb-2">{t('auth.login')}</h2>
             <p className="text-body text-ink-600 mb-8">
-              New to marketly?{' '}
+              {t('auth.noAccount')}{' '}
               <Link to="/register" className="text-accent-400 hover:text-accent-300 transition-colors">
-                Create an account
+                {t('auth.createAccount')}
               </Link>
             </p>
           </motion.div>
@@ -89,7 +88,7 @@ export default function Login() {
             transition={{ delay: 0.18, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           >
             <div>
-              <label htmlFor="email" className="label">Email address</label>
+              <label htmlFor="email" className="label">{t('auth.email')}</label>
               <input
                 id="email"
                 type="email"
@@ -102,7 +101,7 @@ export default function Login() {
               />
             </div>
             <div>
-              <label htmlFor="password" className="label">Password</label>
+              <label htmlFor="password" className="label">{t('auth.password')}</label>
               <input
                 id="password"
                 type="password"
@@ -121,7 +120,7 @@ export default function Login() {
               loading={loading}
               className="w-full mt-2"
             >
-              Sign in
+              {t('auth.signIn')}
             </Button>
           </motion.form>
 

@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 import { adminOrderApi } from '@/api/client';
 import PageTransition from '@/components/PageTransition';
 import { formatPrice } from '@/utils/format';
+import { useI18n } from '@/i18n';
 
 export default function AdminOrders() {
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const { t } = useI18n();
 
   useEffect(() => {
     adminOrderApi.list()
@@ -17,8 +19,8 @@ export default function AdminOrders() {
   return (
     <PageTransition className="space-y-6">
       <div>
-        <p className="eyebrow mb-1">Operations</p>
-        <h1 className="text-h1 text-ink-900">All orders</h1>
+        <p className="eyebrow mb-1">{t('admin.operations')}</p>
+        <h1 className="text-h1 text-ink-900">{t('admin.allOrders')}</h1>
       </div>
 
       <div className="card overflow-visible p-0">
@@ -27,11 +29,11 @@ export default function AdminOrders() {
             <thead>
               <tr>
                 <th>#</th>
-                <th>User</th>
+                <th>{t('admin.user')}</th>
                 <th>Total</th>
-                <th>Status</th>
-                <th>Payment</th>
-                <th>Date</th>
+                <th>{t('admin.status')}</th>
+                <th>{t('admin.method')}</th>
+                <th>{t('admin.date')}</th>
               </tr>
             </thead>
             <tbody>
@@ -46,7 +48,7 @@ export default function AdminOrders() {
                 </tr>
               ))}
               {orders.length === 0 && !loading && (
-                <tr><td colSpan={6} className="text-center text-ink-500 py-8">No orders yet.</td></tr>
+                <tr><td colSpan={6} className="text-center text-ink-500 py-8">{t('admin.noOrdersYet')}</td></tr>
               )}
             </tbody>
           </table>
