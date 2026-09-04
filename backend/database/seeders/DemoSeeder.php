@@ -18,6 +18,7 @@ use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
 
 class DemoSeeder extends Seeder
@@ -143,22 +144,22 @@ class DemoSeeder extends Seeder
     private function seedCategories(): void
     {
         $categories = [
-            ['name' => 'Games', 'type' => CategoryType::Auto, 'icon' => 'gamepad', 'sort_order' => 1, 'description' => 'Game keys, accounts, and in-game items'],
-            ['name' => 'Chat Applications', 'type' => CategoryType::Auto, 'icon' => 'message', 'sort_order' => 2, 'description' => 'Premium subscriptions for chat and messaging apps'],
-            ['name' => 'Cards', 'type' => CategoryType::Auto, 'icon' => 'credit-card', 'sort_order' => 3, 'description' => 'Gift and prepaid cards'],
-            ['name' => 'Balance Top-ups', 'type' => CategoryType::Auto, 'icon' => 'wallet', 'sort_order' => 4, 'description' => 'Mobile balance and top-ups'],
-            ['name' => 'Design Programs', 'type' => CategoryType::Auto, 'icon' => 'design', 'sort_order' => 5, 'description' => 'Software licenses for design tools'],
-            ['name' => 'Screen Subscriptions', 'type' => CategoryType::Auto, 'icon' => 'monitor', 'sort_order' => 6, 'description' => 'Streaming service subscriptions'],
-            ['name' => 'VPN Subscriptions', 'type' => CategoryType::Auto, 'icon' => 'server', 'sort_order' => 7, 'description' => 'VPN access plans'],
-            ['name' => 'Account Verification', 'type' => CategoryType::Manual, 'icon' => 'check-circle', 'sort_order' => 8, 'description' => 'Manual account verification services'],
-            ['name' => 'Artificial Intelligence', 'type' => CategoryType::Auto, 'icon' => 'cpu', 'sort_order' => 9, 'description' => 'AI tool subscriptions'],
-            ['name' => 'Manual Charging & Store Offers', 'type' => CategoryType::Manual, 'icon' => 'handshake', 'sort_order' => 10, 'description' => 'Custom store offers and manual charging'],
-            ['name' => 'Social Media Services', 'type' => CategoryType::Manual, 'icon' => 'share', 'sort_order' => 11, 'description' => 'Telegram, Facebook, Twitter and other social media services'],
+            ['name' => 'Games', 'name_ar' => 'الألعاب', 'type' => CategoryType::Auto, 'icon' => 'gamepad', 'sort_order' => 1, 'description' => 'Game keys, accounts, and in-game items', 'description_ar' => 'مفاتيح الألعاب والحسابات والعناصر داخل الألعاب'],
+            ['name' => 'Chat Applications', 'name_ar' => 'تطبيقات الدردشة', 'type' => CategoryType::Auto, 'icon' => 'message', 'sort_order' => 2, 'description' => 'Premium subscriptions for chat and messaging apps', 'description_ar' => 'اشتراكات مميزة لتطبيقات الدردشة والرسائل'],
+            ['name' => 'Cards', 'name_ar' => 'البطاقات', 'type' => CategoryType::Auto, 'icon' => 'credit-card', 'sort_order' => 3, 'description' => 'Gift and prepaid cards', 'description_ar' => 'البطاقات الهدية والبطاقات مسبقة الدفع'],
+            ['name' => 'Balance Top-ups', 'name_ar' => 'شحن الرصيد', 'type' => CategoryType::Auto, 'icon' => 'wallet', 'sort_order' => 4, 'description' => 'Mobile balance and top-ups', 'description_ar' => 'شحن رصيد الهاتف وإعادة الشحن'],
+            ['name' => 'Design Programs', 'name_ar' => 'برامج التصميم', 'type' => CategoryType::Auto, 'icon' => 'design', 'sort_order' => 5, 'description' => 'Software licenses for design tools', 'description_ar' => 'تراخيص برامج التصميم'],
+            ['name' => 'Screen Subscriptions', 'name_ar' => 'اشتراكات البث', 'type' => CategoryType::Auto, 'icon' => 'monitor', 'sort_order' => 6, 'description' => 'Streaming service subscriptions', 'description_ar' => 'اشتراكات خدمات البث'],
+            ['name' => 'VPN Subscriptions', 'name_ar' => 'اشتراكات VPN', 'type' => CategoryType::Auto, 'icon' => 'server', 'sort_order' => 7, 'description' => 'VPN access plans', 'description_ar' => 'خطط الوصول إلى VPN'],
+            ['name' => 'Account Verification', 'name_ar' => 'التحقق من الحسابات', 'type' => CategoryType::Manual, 'icon' => 'check-circle', 'sort_order' => 8, 'description' => 'Manual account verification services', 'description_ar' => 'خدمات التحقق اليدوية من الحسابات'],
+            ['name' => 'Artificial Intelligence', 'name_ar' => 'الذكاء الاصطناعي', 'type' => CategoryType::Auto, 'icon' => 'cpu', 'sort_order' => 9, 'description' => 'AI tool subscriptions', 'description_ar' => 'اشتراكات أدوات الذكاء الاصطناعي'],
+            ['name' => 'Manual Charging & Store Offers', 'name_ar' => 'الشحن اليدوي وعروض المتجر', 'type' => CategoryType::Manual, 'icon' => 'handshake', 'sort_order' => 10, 'description' => 'Custom store offers and manual charging', 'description_ar' => 'عروض المتجر المخصصة والشحن اليدوي'],
+            ['name' => 'Social Media Services', 'name_ar' => 'خدمات التواصل الاجتماعي', 'type' => CategoryType::Manual, 'icon' => 'share', 'sort_order' => 11, 'description' => 'Telegram, Facebook, Twitter and other social media services', 'description_ar' => 'تيليجرام وفيسبوك وتويتر وخدمات التواصل الاجتماعي الأخرى'],
         ];
 
         foreach ($categories as $data) {
             Category::updateOrCreate(
-                ['slug' => \Illuminate\Support\Str::slug($data['name'])],
+                ['slug' => Str::slug($data['name'])],
                 $data
             );
         }
@@ -208,184 +209,224 @@ class DemoSeeder extends Seeder
             [
                 'category' => 'games',
                 'name' => 'Steam Gift Card $50',
+                'name_ar' => 'بطاقة هدايا ستيم 50$',
                 'price' => 50.00,
                 'stock' => 100,
                 'store' => $store?->id,
                 'description' => 'Redeemable on Steam for any game, DLC, software, or in-game item of your choice. The code is delivered instantly to your Marketly inbox after checkout — no waiting, no shipping.',
+                'description_ar' => 'قابلة للاستخدام على ستيم لأي لعبة أو محتوى إضافي أو برنامج أو عنصر داخل اللعبة. يتم تسليم الكود فوراً إلى صندوق بريدك في Marketly بعد الدفع — بدون انتظار أو شحن.',
             ],
             [
                 'category' => 'games',
                 'name' => 'PlayStation Plus 3 Months',
+                'name_ar' => 'بلايستيشن بلس 3 أشهر',
                 'price' => 25.00,
                 'stock' => 50,
                 'store' => null,
                 'description' => 'Three months of PlayStation Plus Essential — online multiplayer, two free monthly games, exclusive discounts, and 100 GB of cloud storage. Digital code delivered to your account in minutes.',
+                'description_ar' => 'ثلاثة أشهر من بلايستيشن بلس Essential — اللعب الجماعي عبر الإنترنت، لعبتان مجانيتان شهرياً، خصومات حصرية، و100 جيجابايت من التخزين السحابي. كود رقمي يُسلَّم لحسابك خلال دقائق.',
             ],
             [
                 'category' => 'games',
                 'name' => 'Xbox Game Pass Ultimate 1 Month',
+                'name_ar' => 'إكس بوكس غيم باس ألتميت شهر واحد',
                 'price' => 14.99,
                 'stock' => 80,
                 'store' => null,
                 'description' => 'One month of Xbox Game Pass Ultimate. Stream and download over 100 high-quality games on console, PC, and cloud. Includes EA Play membership and Xbox Live Gold.',
+                'description_ar' => 'شهر واحد من إكس بوكس غيم باس ألتميت. استمتع بأكثر من 100 لعبة عالية الجودة على وحدة التحكم والكمبيوتر والسحابة. يشمل عضوية EA Play وXbox Live Gold.',
             ],
 
             // Chat
             [
                 'category' => 'chat-applications',
                 'name' => 'Telegram Premium 3 Months',
+                'name_ar' => 'تيليجرام بريميوم 3 أشهر',
                 'price' => 12.99,
                 'stock' => 200,
                 'store' => null,
                 'description' => 'Three months of Telegram Premium for any account. Get exclusive stickers, faster downloads, animated profile photos, 4 GB file uploads, and an ad-free experience.',
+                'description_ar' => 'ثلاثة أشهر من تيليجرام بريميوم لأي حساب. احصل على ملصقات حصرية، تنزيلات أسرع، صور شخصية متحركة، رفع ملفات حتى 4 جيجابايت، وتجربة بدون إعلانات.',
             ],
             [
                 'category' => 'chat-applications',
                 'name' => 'WhatsApp Business API Setup',
+                'name_ar' => 'إعداد واجهة واتساب للأعمال',
                 'price' => 49.00,
                 'stock' => 30,
                 'store' => null,
                 'description' => 'Full WhatsApp Business API onboarding — verified business account, automated greeting messages, and 1,000 free conversational sessions per month. Delivered within 24 hours.',
+                'description_ar' => 'إعداد كامل لواجهة واتساب للأعمال — حساب أعمال موثق، رسائل ترحيب تلقائية، و1000 جلسة محادثة مجانية شهرياً. يتم التسليم خلال 24 ساعة.',
             ],
 
             // Cards
             [
                 'category' => 'cards',
                 'name' => 'Amazon Gift Card $25',
+                'name_ar' => 'بطاقة هدايا أمازون 25$',
                 'price' => 25.00,
                 'stock' => 200,
                 'store' => $store?->id,
                 'description' => 'Official Amazon.com gift card redeemable across millions of products — no fees, no expiration date. Perfect for birthdays, holidays, or treating yourself.',
+                'description_ar' => 'بطاقة هدايا أمازون الرسمية القابلة للاستخدام على ملايين المنتجات — بدون رسوم وبدون تاريخ انتهاء. مثالية لأعياد الميلاد والعطلات أو لمكافأة نفسك.',
             ],
             [
                 'category' => 'cards',
                 'name' => 'iTunes Gift Card $50',
+                'name_ar' => 'بطاقة هدايا آيتونز 50$',
                 'price' => 50.00,
                 'stock' => 150,
                 'store' => null,
                 'description' => 'Apple App Store & iTunes gift card. Buy apps, games, music, movies, iCloud storage, and subscriptions for any Apple ID. Code delivered instantly.',
+                'description_ar' => 'بطاقة هدايا متجر آبل وآيتونز. اشترِ التطبيقات والألعاب والموسيقى والأفلام وتخزين iCloud والاشتراكات لأي حساب Apple. الكود يُسلَّم فوراً.',
             ],
 
             // Balance
             [
                 'category' => 'balance-top-ups',
                 'name' => 'Mobile Top-up $20',
+                'name_ar' => 'شحن رصيد الهاتف 20$',
                 'price' => 20.00,
                 'stock' => 500,
                 'store' => null,
                 'description' => 'Instant mobile airtime top-up for major carriers. Add $20 to your prepaid balance in seconds — supports AT&T, T-Mobile, Verizon, and 200+ carriers worldwide.',
+                'description_ar' => 'شحن فوري لرصيد الهاتف لجميع شركات الاتصالات الكبرى. أضف 20$ إلى رصيدك المدفوع مسبقاً في ثوانٍ — يدعم AT&T وT-Mobile وVerizon وأكثر من 200 شركة حول العالم.',
             ],
 
             // Design
             [
                 'category' => 'design-programs',
                 'name' => 'Adobe Creative Cloud 1 Month',
+                'name_ar' => 'أدوبي كريتيف كلاود شهر واحد',
                 'price' => 54.99,
                 'stock' => 40,
                 'store' => null,
                 'description' => 'One month of Adobe Creative Cloud — Photoshop, Illustrator, Premiere Pro, After Effects, and 20+ apps. Cloud storage, fonts, and portfolio access included.',
+                'description_ar' => 'شهر واحد من أدوبي كريتيف كلاود — فوتوشوب وإليستريتور وبريمير برو وأفتر إفكتس وأكثر من 20 تطبيقاً. يشمل التخزين السحابي والخطوط والوصول إلى بورتفوليو.',
             ],
             [
                 'category' => 'design-programs',
                 'name' => 'Figma Professional 1 Year',
+                'name_ar' => 'فيغما بروفيشنال سنة واحدة',
                 'price' => 180.00,
                 'stock' => 25,
                 'store' => null,
                 'description' => 'A full year of Figma Professional for one designer. Unlimited Figma files, advanced prototyping, team libraries, FigJam boards, and priority support.',
+                'description_ar' => 'سنة كاملة من فيغما بروفيشنال لمصمم واحد. ملفات فيغما غير محدودة، نماذج أولية متقدمة، مكتبات الفريق، لوحات FigJam، ودعم ذو أولوية.',
             ],
 
             // Streaming
             [
                 'category' => 'screen-subscriptions',
                 'name' => 'Netflix Premium 1 Month',
+                'name_ar' => 'نتفلكس بريميوم شهر واحد',
                 'price' => 17.99,
                 'stock' => 100,
                 'store' => null,
                 'description' => 'One month of Netflix Premium — 4K Ultra HD streaming on 4 screens simultaneously. Watch thousands of TV shows, movies, and Netflix originals.',
+                'description_ar' => 'شهر واحد من نتفلكس بريميوم — بث بدقة 4K Ultra HD على 4 شاشات في وقت واحد. شاهد آلاف المسلسلات والأفلام وأعمال نتفلكس الأصلية.',
             ],
             [
                 'category' => 'screen-subscriptions',
                 'name' => 'Spotify Premium 6 Months',
+                'name_ar' => 'سبوتيفاي بريميوم 6 أشهر',
                 'price' => 59.94,
                 'stock' => 80,
                 'store' => null,
                 'description' => 'Six months of Spotify Premium Individual. Ad-free music, offline listening, unlimited skips, and high-quality audio streaming on any device.',
+                'description_ar' => 'ستة أشهر من سبوتيفاي بريميوم فردي. موسيقى بدون إعلانات، استماع بدون اتصال، تخطي غير محدود، وبث صوتي عالي الجودة على أي جهاز.',
             ],
 
             // VPN
             [
                 'category' => 'vpn-subscriptions',
                 'name' => 'NordVPN 1 Year',
+                'name_ar' => 'نورد في بي إن سنة واحدة',
                 'price' => 59.99,
                 'stock' => 60,
                 'store' => null,
                 'description' => 'A full year of NordVPN — secure browsing, 5,500+ servers in 60 countries, military-grade encryption, malware protection, and support for 6 devices.',
+                'description_ar' => 'سنة كاملة من نورد في بي إن — تصفح آمن، أكثر من 5500 خادم في 60 دولة، تشفير عسكري، حماية من البرامج الضارة، ودعم حتى 6 أجهزة.',
             ],
 
             // Account Verification (manual)
             [
                 'category' => 'account-verification',
                 'name' => 'Social Media Verification',
+                'name_ar' => 'توثيق حسابات التواصل الاجتماعي',
                 'price' => 49.00,
                 'stock' => 999,
                 'type' => CategoryType::Manual,
                 'description' => 'Manual social media verification service. Submit your account and required documents — our team completes the verification badge process within 3-7 business days.',
+                'description_ar' => 'خدمة توثيق يدوي لحسابات التواصل الاجتماعي. أرسل حسابك والوثائق المطلوبة — فريقنا يكمل عملية التوثيق خلال 3-7 أيام عمل.',
             ],
 
             // AI
             [
                 'category' => 'artificial-intelligence',
                 'name' => 'ChatGPT Plus 1 Month',
+                'name_ar' => 'شات جي بي تي بلس شهر واحد',
                 'price' => 20.00,
                 'stock' => 100,
                 'store' => null,
                 'description' => 'One month of ChatGPT Plus — GPT-4 access, faster response times, priority access during peak hours, and advanced data analysis with DALL·E image generation.',
+                'description_ar' => 'شهر واحد من شات جي بي تي بلس — وصول إلى GPT-4، أوقات استجابة أسرع، أولوية الوصول في أوقات الذروة، وتحليل متقدم للبيانات مع توليد الصور بـ DALL·E.',
             ],
             [
                 'category' => 'artificial-intelligence',
                 'name' => 'Midjourney Pro 1 Month',
+                'name_ar' => 'ميدجورني برو شهر واحد',
                 'price' => 30.00,
                 'stock' => 80,
                 'store' => null,
                 'description' => 'One month of Midjourney Pro plan — 30 fast GPU hours per month, stealth image generation, and access to the latest AI image models on Discord.',
+                'description_ar' => 'شهر واحد من خطة ميدجورني برو — 30 ساعة GPU سريعة شهرياً، توليد صور في وضع التخفي، والوصول إلى أحدث نماذج الذكاء الاصطناعي للصور على ديسكورد.',
             ],
 
             // Manual Charging
             [
                 'category' => 'manual-charging-store-offers',
                 'name' => 'Custom Store Offer',
+                'name_ar' => 'عرض متجر مخصص',
                 'price' => 25.00,
                 'stock' => 999,
                 'type' => CategoryType::Manual,
                 'description' => 'Need something custom? Tell us what you want to purchase or top up, and our team will manually handle the order within 24 hours. Minimum order $25.',
+                'description_ar' => 'تحتاج شيئاً مخصصاً؟ أخبرنا بما تريد شراءه أو شحنه، وسيقوم فريقنا بمعالجة الطلب يدوياً خلال 24 ساعة. الحد الأدنى للطلب 25$.',
             ],
 
             // Social Media Services (manual)
             [
                 'category' => 'social-media-services',
                 'name' => 'Telegram Members 1000',
+                'name_ar' => '1000 عضو تيليجرام',
                 'price' => 15.00,
                 'stock' => 999,
                 'type' => CategoryType::Manual,
                 'description' => 'Add 1,000 real, active members to your Telegram channel or group. Gradual delivery to keep your growth looking organic. Non-drop guarantee included.',
+                'description_ar' => 'أضف 1000 عضو نشط وحقيقي إلى قناتك أو مجموعتك في تيليجرام. تسليم تدريجي لجعل النمو يبدو طبيعياً. ضمان عدم النقصان.',
             ],
             [
                 'category' => 'social-media-services',
                 'name' => 'Facebook Page Likes 1000',
+                'name_ar' => '1000 إعجاب لصفحة فيسبوك',
                 'price' => 25.00,
                 'stock' => 999,
                 'type' => CategoryType::Manual,
                 'description' => 'Boost your Facebook page credibility with 1,000 high-quality page likes from real-looking profiles. Delivered over 3-5 days for natural-looking growth.',
+                'description_ar' => 'عزز مصداقية صفحتك على فيسبوك بـ 1000 إعجاب عالي الجودة من ملفات شخصية تبدو حقيقية. يتم التسليم خلال 3-5 أيام لنمو طبيعي.',
             ],
         ];
 
         foreach ($products as $p) {
             Product::updateOrCreate(
-                ['slug' => \Illuminate\Support\Str::slug($p['name'])],
+                ['slug' => Str::slug($p['name'])],
                 [
                     'category_id' => $categories[$p['category']] ?? null,
                     'name' => $p['name'],
+                    'name_ar' => $p['name_ar'] ?? null,
                     'description' => $p['description'],
+                    'description_ar' => $p['description_ar'] ?? null,
                     'price' => $p['price'],
                     'stock' => $p['stock'],
                     'type' => $p['type'] ?? CategoryType::Auto,

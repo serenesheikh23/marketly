@@ -131,11 +131,11 @@
 
   /* ---------- Cards ---------- */
   .card {
-    @apply bg-white dark:bg-ink-50 border border-gray-200 dark:border-ink-200 shadow-sm rounded-xl
+    @apply bg-white dark:bg-ink-50 shadow-sm rounded-xl
            transition-all duration-300 ease-smooth;
   }
   .card-hover {
-    @apply card hover:border-gray-300 dark:hover:border-ink-300 hover:shadow-lift hover:-translate-y-0.5;
+    @apply card hover:shadow-md hover:-translate-y-0.5;
   }
 
   .card-pad { @apply card p-6; }

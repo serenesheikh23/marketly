@@ -61,12 +61,16 @@ export default function Home() {
     <PageTransition className="space-y-16">
 
       {/* ── Hero ──────────────────────────────────────────── */}
-      <section className="relative overflow-hidden rounded-2xl border border-ink-200">
-        <div className="absolute inset-0 opacity-40 dark:opacity-40">
+      <section className="relative w-full rounded-2xl border border-ink-200 overflow-hidden">
+        {/* Full-width aurora background */}
+        <div className="absolute inset-0 opacity-40 dark:opacity-40 pointer-events-none">
           <HeroArt variant="aurora" className="w-full h-full" />
         </div>
-        <div className="relative z-10 px-10 py-16 flex flex-col md:flex-row items-center gap-10">
-          <div className="flex-1">
+
+        {/* Hero content + modern visual */}
+        <div className="relative z-10 px-8 py-14 md:px-14 md:py-20 flex flex-col lg:flex-row items-center gap-12">
+          {/* Left: text */}
+          <div className="flex-1 max-w-2xl">
             <p className="eyebrow mb-4">{t('home.digitalMarketplace')}</p>
             <h1 className="text-display-2 text-gray-900 dark:text-ink-900 mb-4 text-balance">
               {t('home.heroTitle1')}<br />
@@ -97,6 +101,63 @@ export default function Home() {
               )}
             </div>
           </div>
+
+          {/* Right: modern floating visual (hidden on mobile) */}
+          <div className="hidden lg:flex flex-col items-center gap-4 flex-shrink-0">
+
+            {/* Main glassmorphic product showcase card */}
+            <motion.div
+              animate={{ y: [0, -10, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+              className="relative w-64"
+            >
+              {/* Glow orb behind card */}
+              <div className="absolute -inset-6 rounded-3xl bg-accent-400/20 blur-2xl pointer-events-none" />
+              {/* Glass card */}
+              <div className="relative backdrop-blur-xl bg-white/10 dark:bg-ink-50/10 border border-white/20 dark:border-ink-50/20 rounded-2xl p-6 shadow-glow">
+                {/* Product icon row */}
+                <div className="grid grid-cols-3 gap-3 mb-5">
+                  {[
+                    { icon: '🎮', label: 'Games' },
+                    { icon: '💬', label: 'Chat' },
+                    { icon: '💳', label: 'Cards' },
+                    { icon: '💰', label: 'Top-up' },
+                    { icon: '🎨', label: 'Design' },
+                    { icon: '🤖', label: 'AI' },
+                  ].map(({ icon, label }) => (
+                    <div key={label} className="flex flex-col items-center gap-1">
+                      <div className="w-10 h-10 rounded-xl bg-white/20 dark:bg-ink-50/20 backdrop-blur-sm border border-white/20 dark:border-ink-50/20 flex items-center justify-center text-lg shadow-sm">
+                        {icon}
+                      </div>
+                      <span className="text-micro text-gray-600 dark:text-ink-500">{label}</span>
+                    </div>
+                  ))}
+                </div>
+                {/* Price preview */}
+                <div className="flex items-center justify-between pt-4 border-t border-white/20 dark:border-ink-50/20">
+                  <div>
+                    <p className="text-micro text-gray-500 dark:text-ink-500">From</p>
+                    <p className="text-h3 text-accent-400 font-bold">$5.99</p>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-2 h-2 rounded-full bg-status-completed animate-pulse" />
+                    <span className="text-micro text-gray-500 dark:text-ink-500">Instant delivery</span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Floating badge */}
+            <motion.div
+              animate={{ y: [-4, 4, -4] }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+              className="backdrop-blur-xl bg-white/10 dark:bg-ink-50/10 border border-white/20 dark:border-ink-50/20 rounded-full px-4 py-2 shadow-soft flex items-center gap-2"
+            >
+              <span className="text-accent-400 text-sm">⚡</span>
+              <span className="text-small font-semibold text-gray-800 dark:text-ink-800">Auto-delivery 24/7</span>
+            </motion.div>
+
+          </div>
         </div>
       </section>
 
@@ -104,7 +165,7 @@ export default function Home() {
       <section>
         <div className="flex items-end justify-between mb-6">
           <div>
-            <p className="eyebrow mb-1">Browse</p>
+            <p className="eyebrow mb-1">{t('home.browse')}</p>
             <h2 className="text-h2 text-gray-900 dark:text-ink-900">{t('home.categories')}</h2>
           </div>
         </div>
