@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { Gamepad2, MessageCircle, CreditCard, Wallet, Palette, Bot } from 'lucide-react';
 import { categoryApi, productApi } from '@/api/client';
 import { useAppSelector } from '@/store';
 import ProductImage from '@/components/ProductImage';
@@ -117,22 +118,22 @@ export default function Home() {
                 {/* Product icon row - only icons, no text */}
                 <div className="grid grid-cols-3 gap-3">
                   <div className="w-10 h-10 rounded-xl bg-white/20 dark:bg-ink-50/20 backdrop-blur-sm border border-white/20 dark:border-ink-50/20 flex items-center justify-center text-lg shadow-sm">
-                    🎮
+                    <Gamepad2 size={20} className="text-accent-400" />
                   </div>
                   <div className="w-10 h-10 rounded-xl bg-white/20 dark:bg-ink-50/20 backdrop-blur-sm border border-white/20 dark:border-ink-50/20 flex items-center justify-center text-lg shadow-sm">
-                    💬
+                    <MessageCircle size={20} className="text-accent-400" />
                   </div>
                   <div className="w-10 h-10 rounded-xl bg-white/20 dark:bg-ink-50/20 backdrop-blur-sm border border-white/20 dark:border-ink-50/20 flex items-center justify-center text-lg shadow-sm">
-                    💳
+                    <CreditCard size={20} className="text-accent-400" />
                   </div>
                   <div className="w-10 h-10 rounded-xl bg-white/20 dark:bg-ink-50/20 backdrop-blur-sm border border-white/20 dark:border-ink-50/20 flex items-center justify-center text-lg shadow-sm">
-                    💰
+                    <Wallet size={20} className="text-accent-400" />
                   </div>
                   <div className="w-10 h-10 rounded-xl bg-white/20 dark:bg-ink-50/20 backdrop-blur-sm border border-white/20 dark:border-ink-50/20 flex items-center justify-center text-lg shadow-sm">
-                    🎨
+                    <Palette size={20} className="text-accent-400" />
                   </div>
                   <div className="w-10 h-10 rounded-xl bg-white/20 dark:bg-ink-50/20 backdrop-blur-sm border border-white/20 dark:border-ink-50/20 flex items-center justify-center text-lg shadow-sm">
-                    🤖
+                    <Bot size={20} className="text-accent-400" />
                   </div>
                 </div>
               </div>
