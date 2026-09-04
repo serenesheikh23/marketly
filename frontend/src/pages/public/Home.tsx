@@ -176,9 +176,18 @@ export default function Home() {
                 to={`/category/${cat.slug}`}
                 className="card-hover block p-5 text-center group"
               >
-                <span className="text-3xl mb-3 block" role="img" aria-hidden>
-                  {CATEGORY_ICON[cat.icon] ?? '📦'}
-                </span>
+                {cat.image_url ? (
+                  <img
+                    src={cat.image_url}
+                    alt={localized(cat, 'name', 'name_ar', locale)}
+                    loading="lazy"
+                    className="w-12 h-12 mx-auto mb-3 rounded-xl object-cover"
+                  />
+                ) : (
+                  <span className="text-3xl mb-3 block" role="img" aria-hidden>
+                    {CATEGORY_ICON[cat.icon] ?? '📦'}
+                  </span>
+                )}
                 <h3 className="text-sm font-semibold text-gray-900 dark:text-ink-900 group-hover:text-accent-400 transition-colors">
                   {localized(cat, 'name', 'name_ar', locale)}
                 </h3>
