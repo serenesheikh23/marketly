@@ -155,7 +155,7 @@ export default function Home() {
             <h2 className="text-h2 text-ink-900">Featured products</h2>
           </div>
           <Link
-            to="/category/software"
+            to="/products"
             className="text-sm text-accent-400 hover:text-accent-300 transition-colors"
           >
             View all →

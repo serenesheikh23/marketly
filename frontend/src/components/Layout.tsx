@@ -1,14 +1,17 @@
 import { Outlet, Link, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { useAppSelector, useAppDispatch, logout } from '@/store';
+import { useAppSelector, useAppDispatch, logout, translations } from '@/store';
 import { authApi } from '@/api/client';
 import Logo from './Logo';
 import PageTransition from './PageTransition';
+import LanguageSwitcher from './LanguageSwitcher';
+import SocialLinks from './SocialLinks';
 
 export default function Layout() {
   const { user, isAuthenticated } = useAppSelector((s) => s.auth);
+  const { locale } = useAppSelector((s) => s.language);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const t = translations[locale];
   const roles = (user as unknown as { roles?: Array<{ name: string }> })?.roles?.map((r) => r.name) ?? [];
 
   const handleLogout = async () => {
@@ -32,11 +35,11 @@ export default function Layout() {
             {isAuthenticated ? (
               <>
                 <Link to="/dashboard" className="nav-link text-sm">
-                  Dashboard
+                  {t.dashboard}
                 </Link>
                 {(roles.includes('admin') || roles.includes('moderator')) && (
                   <Link to="/admin" className="nav-link text-sm text-accent-400">
-                    Admin
+                    {t.admin}
                   </Link>
                 )}
                 <div className="mx-3 w-px h-5 bg-ink-200" />
@@ -47,18 +50,20 @@ export default function Layout() {
                   onClick={handleLogout}
                   className="nav-link text-sm ml-1 text-status-rejected/80 hover:text-status-rejected hover:bg-status-rejected/10"
                 >
-                  Logout
+                  {t.logout}
                 </button>
+                <LanguageSwitcher />
               </>
             ) : (
               <>
-                <Link to="/login" className="nav-link text-sm">Sign in</Link>
+                <Link to="/login" className="nav-link text-sm">{t.signIn}</Link>
                 <Link
                   to="/register"
                   className="btn-accent btn-sm ml-2"
                 >
-                  Get started
+                  {t.getStarted}
                 </Link>
+                <LanguageSwitcher />
               </>
             )}
           </nav>
@@ -74,14 +79,15 @@ export default function Layout() {
 
       {/* ── Footer ─────────────────────────────────────────── */}
       <footer className="border-t border-ink-200 py-8 mt-auto">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <Logo size="sm" showText={false} />
             <span className="text-micro text-ink-500">
               &copy; {new Date().getFullYear()} marketly
             </span>
           </div>
-          <p className="text-micro text-ink-500">
+          <SocialLinks />
+          <p className="text-micro text-ink-500 text-center sm:text-right">
             All products delivered instantly. Secure payments via Binance Pay &amp; USDT.
           </p>
         </div>

@@ -16,6 +16,7 @@ export default function ProductPage() {
   const [quantity, setQuantity] = useState(1);
   const [payload, setPayload] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (!slug) return;
@@ -45,12 +46,39 @@ export default function ProductPage() {
   const isManual = product.type === 'manual';
 
   const handleAddToCart = () => {
+    // Validate quantity
+    if (!quantity || quantity < 1) {
+      setErrors({ quantity: 'Quantity must be at least 1' });
+      return;
+    }
+
+    // Validate manual product fields
+    if (isManual) {
+      const newErrors: Record<string, string> = {};
+      const linkValue = (payload['Link / Username'] ?? '').trim();
+      if (!linkValue) {
+        newErrors['Link / Username'] = 'Please enter your Link / Username';
+      }
+      // Quantity for manual product is stored in payload too
+      const qtyValue = (payload['Quantity'] ?? '').trim();
+      const qtyNum = parseInt(qtyValue, 10);
+      if (!qtyValue || isNaN(qtyNum) || qtyNum < 1) {
+        newErrors['Quantity'] = 'Quantity must be at least 1';
+      }
+      setErrors(newErrors);
+      if (Object.keys(newErrors).length > 0) return;
+    } else {
+      setErrors({});
+    }
+
     dispatch(
       addToCart({
         product_id: product.id,
         name: product.name,
         price: Number(product.price),
-        quantity,
+        quantity: isManual
+          ? Math.max(1, parseInt((payload['Quantity'] ?? '1').trim(), 10) || 1)
+          : quantity,
         payload: isManual ? payload : undefined,
       }),
     );
@@ -164,13 +192,17 @@ export default function ProductPage() {
                   <div key={label}>
                     <label className="label">{label}</label>
                     <input
-                      className="input"
+                      className={`input ${errors[label] ? 'border-status-rejected' : ''}`}
                       placeholder={label}
                       value={payload[label] ?? ''}
-                      onChange={(e) =>
-                        setPayload((p) => ({ ...p, [label]: e.target.value }))
-                      }
+                      onChange={(e) => {
+                        setPayload((p) => ({ ...p, [label]: e.target.value }));
+                        setErrors((prev) => ({ ...prev, [label]: '' }));
+                      }}
                     />
+                    {errors[label] && (
+                      <p className="text-micro text-status-rejected mt-1">{errors[label]}</p>
+                    )}
                   </div>
                 ))}
               </div>
