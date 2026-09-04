@@ -44,7 +44,7 @@ export default function Layout() {
                     {t('nav.admin')}
                   </Link>
                 )}
-                <div className="mx-3 w-px h-5 bg-ink-200" />
+                <div className="mx-3 w-px h-5 bg-gray-300 dark:bg-ink-200" />
                 <span className="text-sm text-gray-600 dark:text-ink-600 font-medium tabular-nums">
                   {formatPrice(user?.balance)}
                 </span>

@@ -27,7 +27,7 @@ export default function Deposit() {
 
   return (
     <PageTransition className="max-w-lg">
-      <h1 className="text-h1 text-ink-900 mb-8">Deposit Funds</h1>
+      <h1 className="text-h1 text-gray-900 dark:text-ink-900 mb-8">Deposit Funds</h1>
 
       {!deposit ? (
         <motion.form
@@ -39,7 +39,7 @@ export default function Deposit() {
           <div>
             <label className="label">Amount (USD)</label>
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-500 text-sm">$</span>
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 dark:text-ink-500 text-sm">$</span>
               <input
                 type="number"
                 min="1"
@@ -66,7 +66,7 @@ export default function Deposit() {
                   className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all ${
                     method === m.value
                       ? 'border-accent-500 bg-accent-500/5'
-                      : 'border-ink-200 bg-ink-100 hover:border-ink-300'
+                      : 'border-ink-200 bg-gray-100 dark:bg-ink-100 hover:border-ink-300'
                   }`}
                 >
                   <input
@@ -76,7 +76,7 @@ export default function Deposit() {
                     onChange={(e) => setMethod(e.target.value)}
                     className="accent-accent-500"
                   />
-                  <span className="text-sm text-ink-800">{m.label}</span>
+                  <span className="text-sm text-gray-800 dark:text-ink-800">{m.label}</span>
                 </label>
               ))}
             </div>
@@ -92,9 +92,9 @@ export default function Deposit() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <h2 className="text-h3 text-ink-900">Deposit Details</h2>
+          <h2 className="text-h3 text-gray-900 dark:text-ink-900">Deposit Details</h2>
 
-          <div className="bg-ink-100 rounded-xl p-6 space-y-4">
+          <div className="bg-gray-100 dark:bg-ink-100 rounded-xl p-6 space-y-4">
             {deposit.deposit.qr_code && (
               <div className="text-center">
                 <img
@@ -108,7 +108,7 @@ export default function Deposit() {
               <div>
                 <p className="label">Wallet Address</p>
                 <div className="flex items-center gap-2">
-                  <code className="flex-1 bg-ink-50 p-2.5 rounded-lg text-micro text-ink-700 break-all border border-ink-200">
+                  <code className="flex-1 bg-gray-50 dark:bg-ink-50 p-2.5 rounded-lg text-micro text-gray-700 dark:text-ink-700 break-all border border-ink-200">
                     {deposit.deposit.wallet_address}
                   </code>
                   <button
@@ -127,13 +127,13 @@ export default function Deposit() {
             {deposit.deposit.memo && (
               <div>
                 <p className="label">Memo / Tag</p>
-                <code className="block bg-ink-50 p-2.5 rounded-lg text-micro text-ink-700 break-all border border-ink-200">
+                <code className="block bg-gray-50 dark:bg-ink-50 p-2.5 rounded-lg text-micro text-gray-700 dark:text-ink-700 break-all border border-ink-200">
                   {deposit.deposit.memo}
                 </code>
               </div>
             )}
             {deposit.deposit.instructions && (
-              <p className="text-small text-ink-500 text-center">{deposit.deposit.instructions}</p>
+              <p className="text-small text-gray-600 dark:text-ink-500 text-center">{deposit.deposit.instructions}</p>
             )}
           </div>
 

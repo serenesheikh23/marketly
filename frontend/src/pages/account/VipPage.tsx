@@ -90,7 +90,7 @@ export default function VipPage() {
     <PageTransition className="space-y-8">
       <div>
         <p className="eyebrow mb-2">Membership</p>
-        <h1 className="text-h1 text-ink-900">VIP Status</h1>
+        <h1 className="text-h1 text-gray-900 dark:text-ink-900">VIP Status</h1>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -111,25 +111,25 @@ export default function VipPage() {
                 <span className="absolute top-4 right-4 badge-vip">Current</span>
               )}
 
-              <span className={`inline-block mb-4 ${isCurrent ? 'text-accent-400' : 'text-ink-500'}`}>
+              <span className={`inline-block mb-4 ${isCurrent ? 'text-accent-400' : 'text-gray-600 dark:text-ink-500'}`}>
                 {tier.icon}
               </span>
 
               <h3 className={`text-h3 mb-1 ${
                 tier.key === 'vip2' ? 'text-accent-400' :
-                tier.key === 'vip1' ? 'text-status-vip' : 'text-ink-800'
+                tier.key === 'vip1' ? 'text-status-vip' : 'text-gray-800 dark:text-ink-800'
               }`}>
                 {tier.label}
               </h3>
 
-              <div className="space-y-2 text-small text-ink-600 mt-4 mb-6">
+              <div className="space-y-2 text-small text-gray-600 dark:text-ink-600 mt-4 mb-6">
                 <div className="flex justify-between">
                   <span>Withdrawal Limit</span>
-                  <strong className="text-ink-800">{tier.limit}</strong>
+                  <strong className="text-gray-800 dark:text-ink-800">{tier.limit}</strong>
                 </div>
                 <div className="flex justify-between">
                   <span>Withdrawal Fee</span>
-                  <strong className="text-ink-800">{tier.fee}</strong>
+                  <strong className="text-gray-800 dark:text-ink-800">{tier.fee}</strong>
                 </div>
                 {tier.price && (
                   <div className="flex justify-between">

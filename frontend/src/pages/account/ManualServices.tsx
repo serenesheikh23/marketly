@@ -64,8 +64,8 @@ export default function ManualServices() {
     <PageTransition className="space-y-8">
       <div>
         <p className="eyebrow mb-2">Services</p>
-        <h1 className="text-h1 text-ink-900">Manual Services</h1>
-        <p className="text-body text-ink-600 mt-2">
+        <h1 className="text-h1 text-gray-900 dark:text-ink-900">Manual Services</h1>
+        <p className="text-body text-gray-600 dark:text-ink-600 mt-2">
           Custom services handled by our team. Fill in the details below and we'll get started.
         </p>
       </div>
@@ -83,8 +83,8 @@ export default function ManualServices() {
                 <span className="text-2xl mb-3 block" role="img">
                   {CATEGORY_ICON[cat.icon] ?? '📦'}
                 </span>
-                <h3 className="text-sm font-semibold text-ink-900">{localized(cat, 'name', 'name_ar', locale)}</h3>
-                <p className="text-micro text-ink-500 mt-1 line-clamp-2">{localized(cat, 'description', 'description_ar', locale)}</p>
+                <h3 className="text-sm font-semibold text-gray-900 dark:text-ink-900">{localized(cat, 'name', 'name_ar', locale)}</h3>
+                <p className="text-micro text-gray-600 dark:text-ink-500 mt-1 line-clamp-2">{localized(cat, 'description', 'description_ar', locale)}</p>
               </button>
             </motion.div>
           ))}
@@ -106,9 +106,9 @@ export default function ManualServices() {
           <div className="card-pad max-w-lg space-y-5">
             <div>
               <p className="eyebrow mb-1">{localized(selected, 'name', 'name_ar', locale)}</p>
-              <h2 className="text-h2 text-ink-900">Service Details</h2>
+              <h2 className="text-h2 text-gray-900 dark:text-ink-900">Service Details</h2>
               {selected.description && (
-                <p className="text-body text-ink-600 mt-2">{localized(selected, 'description', 'description_ar', locale)}</p>
+                <p className="text-body text-gray-600 dark:text-ink-600 mt-2">{localized(selected, 'description', 'description_ar', locale)}</p>
               )}
             </div>
 
@@ -173,7 +173,7 @@ export default function ManualServices() {
                 </Button>
               </form>
             ) : (
-              <p className="text-body text-ink-500">No form fields defined for this category yet.</p>
+              <p className="text-body text-gray-600 dark:text-ink-500">No form fields defined for this category yet.</p>
             )}
           </div>
         </motion.div>

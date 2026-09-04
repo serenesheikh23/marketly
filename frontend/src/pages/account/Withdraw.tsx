@@ -27,7 +27,7 @@ export default function Withdraw() {
 
   return (
     <PageTransition className="max-w-lg">
-      <h1 className="text-h1 text-ink-900 mb-8">Withdraw</h1>
+      <h1 className="text-h1 text-gray-900 dark:text-ink-900 mb-8">Withdraw</h1>
 
       <motion.div
         className="card-pad space-y-6"
@@ -35,8 +35,8 @@ export default function Withdraw() {
         animate={{ opacity: 1, y: 0 }}
       >
         <div className="bg-status-pending/10 border border-status-pending/20 rounded-xl p-4">
-          <p className="text-micro text-ink-500 uppercase tracking-wide mb-1">Notice</p>
-          <p className="text-small text-ink-600">
+          <p className="text-micro text-gray-600 dark:text-ink-500 uppercase tracking-wide mb-1">Notice</p>
+          <p className="text-small text-gray-600 dark:text-ink-600">
             Withdrawals are processed manually. Please ensure your wallet address is correct — transfers are irreversible.
           </p>
         </div>
@@ -45,7 +45,7 @@ export default function Withdraw() {
           <div>
             <label className="label">Amount (USD)</label>
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-500 text-sm">$</span>
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 dark:text-ink-500 text-sm">$</span>
               <input
                 type="number"
                 min="1"

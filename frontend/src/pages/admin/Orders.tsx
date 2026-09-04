@@ -20,7 +20,7 @@ export default function AdminOrders() {
     <PageTransition className="space-y-6">
       <div>
         <p className="eyebrow mb-1">{t('admin.operations')}</p>
-        <h1 className="text-h1 text-ink-900">{t('admin.allOrders')}</h1>
+        <h1 className="text-h1 text-gray-900 dark:text-ink-900">{t('admin.allOrders')}</h1>
       </div>
 
       <div className="card overflow-visible p-0">
@@ -39,7 +39,7 @@ export default function AdminOrders() {
             <tbody>
               {orders.map((o) => (
                 <tr key={o.id}>
-                  <td className="font-medium text-gray-900 dark:text-ink-900 whitespace-nowrap">#{o.id}</td>
+                  <td className="font-medium text-gray-900 dark:text-gray-900 dark:text-ink-900 whitespace-nowrap">#{o.id}</td>
                   <td className="whitespace-nowrap">{o.user?.name ?? '—'}</td>
                   <td className="tabular-nums whitespace-nowrap">{formatPrice(o.total)}</td>
                   <td><span className={`badge-${o.status}`}>{o.status}</span></td>
