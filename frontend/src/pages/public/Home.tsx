@@ -97,26 +97,6 @@ export default function Home() {
               )}
             </div>
           </div>
-
-          <div className="hidden md:grid grid-cols-2 gap-3 w-64">
-            {[
-              { label: 'Products', value: '500+' },
-              { label: 'Categories', value: (categories?.length ?? 0).toString() },
-              { label: 'Avg. delivery', value: '< 30s' },
-              { label: 'Uptime', value: '99.9%' },
-            ].map((s, i) => (
-              <motion.div
-                key={s.label}
-                className="card-pad text-center"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.3 + i * 0.1, duration: 0.3 }}
-              >
-                <p className="text-h3 text-accent-400">{s.value}</p>
-                <p className="text-micro text-gray-600 dark:text-ink-500 uppercase">{s.label}</p>
-              </motion.div>
-            ))}
-          </div>
         </div>
       </section>
 
