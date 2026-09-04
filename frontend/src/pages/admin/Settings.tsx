@@ -58,13 +58,13 @@ export default function AdminSettings() {
               {info.keys.map((key) => {
                 const value = (settings[group] ?? {})[key]?.value ?? '';
                 return (
-                  <div key={key} className="flex items-center gap-3">
-                    <div className="flex-1 min-w-0">
-                      <p className="text-small font-medium text-ink-800 truncate">{key}</p>
+                  <div key={key} className="flex items-start gap-3">
+                    <div className="w-48 flex-shrink-0 pt-1">
+                      <p className="text-small font-medium text-ink-800 break-words">{key}</p>
                     </div>
                     <input
                       type="text"
-                      className="input w-64"
+                      className="input flex-1"
                       defaultValue={value}
                       disabled={saving}
                       onBlur={(e) => {

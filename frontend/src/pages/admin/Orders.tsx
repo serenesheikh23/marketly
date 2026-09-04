@@ -21,8 +21,8 @@ export default function AdminOrders() {
         <h1 className="text-h1 text-ink-900">All orders</h1>
       </div>
 
-      <div className="card overflow-hidden p-0">
-        <div className="overflow-x-auto">
+      <div className="card overflow-visible p-0">
+        <div className="table-wrap">
           <table className="table">
             <thead>
               <tr>
@@ -37,12 +37,12 @@ export default function AdminOrders() {
             <tbody>
               {orders.map((o) => (
                 <tr key={o.id}>
-                  <td className="font-medium text-ink-900">#{o.id}</td>
-                  <td>{o.user?.name ?? '—'}</td>
-                  <td className="tabular-nums">{formatPrice(o.total)}</td>
+                  <td className="font-medium text-ink-900 whitespace-nowrap">#{o.id}</td>
+                  <td className="whitespace-nowrap">{o.user?.name ?? '—'}</td>
+                  <td className="tabular-nums whitespace-nowrap">{formatPrice(o.total)}</td>
                   <td><span className={`badge-${o.status}`}>{o.status}</span></td>
-                  <td className="text-ink-500">{o.payment_method}</td>
-                  <td className="text-ink-500">{new Date(o.created_at).toLocaleDateString()}</td>
+                  <td className="text-ink-500 whitespace-nowrap">{o.payment_method}</td>
+                  <td className="text-ink-500 whitespace-nowrap">{new Date(o.created_at).toLocaleDateString()}</td>
                 </tr>
               ))}
               {orders.length === 0 && !loading && (

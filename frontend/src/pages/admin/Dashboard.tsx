@@ -141,31 +141,33 @@ export default function AdminDashboard() {
         <div className="flex items-center justify-between mb-5">
           <h2 className="text-h3 text-ink-900">Recent orders</h2>
         </div>
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Order #</th>
-              <th>User</th>
-              <th>Total</th>
-              <th>Status</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {(stats?.recent_orders ?? []).map((o: any) => (
-              <tr key={o.id}>
-                <td className="font-medium text-ink-900">#{o.id}</td>
-                <td>{o.user?.name ?? '—'}</td>
-                <td className="tabular-nums">{formatPrice(o.total)}</td>
-                <td><span className={`badge-${o.status}`}>{o.status}</span></td>
-                <td className="text-ink-500">{new Date(o.created_at).toLocaleDateString()}</td>
+        <div className="table-wrap">
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Order #</th>
+                <th>User</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Date</th>
               </tr>
-            ))}
-            {(stats?.recent_orders ?? []).length === 0 && (
-              <tr><td colSpan={5} className="text-center text-ink-500 py-6">No orders yet.</td></tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {(stats?.recent_orders ?? []).map((o: any) => (
+                <tr key={o.id}>
+                  <td className="font-medium text-ink-900 whitespace-nowrap">#{o.id}</td>
+                  <td className="whitespace-nowrap">{o.user?.name ?? '—'}</td>
+                  <td className="tabular-nums whitespace-nowrap">{formatPrice(o.total)}</td>
+                  <td><span className={`badge-${o.status}`}>{o.status}</span></td>
+                  <td className="text-ink-500 whitespace-nowrap">{new Date(o.created_at).toLocaleDateString()}</td>
+                </tr>
+              ))}
+              {(stats?.recent_orders ?? []).length === 0 && (
+                <tr><td colSpan={5} className="text-center text-ink-500 py-6">No orders yet.</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </PageTransition>
   );

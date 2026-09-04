@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Enums\CategoryType;
 use App\Enums\OrderStatus;
 use App\Enums\TransactionStatus;
 use App\Enums\TransactionType;
@@ -20,7 +19,7 @@ use Illuminate\Support\Facades\Log;
 class OrderService
 {
     /**
-     * @param array<int, array{product_id: int, quantity: int, payload?: array<string, mixed>}> $items
+     * @param  array<int, array{product_id: int, quantity: int, payload?: array<string, mixed>}>  $items
      */
     public function createOrder(User $user, array $items, string $paymentMethod = 'cash_wallet'): Order
     {
@@ -48,7 +47,7 @@ class OrderService
             $total = $subtotal + $fee;
 
             // Determine if this is fully manual
-            $isManualOrder = collect($productMap)->every(fn($i) => $i['product']->isManual());
+            $isManualOrder = collect($productMap)->every(fn ($i) => $i['product']->isManual());
 
             // For automatic orders paid with cash_wallet, debit immediately
             if (! $isManualOrder && $paymentMethod === 'cash_wallet' && (float) $user->balance < $total) {
@@ -64,7 +63,7 @@ class OrderService
                 'fee' => $fee,
                 'total' => $total,
                 'payment_method' => $paymentMethod,
-                'payment_ref' => $paymentMethod !== 'cash_wallet' ? null : 'wallet-' . uniqid(),
+                'payment_ref' => $paymentMethod !== 'cash_wallet' ? null : 'wallet-'.uniqid(),
             ]);
 
             foreach ($productMap as $productId => $data) {
@@ -98,12 +97,20 @@ class OrderService
                     ]);
                 }
 
-                event(new OrderCompleted($order));
+                $this->safeBroadcast(new OrderCompleted($order));
             } else {
-                event(new OrderCreated($order));
+                $this->safeBroadcast(new OrderCreated($order));
             }
 
-            $user->notify(new OrderStatusChanged($order));
+            try {
+                $user->notify(new OrderStatusChanged($order));
+            } catch (\Throwable $e) {
+                Log::warning('Notification failed (non-fatal)', [
+                    'user_id' => $user->id,
+                    'order_id' => $order->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
 
             return $order->fresh(['items.product']);
         });
@@ -113,9 +120,21 @@ class OrderService
     {
         DB::transaction(function () use ($order) {
             $order->update(['status' => OrderStatus::Completed]);
-            event(new OrderCompleted($order));
+            $this->safeBroadcast(new OrderCompleted($order));
             $order->user->notify(new OrderStatusChanged($order));
         });
+    }
+
+    private function safeBroadcast(object $event): void
+    {
+        try {
+            event($event);
+        } catch (\Throwable $e) {
+            Log::warning('Broadcast failed (non-fatal)', [
+                'event' => $event::class,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
     public function markRejected(Order $order, ?string $reason = null): void
@@ -125,6 +144,7 @@ class OrderService
                 'status' => OrderStatus::Rejected,
                 'notes' => $reason ? "Rejected: {$reason}" : $order->notes,
             ]);
+            $this->safeBroadcast(new OrderCompleted($order));
             $order->user->notify(new OrderStatusChanged($order));
         });
     }
@@ -133,6 +153,7 @@ class OrderService
     {
         DB::transaction(function () use ($order) {
             $order->update(['status' => OrderStatus::Processing]);
+            $this->safeBroadcast(new OrderCompleted($order));
             $order->user->notify(new OrderStatusChanged($order));
         });
     }

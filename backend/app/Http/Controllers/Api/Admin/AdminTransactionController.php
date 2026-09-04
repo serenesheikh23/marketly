@@ -8,9 +8,9 @@ use App\Events\DepositStatusChanged;
 use App\Events\WithdrawalStatusChanged;
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
-use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class AdminTransactionController extends Controller
 {
@@ -24,6 +24,7 @@ class AdminTransactionController extends Controller
         }
 
         $deposits = $query->latest()->paginate(25);
+
         return response()->json($deposits);
     }
 
@@ -37,6 +38,7 @@ class AdminTransactionController extends Controller
         }
 
         $withdrawals = $query->latest()->paginate(25);
+
         return response()->json($withdrawals);
     }
 
@@ -50,7 +52,7 @@ class AdminTransactionController extends Controller
         $user->increment('balance', $transaction->amount);
         $transaction->update(['status' => TransactionStatus::Approved]);
 
-        event(new DepositStatusChanged($transaction));
+        $this->safeBroadcast(new DepositStatusChanged($transaction));
 
         return response()->json(['transaction' => $transaction->fresh()]);
     }
@@ -66,7 +68,7 @@ class AdminTransactionController extends Controller
             'notes' => $request->string('reason')->toString(),
         ]);
 
-        event(new DepositStatusChanged($transaction));
+        $this->safeBroadcast(new DepositStatusChanged($transaction));
 
         return response()->json(['transaction' => $transaction->fresh()]);
     }
@@ -78,7 +80,7 @@ class AdminTransactionController extends Controller
         }
 
         $transaction->update(['status' => TransactionStatus::Approved]);
-        event(new WithdrawalStatusChanged($transaction));
+        $this->safeBroadcast(new WithdrawalStatusChanged($transaction));
 
         return response()->json(['transaction' => $transaction->fresh()]);
     }
@@ -97,8 +99,20 @@ class AdminTransactionController extends Controller
             'notes' => $request->string('reason')->toString(),
         ]);
 
-        event(new WithdrawalStatusChanged($transaction));
+        $this->safeBroadcast(new WithdrawalStatusChanged($transaction));
 
         return response()->json(['transaction' => $transaction->fresh()]);
+    }
+
+    private function safeBroadcast(object $event): void
+    {
+        try {
+            event($event);
+        } catch (\Throwable $e) {
+            Log::warning('Broadcast failed (non-fatal)', [
+                'event' => $event::class,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 }
