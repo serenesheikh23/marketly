@@ -52,9 +52,9 @@ export default function HeroArt({ variant = 'aurora', className = '' }: HeroArtP
     );
   }
 
-  // aurora (default) — transparent background, no hardcoded #0A0A0A rect
+  // aurora (default) — Stretched to 1440 width so it NEVER cuts off on large screens
   return (
-    <svg viewBox="0 0 600 600" preserveAspectRatio="none" className={className} aria-hidden>
+    <svg viewBox="0 0 1440 600" preserveAspectRatio="none" className={className} aria-hidden>
       <defs>
         <linearGradient id="aurora" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0%" stopColor="#10B981" stopOpacity="0.30" />
@@ -65,13 +65,13 @@ export default function HeroArt({ variant = 'aurora', className = '' }: HeroArtP
           <circle cx="2" cy="2" r="1" fill="currentColor" className="text-ink-300 dark:text-ink-200" />
         </pattern>
       </defs>
-      <rect width="600" height="600" fill="url(#dots)" opacity="0.6" />
+      <rect width="1440" height="600" fill="url(#dots)" opacity="0.6" />
       <path
-        d="M0 380 C150 300, 300 460, 600 320 L600 600 L0 600 Z"
+        d="M0 380 C300 300, 600 460, 1440 320 L1440 600 L0 600 Z"
         fill="url(#aurora)"
       />
       <path
-        d="M0 420 C200 380, 350 500, 600 420 L600 600 L0 600 Z"
+        d="M0 420 C400 380, 800 500, 1440 420 L1440 600 L0 600 Z"
         fill="#10B981"
         opacity="0.05"
       />
