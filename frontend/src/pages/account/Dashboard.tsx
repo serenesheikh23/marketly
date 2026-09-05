@@ -7,6 +7,7 @@ import EmptyState from '@/components/EmptyState';
 import PageTransition from '@/components/PageTransition';
 import { formatPrice, formatDateTime } from '@/utils/format';
 import { useI18n } from '@/i18n';
+import Breadcrumbs from '@/components/Breadcrumbs';
 
 const QUICK_ACTIONS = [
   { to: '/dashboard/deposit', label: 'admin.depositFunds', icon: 'deposit', color: 'accent' },
@@ -76,10 +77,11 @@ export default function Dashboard() {
   return (
     <PageTransition className="space-y-10">
 
+      <Breadcrumbs items={[{ label: t('nav.home'), link: '/' }, { label: t('nav.dashboard') }]} />
+
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <p className="eyebrow mb-1">{t('account.welcomeBack')}</p>
           <h1 className="text-h1 text-gray-900 dark:text-ink-900">{user?.name ?? 'User'}</h1>
         </div>
         <div className="text-right">

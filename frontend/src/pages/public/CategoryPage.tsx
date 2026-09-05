@@ -7,10 +7,11 @@ import { formatPrice } from '@/utils/format';
 import PageTransition from '@/components/PageTransition';
 import { useI18n } from '@/i18n';
 import { localized } from '@/utils/localize';
+import Breadcrumbs from '@/components/Breadcrumbs';
 
 export default function CategoryPage() {
   const { slug } = useParams();
-  const { locale } = useI18n();
+  const { t, locale } = useI18n();
   const [category, setCategory] = useState<any>(null);
   const [products, setProducts] = useState<any[]>([]);
   const [search, setSearch] = useState('');
@@ -82,12 +83,13 @@ export default function CategoryPage() {
     <PageTransition className="space-y-8">
       {/* Header */}
       <div>
-        <p className="eyebrow mb-2">
-          <Link to="/" className="hover:text-accent-300 transition-colors">Home</Link>
-          {' / '}
-          {localized(category, 'name', 'name_ar', locale)}
-        </p>
-        <div className="flex items-start justify-between gap-4">
+        <Breadcrumbs
+          items={[
+            { label: t('nav.home'), link: '/' },
+            { label: localized(category, 'name', 'name_ar', locale) },
+          ]}
+        />
+        <div className="flex items-start justify-between gap-4 mt-4">
           <div>
             <h1 className="text-h1 text-gray-900 dark:text-ink-900 mb-2">{localized(category, 'name', 'name_ar', locale)}</h1>
             {category.description && (

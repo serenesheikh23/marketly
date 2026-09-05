@@ -8,9 +8,10 @@ import { formatPrice } from '@/utils/format';
 import PageTransition from '@/components/PageTransition';
 import { useI18n } from '@/i18n';
 import { localized } from '@/utils/localize';
+import Breadcrumbs from '@/components/Breadcrumbs';
 
 export default function Products() {
-  const { locale } = useI18n();
+  const { t, locale } = useI18n();
   const [products, setProducts] = useState<any[]>([]);
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
@@ -35,8 +36,8 @@ export default function Products() {
     return (
       <PageTransition className="space-y-8">
         <div>
-          <p className="eyebrow mb-2">Catalog</p>
-          <h1 className="text-h1 text-gray-900 dark:text-ink-900">All Products</h1>
+          <Breadcrumbs items={[{ label: t('nav.home'), link: '/' }, { label: t('nav.products') }]} />
+          <h1 className="text-h1 text-gray-900 dark:text-ink-900 mt-4">{t('nav.products')}</h1>
         </div>
         <ProductGridSkeleton count={8} />
       </PageTransition>
@@ -46,8 +47,8 @@ export default function Products() {
   return (
     <PageTransition className="space-y-8">
       <div>
-        <p className="eyebrow mb-2">Catalog</p>
-        <h1 className="text-h1 text-gray-900 dark:text-ink-900">All Products</h1>
+        <Breadcrumbs items={[{ label: t('nav.home'), link: '/' }, { label: t('nav.products') }]} />
+        <h1 className="text-h1 text-gray-900 dark:text-ink-900 mt-4">{t('nav.products')}</h1>
       </div>
 
       <div className="relative max-w-sm">
@@ -56,7 +57,7 @@ export default function Products() {
         </svg>
         <input
           type="search"
-          placeholder="Search products…"
+          placeholder={t('products.searchPlaceholder')}
           className="input pl-10"
           value={search}
           onChange={(e) => handleSearch(e.target.value)}
@@ -97,7 +98,7 @@ export default function Products() {
       ) : (
         <div className="text-center py-20 card-pad">
           <p className="text-body text-gray-600 dark:text-ink-600">
-            {search ? 'No products match your search.' : 'No products available.'}
+            {search ? 'No products match your search.' : t('products.noProducts')}
           </p>
           {search && (
             <button

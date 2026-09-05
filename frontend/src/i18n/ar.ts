@@ -30,6 +30,12 @@ const ar: import('./en').Translations = {
     adminPanel: 'لوحة الإدارة',
   },
 
+  // Products page
+  products: {
+    searchPlaceholder: '...بحث عن منتجات',
+    noProducts: 'لا توجد منتجات متاحة.',
+  },
+
   // Hero / Home
   home: {
     digitalMarketplace: 'السوق الرقمي',

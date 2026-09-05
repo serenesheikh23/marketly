@@ -9,6 +9,7 @@ import { formatPrice } from '@/utils/format';
 import PageTransition from '@/components/PageTransition';
 import { useI18n } from '@/i18n';
 import { localized } from '@/utils/localize';
+import Breadcrumbs from '@/components/Breadcrumbs';
 
 export default function ProductPage() {
   const { slug } = useParams();
@@ -94,18 +95,13 @@ export default function ProductPage() {
   return (
     <PageTransition className="max-w-5xl mx-auto">
       {/* Breadcrumb */}
-      <p className="eyebrow mb-6">
-        <Link to="/" className="hover:text-accent-300 transition-colors">{t('nav.home')}</Link>
-        {' / '}
-        <Link
-          to={`/category/${product.category?.slug}`}
-          className="hover:text-accent-300 transition-colors"
-        >
-{localized(product.category, 'name', 'name_ar', locale)}
-        </Link>
-        {' / '}
-        {localized(product, 'name', 'name_ar', locale)}
-      </p>
+      <Breadcrumbs
+        items={[
+          { label: t('nav.home'), link: '/' },
+          { label: localized(product.category, 'name', 'name_ar', locale), link: `/category/${product.category?.slug}` },
+          { label: localized(product, 'name', 'name_ar', locale) },
+        ]}
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
         <motion.div

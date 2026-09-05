@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import Button from '@/components/Button';
 import PageTransition from '@/components/PageTransition';
 import { useI18n } from '@/i18n';
+import Breadcrumbs from '@/components/Breadcrumbs';
 
 export default function Deposit() {
   const { t } = useI18n();
@@ -36,7 +37,14 @@ export default function Deposit() {
   return (
     <PageTransition className="min-h-screen flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-lg mx-auto flex flex-col items-center">
-        <h1 className="text-h1 text-gray-900 dark:text-ink-900 text-center mb-2">{t('deposit.title')}</h1>
+        <Breadcrumbs
+          items={[
+            { label: t('nav.home'), link: '/' },
+            { label: t('nav.dashboard'), link: '/dashboard' },
+            { label: t('deposit.title') },
+          ]}
+        />
+        <h1 className="text-h1 text-gray-900 dark:text-ink-900 text-center mb-2 mt-4">{t('deposit.title')}</h1>
         <p className="text-body text-gray-600 dark:text-ink-600 text-center mb-8">{t('deposit.subtitle')}</p>
 
         {!deposit ? (
