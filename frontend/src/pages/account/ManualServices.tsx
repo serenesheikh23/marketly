@@ -61,7 +61,7 @@ export default function ManualServices() {
   };
 
   return (
-    <PageTransition className="space-y-8">
+    <PageTransition className="max-w-7xl mx-auto w-full space-y-8">
       <div>
         <p className="eyebrow mb-2">Services</p>
         <h1 className="text-h1 text-gray-900 dark:text-ink-900">Manual Services</h1>

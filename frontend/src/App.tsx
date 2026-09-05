@@ -1,7 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAppSelector } from '@/hooks/useAuth';
-import { useEcho } from '@/hooks/useEcho';
 import Layout from '@/components/Layout';
 import AdminLayout from '@/components/AdminLayout';
 import ErrorBoundary from '@/components/ErrorBoundary';
@@ -54,7 +53,8 @@ function AdminRoute({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  useEcho();
+  // TODO: Re-enable once Reverb is properly configured for production
+  // useEcho();
 
   return (
     <ErrorBoundary>
