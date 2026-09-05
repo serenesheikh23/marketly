@@ -30,22 +30,22 @@ export default function ManualServices() {
 
   const selectCategory = async (cat: any) => {
     setSelected(cat);
+    setFields([]);
+    setFormData({});
+    setQuantity(1);
     try {
       const r = await categoryApi.formSchema(cat.slug);
       setFields(r.data.fields ?? []);
     } catch {
       setFields([]);
     }
-    // Also fetch products for this category so the order can reference one
+    // Fetch products for this category
     try {
       const pr = await productApi.list({ category_id: cat.id, type: 'manual' });
-      // attach products to selected for later use
       setSelected((prev: any) => ({ ...(prev ?? cat), products: pr.data.data ?? pr.data.products ?? [] }));
     } catch {
-      // keep products on cat if any
+      setSelected((prev: any) => ({ ...(prev ?? cat), products: [] }));
     }
-    setFormData({});
-    setQuantity(1);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -120,9 +120,11 @@ export default function ManualServices() {
               )}
             </div>
 
-            {fields.length > 0 ? (
-              <form onSubmit={handleSubmit} className="space-y-4">
-                {fields.map((f: any) => (
+            {/* If there are products, ALWAYS show the form */}
+            {(selected.products ?? []).length > 0 ? (
+              <form onSubmit={handleSubmit} className="space-y-4 w-full">
+                {/* Show fields only if they exist */}
+                {fields.length > 0 && fields.map((f: any) => (
                   <div key={f.key}>
                     <label className="label">
                       {f.label}{f.required ? ' *' : ''}
@@ -160,6 +162,8 @@ export default function ManualServices() {
                     )}
                   </div>
                 ))}
+
+                {/* Quantity + Submit */}
                 <div>
                   <label className="label">{t('manualServices.quantity')}</label>
                   <input
@@ -183,7 +187,7 @@ export default function ManualServices() {
             ) : (
               <div className="text-center py-6 space-y-3">
                 <p className="text-3xl">📋</p>
-                <p className="text-body text-gray-600 dark:text-ink-500">{t('manualServices.noFields')}</p>
+                <p className="text-body text-gray-600 dark:text-ink-500">{t('manualServices.noProducts')}</p>
               </div>
             )}
           </div>
