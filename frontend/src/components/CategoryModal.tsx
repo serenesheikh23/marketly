@@ -10,6 +10,7 @@ import { useI18n } from '@/i18n';
 interface FormField {
   key: string;
   label: string;
+  label_ar?: string;
   type: 'text' | 'select' | 'textarea';
   required: boolean;
   options?: string;
@@ -60,7 +61,7 @@ export default function CategoryModal({ category, onClose, onSaved }: CategoryMo
   const addField = () => {
     setFormFields((prev) => [
       ...prev,
-      { key: `field_${Date.now()}`, label: '', type: 'text', required: false, options: '' },
+      { key: `field_${Date.now()}`, label: '', label_ar: '', type: 'text', required: false, options: '' },
     ]);
   };
 
@@ -200,10 +201,11 @@ export default function CategoryModal({ category, onClose, onSaved }: CategoryMo
             <div className="space-y-3">
               {formFields.map((field, index) => (
                 <div key={field.key} className="card-pad border border-gray-200 dark:border-ink-200">
-                  <div className="grid grid-cols-1 sm:grid-cols-12 gap-2">
-                    <div className="sm:col-span-4">
+                  {/* Row 1: Label (EN) + Label (AR) */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <div>
                       <label className="text-micro text-gray-600 dark:text-ink-600 mb-1 block">
-                        {t('admin.fieldLabel')}
+                        {t('admin.fieldLabelEn') ?? 'Label (EN)'}
                       </label>
                       <input
                         type="text"
@@ -213,6 +215,23 @@ export default function CategoryModal({ category, onClose, onSaved }: CategoryMo
                         placeholder="e.g. Profile Link"
                       />
                     </div>
+                    <div>
+                      <label className="text-micro text-gray-600 dark:text-ink-600 mb-1 block">
+                        {t('admin.fieldLabelAr') ?? 'Label (AR)'}
+                      </label>
+                      <input
+                        type="text"
+                        className="input"
+                        dir="rtl"
+                        value={field.label_ar ?? ''}
+                        onChange={(e) => updateField(index, { label_ar: e.target.value })}
+                        placeholder="مثال: رابط الملف"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Row 2: Type + Required + Options */}
+                  <div className="grid grid-cols-1 sm:grid-cols-12 gap-2 mt-2">
                     <div className="sm:col-span-3">
                       <label className="text-micro text-gray-600 dark:text-ink-600 mb-1 block">
                         {t('admin.fieldType')}
@@ -240,7 +259,7 @@ export default function CategoryModal({ category, onClose, onSaved }: CategoryMo
                         />
                       </div>
                     </div>
-                    <div className="sm:col-span-3">
+                    <div className="sm:col-span-7">
                       <label className="text-micro text-gray-600 dark:text-ink-600 mb-1 block">
                         {t('admin.fieldOptions')}
                       </label>
