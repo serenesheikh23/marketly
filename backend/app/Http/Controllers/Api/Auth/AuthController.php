@@ -26,8 +26,11 @@ class AuthController extends Controller
         Auth::login($user);
         $request->session()->regenerate();
 
+        $token = $user->createToken('auth')->plainTextToken;
+
         return response()->json([
             'user' => $user->load('roles'),
+            'token' => $token,
         ], 201);
     }
 
@@ -49,8 +52,11 @@ class AuthController extends Controller
             return response()->json(['message' => 'Your account has been banned.'], 403);
         }
 
+        $token = $user->createToken('auth')->plainTextToken;
+
         return response()->json([
             'user' => $user->load('roles'),
+            'token' => $token,
         ]);
     }
 

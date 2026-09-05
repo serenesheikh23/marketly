@@ -6,37 +6,28 @@ console.log('[API] Using backend URL:', API_URL);
 
 const api = axios.create({
   baseURL: API_URL,
-  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
   },
 });
 
-// Auto-send X-XSRF-TOKEN header for Laravel CSRF protection
-// The XSRF-TOKEN cookie is set automatically by Laravel on the response,
-// we read it and include it as the X-XSRF-TOKEN header for requests
+// Auto-send Bearer token from localStorage on every request
 api.interceptors.request.use((config) => {
-  // Skip XSRF for same-origin requests if already handled by credentials
-  // For cross-origin, we need to send the XSRF token
-  const xsrfToken = document.cookie.match(/(?:^|; )XSRF-TOKEN=([^;])/);
-  if (xsrfToken && config.url && (config.url.startsWith('/admin/') || config.url.startsWith('/api/'))) {
-    config.headers['X-XSRF-TOKEN'] = xsrfToken[1] || '';
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });
 
 api.interceptors.response.use(
   (response) => {
-    // Extract XSRF-TOKEN from response headers for future requests
-    const xsrfToken = response.headers['x-xsrf-token'];
-    if (xsrfToken && !document.cookie.includes('XSRF-TOKEN=')) {
-      document.cookie = `XSRF-TOKEN=${xsrfToken}; path=/;`;
-    }
     return response;
   },
   async (error) => {
     if (error.response?.status === 401) {
+      localStorage.removeItem('token');
       localStorage.removeItem('auth_user');
       window.location.href = '/login';
     }

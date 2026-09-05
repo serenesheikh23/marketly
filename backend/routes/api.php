@@ -33,7 +33,7 @@ Route::get('/products/{slug}', [ProductController::class, 'show']);
 Route::post('/webhooks/payments/{gateway}', [WebhookController::class, 'handle']);
 
 // Authenticated user routes
-Route::middleware('auth:web')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::get('/auth/me', [AuthController::class, 'me']);
 
@@ -64,7 +64,7 @@ Route::middleware('auth:web')->group(function () {
 });
 
 // Admin routes
-Route::middleware(['auth:web', 'role:admin|moderator'])->prefix('admin')->group(function () {
+Route::middleware(['auth:sanctum', 'role:admin|moderator'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'stats']);
     Route::get('/health', [AdminDashboardController::class, 'health']);
 
