@@ -58,8 +58,6 @@ export default function Layout() {
                 {(roles.includes('admin') || roles.includes('moderator')) && (
                   <Link to="/admin" className="nav-link text-sm text-accent-400 hidden md:inline">{t('nav.admin')}</Link>
                 )}
-                {/* Added Back to Site */}
-                <Link to="/" className="nav-link text-sm hidden md:inline">{t('nav.backToSite')}</Link>
                 <div className="mx-2 w-px h-5 bg-gray-300 dark:bg-ink-200" />
                 <span className="text-sm text-gray-600 dark:text-ink-600 font-medium tabular-nums">
                   {formatPrice(user?.balance)}
@@ -119,8 +117,6 @@ export default function Layout() {
                   <Link to="/admin" className="nav-link text-accent-400" onClick={() => setMobileOpen(false)}>{t('nav.admin')}</Link>
                 )}
                 <Link to="/cart" className="nav-link" onClick={() => setMobileOpen(false)}>{t('nav.cart')}</Link>
-                {/* Added Back to Site */}
-                <Link to="/" className="nav-link" onClick={() => setMobileOpen(false)}>{t('nav.backToSite')}</Link>
                 <div className="pt-2 pb-1 text-xs text-gray-500 dark:text-ink-500 font-semibold uppercase tracking-wider">Balance: {formatPrice(user?.balance)}</div>
                 <button
                   onClick={handleLogout}
