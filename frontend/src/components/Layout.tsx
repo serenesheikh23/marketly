@@ -43,7 +43,7 @@ export default function Layout() {
     <div className="min-h-screen bg-gray-50 dark:bg-ink flex flex-col overflow-x-hidden">
       {/* ── Header ─────────────────────────────────────────── */}
       <header className="sticky top-0 z-50 border-b border-gray-200 dark:border-ink-200 bg-white/90 dark:bg-ink/90 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center gap-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4 flex-wrap">
 
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 flex-shrink-0">
@@ -51,7 +51,7 @@ export default function Layout() {
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-1 flex-1">
+          <nav className="hidden md:flex items-center gap-2 flex-1 flex-wrap">
             {isAuthenticated ? (
               <>
                 <Link to="/dashboard" className="nav-link text-sm">{t('nav.dashboard')}</Link>

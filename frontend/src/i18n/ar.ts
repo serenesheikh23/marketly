@@ -251,8 +251,16 @@ const ar: import('./en').Translations = {
 
   // Footer
   footer: {
-    copyright: '© {year} marketly',
+    copyright: '© {year} Marketly. جميع الحقوق محفوظة.',
     tagline: 'جميع المنتجات تُسلَّم فوراً. مدفوعات آمنة عبر Binance Pay و USDT.',
+    contact: 'اتصل بنا',
+    legal: 'قانوني',
+    followUs: 'تابعنا',
+    termsOfService: 'شروط الخدمة',
+    privacyPolicy: 'سياسة الخصوصية',
+    refundPolicy: 'سياسة الاسترداد',
+    noSocialLinks: 'لا توجد روابط تواصل اجتماعي بعد.',
+    poweredBy: 'مدعوم من Marketly',
   },
 
   // Toasts / Errors (fallback)

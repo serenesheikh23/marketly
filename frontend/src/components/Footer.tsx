@@ -87,7 +87,7 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <h3 className="text-small font-semibold text-gray-900 dark:text-ink-900 mb-3">Contact</h3>
+            <h3 className="text-small font-semibold text-gray-900 dark:text-ink-900 mb-3">{t('footer.contact')}</h3>
             <ul className="space-y-1.5 text-micro text-gray-600 dark:text-ink-500">
               {company.support_email && (
                 <li>
@@ -103,17 +103,17 @@ export default function Footer() {
 
           {/* Legal */}
           <div>
-            <h3 className="text-small font-semibold text-gray-900 dark:text-ink-900 mb-3">Legal</h3>
+            <h3 className="text-small font-semibold text-gray-900 dark:text-ink-900 mb-3">{t('footer.legal')}</h3>
             <ul className="space-y-1.5 text-micro text-gray-600 dark:text-ink-500">
-              <li><Link to="/legal/terms" className="hover:text-accent-400 transition-colors">Terms of Service</Link></li>
-              <li><Link to="/legal/privacy" className="hover:text-accent-400 transition-colors">Privacy Policy</Link></li>
-              <li><Link to="/legal/refund" className="hover:text-accent-400 transition-colors">Refund Policy</Link></li>
+              <li><Link to="/legal/terms" className="hover:text-accent-400 transition-colors">{t('footer.termsOfService')}</Link></li>
+              <li><Link to="/legal/privacy" className="hover:text-accent-400 transition-colors">{t('footer.privacyPolicy')}</Link></li>
+              <li><Link to="/legal/refund" className="hover:text-accent-400 transition-colors">{t('footer.refundPolicy')}</Link></li>
             </ul>
           </div>
 
           {/* Social */}
           <div>
-            <h3 className="text-small font-semibold text-gray-900 dark:text-ink-900 mb-3">Follow us</h3>
+            <h3 className="text-small font-semibold text-gray-900 dark:text-ink-900 mb-3">{t('footer.followUs')}</h3>
             {activeSocials.length > 0 ? (
               <div className="flex items-center gap-3">
                 {activeSocials.map((link) => (
@@ -132,14 +132,14 @@ export default function Footer() {
                 ))}
               </div>
             ) : (
-              <p className="text-micro text-gray-500 dark:text-ink-500">No social links yet.</p>
+              <p className="text-micro text-gray-500 dark:text-ink-500">{t('footer.noSocialLinks')}</p>
             )}
           </div>
         </div>
 
         <div className="mt-8 pt-6 border-t border-gray-200 dark:border-ink-200 flex flex-col sm:flex-row items-center justify-between gap-2 text-micro text-gray-600 dark:text-ink-500">
-          <span>© {new Date().getFullYear()} {companyName}. All rights reserved.</span>
-          <span>Powered by Marketly</span>
+          <span>{t('footer.copyright', { year: new Date().getFullYear() })}</span>
+          <span>{t('footer.poweredBy')}</span>
         </div>
       </div>
     </footer>
