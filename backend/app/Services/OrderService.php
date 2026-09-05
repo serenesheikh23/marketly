@@ -20,10 +20,11 @@ class OrderService
 {
     /**
      * @param  array<int, array{product_id: int, quantity: int, payload?: array<string, mixed>}>  $items
+     * @param  array<string, mixed>  $meta  user-supplied payment metadata (Binance ID, USDT address, etc.)
      */
-    public function createOrder(User $user, array $items, string $paymentMethod = 'cash_wallet'): Order
+    public function createOrder(User $user, array $items, string $paymentMethod = 'cash_wallet', array $meta = []): Order
     {
-        return DB::transaction(function () use ($user, $items, $paymentMethod) {
+        return DB::transaction(function () use ($user, $items, $paymentMethod, $meta) {
             $subtotal = 0.0;
             $productMap = [];
 
@@ -56,6 +57,13 @@ class OrderService
 
             $status = $isManualOrder ? OrderStatus::Pending : OrderStatus::Completed;
 
+            // Generate payment_ref — wallet gets wallet-xxx; Binance/USDT get a simulated TX id
+            $paymentRef = match ($paymentMethod) {
+                'cash_wallet' => 'wallet-'.uniqid(),
+                'binance_pay', 'usdt' => $this->simulatePaymentRef($paymentMethod, $meta, $total),
+                default => null,
+            };
+
             $order = Order::create([
                 'user_id' => $user->id,
                 'status' => $status,
@@ -63,7 +71,7 @@ class OrderService
                 'fee' => $fee,
                 'total' => $total,
                 'payment_method' => $paymentMethod,
-                'payment_ref' => $paymentMethod !== 'cash_wallet' ? null : 'wallet-'.uniqid(),
+                'payment_ref' => $paymentRef,
             ]);
 
             foreach ($productMap as $productId => $data) {
@@ -94,6 +102,21 @@ class OrderService
                         'method' => 'cash_wallet',
                         'gateway_ref' => $order->payment_ref,
                         'meta' => ['order_id' => $order->id],
+                    ]);
+                } elseif (in_array($paymentMethod, ['binance_pay', 'usdt'])) {
+                    // Simulated payment — no balance deduction, but record the TX for admin visibility
+                    Transaction::create([
+                        'user_id' => $user->id,
+                        'type' => TransactionType::Purchase,
+                        'amount' => $total,
+                        'fee' => 0,
+                        'status' => TransactionStatus::Approved,
+                        'method' => $paymentMethod,
+                        'gateway_ref' => $order->payment_ref,
+                        'meta' => [
+                            'order_id' => $order->id,
+                            'payment_meta' => $meta,
+                        ],
                     ]);
                 }
 
@@ -135,6 +158,28 @@ class OrderService
                 'error' => $e->getMessage(),
             ]);
         }
+    }
+
+    /**
+     * Call the gateway's simulatePayment and return the fake transaction id.
+     *
+     * @param  array<string, mixed>  $meta
+     */
+    private function simulatePaymentRef(string $paymentMethod, array $meta, float $total): string
+    {
+        $gateway = app(PaymentGatewayManager::class)->driver($paymentMethod);
+        $result = $gateway->simulatePayment([...$meta, 'amount' => $total]);
+
+        if (! ($result['success'] ?? false)) {
+            Log::warning('Payment simulation returned failure', [
+                'method' => $paymentMethod,
+                'result' => $result,
+            ]);
+
+            return $paymentMethod.'_failed_'.uniqid();
+        }
+
+        return $result['transaction_id'] ?? $paymentMethod.'_'.uniqid();
     }
 
     public function markRejected(Order $order, ?string $reason = null): void

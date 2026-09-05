@@ -25,6 +25,19 @@ export default function Cart() {
   const [submitting, setSubmitting] = useState(false);
   const [confirming, setConfirming] = useState(false);
 
+  // Payment-specific fields
+  const [binanceId, setBinanceId] = useState('');
+  const [usdtAddress, setUsdtAddress] = useState('');
+  const [usdtTxHash, setUsdtTxHash] = useState('');
+  const [usdtNetwork, setUsdtNetwork] = useState('BEP-20');
+
+  // Reset crypto fields when payment method changes
+  const handleMethodChange = (method: string) => {
+    setPaymentMethod(method);
+    if (method !== 'binance_pay') setBinanceId('');
+    if (method !== 'usdt') { setUsdtAddress(''); setUsdtTxHash(''); }
+  };
+
   const total = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
 
   const handleConfirm = () => {
@@ -34,6 +47,23 @@ export default function Cart() {
 
   const handleCheckout = async () => {
     if (items.length === 0) return;
+
+    // Validate crypto payment fields
+    if (paymentMethod === 'binance_pay' && !binanceId.trim()) {
+      toast.error('Please enter your Binance ID or email.');
+      return;
+    }
+    if (paymentMethod === 'usdt' && (!usdtAddress.trim() || !usdtTxHash.trim())) {
+      toast.error('Please enter your USDT wallet address and transaction hash.');
+      return;
+    }
+
+    const meta: Record<string, string> | undefined = paymentMethod === 'binance_pay'
+      ? { binance_id: binanceId.trim(), binance_email: binanceId.trim() }
+      : paymentMethod === 'usdt'
+        ? { wallet_address: usdtAddress.trim(), tx_hash: usdtTxHash.trim(), network: usdtNetwork }
+        : undefined;
+
     setSubmitting(true);
     try {
       const res = await orderApi.create({
@@ -43,6 +73,7 @@ export default function Cart() {
           payload: i.payload,
         })),
         payment_method: paymentMethod,
+        ...(meta ? { meta } : {}),
       });
       toast.success(t('cart.orderPlaced', { id: res.data.order.id }));
       dispatch(clearCart());
@@ -156,13 +187,71 @@ export default function Cart() {
                     name="payment_method"
                     value={m.value}
                     checked={paymentMethod === m.value}
-                    onChange={(e) => setPaymentMethod(e.target.value)}
+                    onChange={(e) => handleMethodChange(e.target.value)}
                     className="accent-accent-500"
                   />
                   <span className="text-sm text-gray-800 dark:text-ink-800">{m.label}</span>
                 </label>
               ))}
             </div>
+
+            {/* Binance Pay fields */}
+            {paymentMethod === 'binance_pay' && (
+              <div className="space-y-2 border-t border-ink-200 pt-4">
+                <label className="label">Your Binance ID or Account Email</label>
+                <input
+                  type="text"
+                  className="input"
+                  placeholder="Binance ID or email@example.com"
+                  value={binanceId}
+                  onChange={(e) => setBinanceId(e.target.value)}
+                />
+                <p className="text-micro text-gray-500 dark:text-ink-500">
+                  Enter the Binance Pay ID or email associated with your Binance account.
+                </p>
+              </div>
+            )}
+
+            {/* USDT fields */}
+            {paymentMethod === 'usdt' && (
+              <div className="space-y-3 border-t border-ink-200 pt-4">
+                <div>
+                  <label className="label">Your USDT Wallet Address (BEP-20)</label>
+                  <input
+                    type="text"
+                    className="input"
+                    placeholder="0x..."
+                    value={usdtAddress}
+                    onChange={(e) => setUsdtAddress(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="label">Transaction Hash (TX Hash)</label>
+                  <input
+                    type="text"
+                    className="input"
+                    placeholder="0x..."
+                    value={usdtTxHash}
+                    onChange={(e) => setUsdtTxHash(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="label">Network</label>
+                  <select
+                    className="input"
+                    value={usdtNetwork}
+                    onChange={(e) => setUsdtNetwork(e.target.value)}
+                  >
+                    <option value="BEP-20">BEP-20 (BNB Smart Chain)</option>
+                    <option value="TRC-20">TRC-20 (Tron)</option>
+                    <option value="ERC-20">ERC-20 (Ethereum)</option>
+                  </select>
+                </div>
+                <p className="text-micro text-gray-500 dark:text-ink-500">
+                  Enter the wallet address you sent USDT from and the transaction hash from your blockchain explorer.
+                </p>
+              </div>
+            )}
 
             <div className="border-t border-ink-200 pt-4 space-y-1">
               <div className="flex justify-between text-small text-gray-600 dark:text-ink-500">

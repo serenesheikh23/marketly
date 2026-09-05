@@ -69,4 +69,28 @@ class BinancePayGateway implements PaymentGatewayInterface
             'error' => null,
         ];
     }
+
+    /**
+     * Demo-mode simulator: returns a fake successful Binance Pay transaction.
+     * No balance deduction, no external API call.
+     */
+    public function simulatePayment(array $meta = []): array
+    {
+        $txid = 'binance_'.strtoupper(Str::random(12));
+
+        Log::info('Binance Pay simulated payment', [
+            'transaction_id' => $txid,
+            'account' => $meta['binance_id'] ?? $meta['binance_email'] ?? null,
+            'amount' => $meta['amount'] ?? null,
+        ]);
+
+        return [
+            'success' => true,
+            'transaction_id' => $txid,
+            'status' => 'SUCCESS',
+            'method' => 'binance_pay',
+            'account' => $meta['binance_id'] ?? $meta['binance_email'] ?? null,
+            'error' => null,
+        ];
+    }
 }

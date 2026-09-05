@@ -35,4 +35,15 @@ class CashWalletGateway implements PaymentGatewayInterface
             'error' => 'Cash wallet has no webhook; admin must approve manually.',
         ];
     }
+
+    public function simulatePayment(array $meta = []): array
+    {
+        return [
+            'success' => false,
+            'transaction_id' => null,
+            'status' => 'not_applicable',
+            'method' => 'cash_wallet',
+            'error' => 'Cash wallet does not use simulation — balance is debited directly.',
+        ];
+    }
 }

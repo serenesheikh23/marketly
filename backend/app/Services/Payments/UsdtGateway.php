@@ -86,4 +86,30 @@ class UsdtGateway implements PaymentGatewayInterface
             'error' => null,
         ];
     }
+
+    /**
+     * Demo-mode simulator: returns a fake successful USDT transaction.
+     * No balance deduction, no external API call.
+     */
+    public function simulatePayment(array $meta = []): array
+    {
+        $txid = 'usdt_'.strtoupper(Str::random(16));
+
+        Log::info('USDT simulated payment', [
+            'transaction_id' => $txid,
+            'wallet_address' => $meta['wallet_address'] ?? null,
+            'network' => $meta['network'] ?? 'BEP-20',
+            'amount' => $meta['amount'] ?? null,
+        ]);
+
+        return [
+            'success' => true,
+            'transaction_id' => $txid,
+            'status' => 'SUCCESS',
+            'method' => 'usdt',
+            'wallet_address' => $meta['wallet_address'] ?? null,
+            'network' => $meta['network'] ?? 'BEP-20',
+            'error' => null,
+        ];
+    }
 }
