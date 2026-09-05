@@ -17,12 +17,19 @@ class Setting extends Model
     ];
 
     public const GROUP_VIP = 'vip';
+
     public const GROUP_PAYMENT = 'payment';
+
     public const GROUP_GENERAL = 'general';
+
+    public const GROUP_COMPANY = 'company';
+
+    public const GROUP_LEGAL = 'legal';
 
     public static function get(string $key, mixed $default = null): mixed
     {
         $setting = static::where('key', $key)->first();
+
         return $setting ? $setting->castValue() : $default;
     }
 

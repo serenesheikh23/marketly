@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAppDispatch, logout } from '@/store';
-import { authApi } from '@/api/client';
+import { authApi, adminOrderApi } from '@/api/client';
 import Logo from './Logo';
 import PageTransition from './PageTransition';
 import { useI18n } from '@/i18n';
@@ -75,11 +75,18 @@ export default function AdminLayout() {
   const location = useLocation();
   const { t } = useI18n();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [pendingCount, setPendingCount] = useState(0);
+
+  useEffect(() => {
+    adminOrderApi.pendingManualCount()
+      .then((r) => setPendingCount(r.data.count ?? 0))
+      .catch(() => {});
+  }, []);
 
   const handleLogout = async () => {
-    await authApi.logout();
+    try { await authApi.logout(); } catch (_) { /* ignore */ }
     dispatch(logout());
-    navigate('/');
+    navigate('/login');
   };
 
   const closeSidebar = () => setSidebarOpen(false);
@@ -144,6 +151,7 @@ export default function AdminLayout() {
             const isActive = item.exact
               ? location.pathname === item.to
               : location.pathname.startsWith(item.to);
+            const showBadge = item.to === '/admin/orders' && pendingCount > 0;
             return (
               <Link
                 key={item.to}
@@ -154,7 +162,12 @@ export default function AdminLayout() {
                 <span className={isActive ? 'text-accent-500 dark:text-accent-400' : 'text-gray-500 dark:text-ink-500'}>
                   {item.icon}
                 </span>
-                {t(item.key)}
+                <span className="flex-1">{t(item.key)}</span>
+                {showBadge && (
+                  <span className="ml-auto inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-bold text-white bg-accent-500 rounded-full">
+                    {pendingCount > 99 ? '99+' : pendingCount}
+                  </span>
+                )}
               </Link>
             );
           })}

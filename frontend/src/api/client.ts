@@ -118,6 +118,7 @@ export const adminCategoryApi = {
 export const adminOrderApi = {
   list: (params?: Record<string, string>) => api.get('/admin/orders', { params }),
   pendingManual: () => api.get('/admin/orders/pending-manual'),
+  pendingManualCount: () => api.get('/admin/orders/pending-manual/count'),
   updateStatus: (id: number, data: { status: string; notes?: string }) =>
     api.patch(`/admin/orders/${id}/status`, data),
 };
@@ -142,6 +143,15 @@ export const adminSettingsApi = {
   update: (data: { key: string; value: string; type?: string }) => api.post('/admin/settings', data),
   bulkUpdate: (items: Array<{ key: string; value: string; type?: string }>) =>
     api.post('/admin/settings/bulk', { items }),
+  updateCompany: (data: Record<string, string>) => api.put('/admin/settings/company', data),
+  updateLegal: (page: string, data: { content: string }) =>
+    api.put(`/admin/settings/legal/${page}`, data),
+};
+
+// Public settings
+export const settingsApi = {
+  company: () => api.get('/settings/company'),
+  legal: (page: string) => api.get(`/settings/legal/${page}`),
 };
 
 // Admin — Dashboard
