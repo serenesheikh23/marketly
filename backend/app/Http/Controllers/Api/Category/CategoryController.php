@@ -37,13 +37,18 @@ class CategoryController extends Controller
 
     public function formSchema(string $slug): JsonResponse
     {
-        $category = Category::where('slug', $slug)
-            ->with('manualOrderFields')
-            ->firstOrFail();
+        $category = Category::where('slug', $slug)->firstOrFail();
+
+        // FIX: Pull from the form_schema column, not the manualOrderFields relationship.
+        // If it's a JSON string (old data), decode it. If it's an array, use it directly.
+        $fields = $category->form_schema;
+        if (is_string($fields)) {
+            $fields = json_decode($fields, true);
+        }
 
         return response()->json([
             'category' => $category,
-            'fields' => $category->manualOrderFields->sortBy('sort_order')->values(),
+            'fields' => $fields ?? [],
         ]);
     }
 }
