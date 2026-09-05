@@ -51,6 +51,8 @@ export default function AdminSettings() {
   const [legalContent, setLegalContent] = useState<Record<string, string>>({});
   const [legalSaving, setLegalSaving] = useState<string | null>(null);
 
+  // legalContent shape: { terms_en: '', terms_ar: '', privacy_en: '', privacy_ar: '', refund_en: '', refund_ar: '' }
+
   const { t } = useI18n();
 
   useEffect(() => {
@@ -61,8 +63,11 @@ export default function AdminSettings() {
       .then((r) => setCompany(r.data.settings ?? {}))
       .catch(console.error);
     LEGAL_PAGES.forEach((p) => {
-      settingsApi.legal(p.slug)
-        .then((r) => setLegalContent((prev) => ({ ...prev, [p.slug]: r.data.content ?? '' })))
+      settingsApi.legal(p.slug, 'en')
+        .then((r) => setLegalContent((prev) => ({ ...prev, [`${p.slug}_en`]: r.data.content ?? '' })))
+        .catch(console.error);
+      settingsApi.legal(p.slug, 'ar')
+        .then((r) => setLegalContent((prev) => ({ ...prev, [`${p.slug}_ar`]: r.data.content ?? '' })))
         .catch(console.error);
     });
   }, []);
@@ -90,7 +95,10 @@ export default function AdminSettings() {
   const saveLegal = async (slug: string) => {
     setLegalSaving(slug);
     try {
-      await adminSettingsApi.updateLegal(slug, { content: legalContent[slug] ?? '' });
+      await adminSettingsApi.updateLegal(slug, {
+        content_en: legalContent[`${slug}_en`] ?? '',
+        content_ar: legalContent[`${slug}_ar`] ?? '',
+      });
       toast.success(t('admin.legalPageUpdated'));
     } catch (err: any) { toast.error(err.response?.data?.message ?? t('common.failed')); }
     finally { setLegalSaving(null); }
@@ -163,16 +171,31 @@ export default function AdminSettings() {
         <h2 className="text-h3 text-gray-900 dark:text-ink-900 mb-5">{t('admin.legalPages')}</h2>
         <div className="space-y-6">
           {LEGAL_PAGES.map((p) => (
-            <div key={p.slug} className="space-y-2">
+            <div key={p.slug} className="space-y-4">
               <label className="text-small font-medium text-gray-800 dark:text-ink-800">
                 {t(p.labelKey)}
               </label>
-              <textarea
-                className="input min-h-[180px] font-mono text-small"
-                value={legalContent[p.slug] ?? ''}
-                onChange={(e) => setLegalContent((prev) => ({ ...prev, [p.slug]: e.target.value }))}
-                placeholder="Please update this content in the admin panel."
-              />
+              {/* English */}
+              <div className="space-y-1">
+                <p className="text-micro text-gray-500 dark:text-ink-500 font-medium">English</p>
+                <textarea
+                  className="input min-h-[120px] font-mono text-small"
+                  value={legalContent[`${p.slug}_en`] ?? ''}
+                  onChange={(e) => setLegalContent((prev) => ({ ...prev, [`${p.slug}_en`]: e.target.value }))}
+                  placeholder="Enter English content..."
+                />
+              </div>
+              {/* Arabic */}
+              <div className="space-y-1">
+                <p className="text-micro text-gray-500 dark:text-ink-500 font-medium" dir="rtl">المحتوى بالعربية</p>
+                <textarea
+                  className="input min-h-[120px] font-mono text-small text-right"
+                  dir="rtl"
+                  value={legalContent[`${p.slug}_ar`] ?? ''}
+                  onChange={(e) => setLegalContent((prev) => ({ ...prev, [`${p.slug}_ar`]: e.target.value }))}
+                  placeholder="أدخل المحتوى بالعربية..."
+                />
+              </div>
               <div className="flex justify-end">
                 <Button
                   variant="secondary"
