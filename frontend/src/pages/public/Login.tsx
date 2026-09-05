@@ -47,12 +47,13 @@ export default function Login() {
   return (
     <PageTransition className="min-h-screen flex flex-col lg:flex-row-reverse">
       {/* Right: floating icons — visible on all screens */}
-      <div className="relative w-full lg:w-1/2 flex items-center justify-center px-6 py-12 lg:px-16 lg:py-20 mt-8 lg:mt-0">
+      <div className="relative w-full lg:w-1/2 flex items-center justify-center px-6 py-4 lg:px-16 lg:py-20 mt-4 lg:mt-0">
         {/* Full-width aurora background */}
         <div className="absolute inset-0 opacity-40 dark:opacity-40 pointer-events-none">
           <HeroArt variant="aurora" className="w-full h-full" />
         </div>
-        <div className="relative w-full h-64 lg:h-80 flex-shrink-0">
+        {/* Reduced height container for mobile (h-32) - full size on desktop (lg:h-80) */}
+        <div className="relative w-full h-32 lg:h-80 flex-shrink-0">
           <motion.div
             animate={{ y: [0, -15, 0], x: [0, 5, 0], rotate: [0, 8, 0] }}
             transition={{ duration: 5, delay: 0, repeat: Infinity, ease: 'easeInOut' }}
