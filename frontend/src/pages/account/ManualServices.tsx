@@ -6,6 +6,7 @@ import Button from '@/components/Button';
 import PageTransition from '@/components/PageTransition';
 import { useI18n } from '@/i18n';
 import { localized } from '@/utils/localize';
+import Breadcrumbs from '@/components/Breadcrumbs';
 
 const CATEGORY_ICON: Record<string, string> = {
   gamepad: '🎮', message: '💬', 'credit-card': '💳', wallet: '💰',
@@ -76,8 +77,14 @@ export default function ManualServices() {
   return (
     <div className="max-w-7xl mx-auto w-full space-y-8">
       <PageTransition className="space-y-2">
-        <p className="eyebrow mb-2">{t('manualServices.title')}</p>
-        <h1 className="text-h1 text-gray-900 dark:text-ink-900">{t('manualServices.title')}</h1>
+        <Breadcrumbs
+          items={[
+            { label: t('nav.home'), link: '/' },
+            { label: t('nav.dashboard'), link: '/dashboard' },
+            { label: t('manualServices.title') },
+          ]}
+        />
+        <h1 className="text-h1 text-gray-900 dark:text-ink-900 mt-4">{t('manualServices.title')}</h1>
         <p className="text-body text-gray-600 dark:text-ink-600 mt-2">
           {t('manualServices.description')}
         </p>

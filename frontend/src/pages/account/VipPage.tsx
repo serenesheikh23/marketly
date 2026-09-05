@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 import Button from '@/components/Button';
 import PageTransition from '@/components/PageTransition';
 import { useI18n } from '@/i18n';
+import Breadcrumbs from '@/components/Breadcrumbs';
 
 const TIER_ICONS: Record<string, ReactNode> = {
   none: (
@@ -90,8 +91,14 @@ export default function VipPage() {
 
   return (
     <PageTransition className="max-w-4xl mx-auto w-full space-y-8">
-      <div>
-        <p className="eyebrow mb-2">{t('vip.title')}</p>
+      <Breadcrumbs
+        items={[
+          { label: t('nav.home'), link: '/' },
+          { label: t('nav.dashboard'), link: '/dashboard' },
+          { label: t('vip.title') },
+        ]}
+      />
+      <div className="mt-4">
         <h1 className="text-h1 text-gray-900 dark:text-ink-900 text-center">{t('vip.title')}</h1>
       </div>
 
