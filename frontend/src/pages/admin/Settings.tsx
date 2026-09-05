@@ -82,7 +82,7 @@ export default function AdminSettings() {
     setCompanySaving(true);
     try {
       await adminSettingsApi.updateCompany(company);
-      toast.success('Company info updated.');
+      toast.success(t('admin.companyInfoUpdated'));
     } catch (err: any) { toast.error(err.response?.data?.message ?? t('common.failed')); }
     finally { setCompanySaving(false); }
   };
@@ -91,7 +91,7 @@ export default function AdminSettings() {
     setLegalSaving(slug);
     try {
       await adminSettingsApi.updateLegal(slug, { content: legalContent[slug] ?? '' });
-      toast.success('Legal page updated.');
+      toast.success(t('admin.legalPageUpdated'));
     } catch (err: any) { toast.error(err.response?.data?.message ?? t('common.failed')); }
     finally { setLegalSaving(null); }
   };
