@@ -60,7 +60,7 @@ export default function AdminCategories() {
 
   const openEdit = (cat: any) => { setEditCategory(cat); setShowModal(true); };
   const openNew = () => { setEditCategory(undefined); setShowModal(true); };
-  const onSaved = () => { toast.success(editCategory ? t('admin.categoryUpdated') : t('admin.categoryCreated')); fetch(); };
+  const onSaved = () => { toast.success(editCategory ? t('admin.categoryUpdated') : t('admin.newCategoryCreated')); fetch(); };
 
   return (
     <PageTransition className="space-y-8">
