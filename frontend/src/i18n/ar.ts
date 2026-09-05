@@ -260,6 +260,8 @@ const ar: import('./en').Translations = {
     addField: 'إضافة حقل',
     newCategoryCreated: 'تم إنشاء الفئة.',
     fieldLabel: 'عنوان الحقل',
+    fieldLabelEn: 'التسمية (EN)',
+    fieldLabelAr: 'التسمية (AR)',
     fieldType: 'نوع الحقل',
     fieldRequired: 'مطلوب',
     fieldOptions: 'الخيارات',
