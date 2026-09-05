@@ -23,6 +23,11 @@ export default function Register() {
     setLoading(true);
     try {
       const res = await authApi.register(form);
+      const token = res.data.token;
+
+      // Save token to localStorage for API requests
+      localStorage.setItem('token', token);
+
       dispatch(setUser(res.data.user));
       toast.success('Account created!');
       navigate('/dashboard');

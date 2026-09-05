@@ -42,6 +42,7 @@ const authSlice = createSlice({
       state.user = null;
       state.isAuthenticated = false;
       localStorage.removeItem('auth_user');
+      localStorage.removeItem('token');
     },
     updateBalance(state, action: PayloadAction<string>) {
       if (state.user) {
