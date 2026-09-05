@@ -186,11 +186,7 @@ export default function Home() {
                   />
                 ) : (
                   <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-gray-100 dark:bg-ink-100 flex items-center justify-center">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 text-gray-300 dark:text-ink-300" aria-hidden="true">
-                      <rect x="3" y="4" width="18" height="16" rx="2" />
-                      <circle cx="9" cy="10" r="1.5" />
-                      <path d="m21 16-5-5-9 9" />
-                    </svg>
+                    <span className="text-2xl" aria-hidden="true">{CATEGORY_ICON[cat.icon] ?? '📦'}</span>
                   </div>
                 )}
                 <h3 className="text-sm font-semibold text-gray-900 dark:text-ink-900 group-hover:text-accent-400 transition-colors">
