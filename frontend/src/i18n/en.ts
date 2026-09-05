@@ -30,6 +30,12 @@ const en = {
     adminPanel: 'Admin Panel',
   },
 
+  // Products page
+  products: {
+    searchPlaceholder: 'Search products…',
+    noProducts: 'No products available.',
+  },
+
   // Hero / Home
   home: {
     digitalMarketplace: 'Digital Marketplace',

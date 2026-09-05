@@ -5,6 +5,7 @@ import EmptyState from '@/components/EmptyState';
 import PageTransition from '@/components/PageTransition';
 import { formatPrice, formatDateTime } from '@/utils/format';
 import { useI18n } from '@/i18n';
+import Breadcrumbs from '@/components/Breadcrumbs';
 
 export default function Orders() {
   const { t } = useI18n();
@@ -28,7 +29,14 @@ export default function Orders() {
 
   return (
     <PageTransition className="max-w-4xl mx-auto w-full space-y-6">
-      <h1 className="text-h1 text-gray-900 dark:text-ink-900 text-center">{t('orders.title')}</h1>
+      <Breadcrumbs
+        items={[
+          { label: t('nav.home'), link: '/' },
+          { label: t('nav.dashboard'), link: '/dashboard' },
+          { label: t('orders.title') },
+        ]}
+      />
+      <h1 className="text-h1 text-gray-900 dark:text-ink-900 text-center mt-4">{t('orders.title')}</h1>
 
       {orders.length === 0 ? (
         <EmptyState

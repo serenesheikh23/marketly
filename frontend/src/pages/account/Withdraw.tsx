@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import Button from '@/components/Button';
 import PageTransition from '@/components/PageTransition';
 import { useI18n } from '@/i18n';
+import Breadcrumbs from '@/components/Breadcrumbs';
 
 export default function Withdraw() {
   const { t } = useI18n();
@@ -30,7 +31,14 @@ export default function Withdraw() {
   return (
     <div className="max-w-xl mx-auto w-full flex flex-col items-center">
       <PageTransition className="w-full">
-        <h1 className="text-h1 text-gray-900 dark:text-ink-900 mb-8 text-center">{t('withdraw.title')}</h1>
+        <Breadcrumbs
+          items={[
+            { label: t('nav.home'), link: '/' },
+            { label: t('nav.dashboard'), link: '/dashboard' },
+            { label: t('withdraw.title') },
+          ]}
+        />
+        <h1 className="text-h1 text-gray-900 dark:text-ink-900 mb-8 text-center mt-4">{t('withdraw.title')}</h1>
 
         <motion.div
           className="card-pad space-y-6"

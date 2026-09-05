@@ -198,6 +198,18 @@ export default function AdminLayout() {
 
         {/* Bottom actions */}
         <div className="px-3 py-4 border-t border-gray-200 dark:border-ink-200 space-y-0.5">
+          {/* My Dashboard — switch between admin panel and user dashboard */}
+          <Link
+            to="/dashboard"
+            className="nav-link text-sm"
+            onClick={closeSidebar}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-500 dark:text-ink-500">
+              <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+              <rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>
+            </svg>
+            {t('nav.dashboard')}
+          </Link>
           {/* FIXED: Back to site now goes to homepage (/) instead of dashboard */}
           <Link
             to="/"
