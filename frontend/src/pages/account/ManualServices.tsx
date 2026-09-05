@@ -21,7 +21,6 @@ export default function ManualServices() {
   const [formData, setFormData] = useState<Record<string, string>>({});
   const [quantity, setQuantity] = useState(1);
   const [submitting, setSubmitting] = useState(false);
-  // *NEW* Loading state to prevent flashing
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -35,18 +34,21 @@ export default function ManualServices() {
     setFields([]);
     setFormData({});
     setQuantity(1);
-    // *NEW* Set loading to true immediately
     setIsLoading(true); 
 
+    // Fetch BOTH the form schema AND the products before showing the form
     try {
-      // Fetch products
-      const pr = await productApi.list({ category_id: cat.id, type: 'manual' });
-      const products = pr.data.data ?? pr.data.products ?? [];
+      const [schemaRes, productRes] = await Promise.all([
+        categoryApi.formSchema(cat.slug).catch(() => ({ data: { fields: [] } })),
+        productApi.list({ category_id: cat.id, type: 'manual' }).catch(() => ({ data: { data: [], products: [] } })),
+      ]);
+
+      const schemaFields = schemaRes.data.fields ?? [];
+      const products = productRes.data.data ?? productRes.data.products ?? [];
+
+      setFields(schemaFields);
       setSelected((prev: any) => ({ ...(prev ?? cat), products }));
-    } catch {
-      setSelected((prev: any) => ({ ...(prev ?? cat), products: [] }));
     } finally {
-      // *NEW* Set loading to false AFTER the API finishes
       setIsLoading(false);
     }
   };
@@ -123,7 +125,6 @@ export default function ManualServices() {
               )}
             </div>
 
-            {/* *NEW* Check loading first! */}
             {isLoading ? (
               <div className="text-center py-6">
                 <p className="text-gray-500 dark:text-ink-500">{t('common.loading')}</p>
