@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import { Outlet, Link, useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch, logout } from '@/store';
 import { authApi } from '@/api/client';
@@ -18,19 +18,6 @@ export default function Layout() {
   const roles = (user as unknown as { roles?: Array<{ name: string }> })?.roles?.map((r) => r.name) ?? [];
 
   const [mobileOpen, setMobileOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
-
-  // Close menu on outside click
-  useEffect(() => {
-    if (!mobileOpen) return;
-    const handler = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setMobileOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, [mobileOpen]);
 
   const handleLogout = async () => {
     try { await authApi.logout(); } catch (_) { /* ignore */ }
@@ -39,13 +26,13 @@ export default function Layout() {
     navigate('/login');
   };
 
+  const closeMenu = () => setMobileOpen(false);
+  const toggleMenu = () => setMobileOpen((v) => !v);
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-ink flex flex-col overflow-x-hidden">
-      {/* ── Header ─────────────────────────────────────────── */}
-      <header className="sticky top-0 z-50 border-b border-gray-200 dark:border-ink-200 bg-white/90 dark:bg-ink/90 backdrop-blur-md">
+      <header className="sticky top-0 z-[100] border-b border-gray-200 dark:border-ink-200 bg-white/90 dark:bg-ink/90 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-2 flex-wrap">
-
-          {/* Logo */}
           <Link to="/" className="flex items-center gap-2 flex-shrink-0">
             <Logo size="sm" showText />
           </Link>
@@ -78,16 +65,13 @@ export default function Layout() {
             </div>
           </nav>
 
-          {/* Mobile right side: only toggles + hamburger */}
+          {/* Mobile right side: toggles + hamburger */}
           <div className="ms-auto flex items-center gap-1 md:hidden">
             <LanguageSwitcher />
             <ThemeToggle />
             <button
               type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                setMobileOpen((v) => !v);
-              }}
+              onClick={toggleMenu}
               className="relative z-50 p-2 rounded-md text-gray-700 dark:text-ink-700 hover:bg-gray-100 dark:hover:bg-ink-100 transition-colors"
               aria-label={mobileOpen ? 'Close menu' : 'Toggle menu'}
               aria-expanded={mobileOpen}
@@ -106,47 +90,47 @@ export default function Layout() {
         </div>
       </header>
 
-      {/* Mobile slide-down menu */}
+      {/* Mobile menu overlay (mimics sidebar) */}
       {mobileOpen && (
-        <div
-          ref={menuRef}
-          className="md:hidden z-40 bg-white dark:bg-ink-50 border-b border-gray-200 dark:border-ink-200 shadow-lg"
-        >
-          <nav className="px-4 py-3 space-y-1">
-            {isAuthenticated ? (
-              <>
-                <Link to="/dashboard" className="nav-link" onClick={() => setMobileOpen(false)}>{t('nav.dashboard')}</Link>
-                {(roles.includes('admin') || roles.includes('moderator')) && (
-                  <Link to="/admin" className="nav-link text-accent-400" onClick={() => setMobileOpen(false)}>{t('nav.admin')}</Link>
-                )}
-                <Link to="/cart" className="nav-link" onClick={() => setMobileOpen(false)}>{t('nav.cart')}</Link>
-                <div className="pt-2 pb-1 text-xs text-gray-500 dark:text-ink-500 font-semibold uppercase tracking-wider">Balance: {formatPrice(user?.balance)}</div>
-                <button
-                  onClick={handleLogout}
-                  className="nav-link text-status-rejected/80 hover:text-status-rejected hover:bg-status-rejected/10 w-full text-left"
-                >
-                  {t('nav.signOut')}
-                </button>
-              </>
-            ) : (
-              <>
-                <Link to="/products" className="nav-link" onClick={() => setMobileOpen(false)}>{t('nav.products')}</Link>
-                <Link to="/login" className="nav-link" onClick={() => setMobileOpen(false)}>{t('nav.signIn')}</Link>
-                <Link to="/register" className="nav-link" onClick={() => setMobileOpen(false)}>{t('nav.getStarted')}</Link>
-              </>
-            )}
-          </nav>
-        </div>
+        <>
+          <div
+            className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+            onClick={closeMenu}
+          />
+          <div
+            className="md:hidden z-50 bg-white dark:bg-ink-50 border-b border-gray-200 dark:border-ink-200 shadow-lg"
+          >
+            <nav className="px-4 py-3 space-y-1">
+              {isAuthenticated ? (
+                <>
+                  <Link to="/dashboard" className="nav-link" onClick={closeMenu}>{t('nav.dashboard')}</Link>
+                  {(roles.includes('admin') || roles.includes('moderator')) && (
+                    <Link to="/admin" className="nav-link text-accent-400" onClick={closeMenu}>{t('nav.admin')}</Link>
+                  )}
+                  <Link to="/cart" className="nav-link" onClick={closeMenu}>{t('nav.cart')}</Link>
+                  <div className="pt-2 pb-1 text-xs text-gray-500 dark:text-ink-500 font-semibold uppercase tracking-wider">Balance: {formatPrice(user?.balance)}</div>
+                  <button onClick={handleLogout} className="nav-link text-status-rejected/80 hover:text-status-rejected hover:bg-status-rejected/10 w-full text-left">
+                    {t('nav.signOut')}
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link to="/products" className="nav-link" onClick={closeMenu}>{t('nav.products')}</Link>
+                  <Link to="/login" className="nav-link" onClick={closeMenu}>{t('nav.signIn')}</Link>
+                  <Link to="/register" className="nav-link" onClick={closeMenu}>{t('nav.getStarted')}</Link>
+                </>
+              )}
+            </nav>
+          </div>
+        </>
       )}
 
-      {/* ── Main ───────────────────────────────────────────── */}
       <main className="flex-1">
         <PageTransition className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
           <Outlet />
         </PageTransition>
       </main>
 
-      {/* ── Footer ─────────────────────────────────────────── */}
       <Footer />
     </div>
   );
