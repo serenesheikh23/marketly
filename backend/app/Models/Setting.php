@@ -35,6 +35,11 @@ class Setting extends Model
 
     public static function set(string $key, mixed $value, string $group = 'general'): void
     {
+        // Fix: Don't save empty strings or null values (prevents server error)
+        if (is_null($value) || trim((string) $value) === '') {
+            return;
+        }
+
         static::updateOrCreate(
             ['key' => $key],
             ['value' => $value, 'group' => $group]
