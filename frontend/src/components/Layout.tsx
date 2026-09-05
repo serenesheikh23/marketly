@@ -84,7 +84,10 @@ export default function Layout() {
             <ThemeToggle />
             <button
               type="button"
-              onClick={() => setMobileOpen((v) => !v)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setMobileOpen((v) => !v);
+              }}
               className="relative z-50 p-2 rounded-md text-gray-700 dark:text-ink-700 hover:bg-gray-100 dark:hover:bg-ink-100 transition-colors"
               aria-label={mobileOpen ? 'Close menu' : 'Toggle menu'}
               aria-expanded={mobileOpen}
