@@ -144,7 +144,7 @@ export const adminSettingsApi = {
   bulkUpdate: (items: Array<{ key: string; value: string; type?: string }>) =>
     api.post('/admin/settings/bulk', { items }),
   updateCompany: (data: Record<string, string>) => api.put('/admin/settings/company', data),
-  updateLegal: (page: string, data: { content: string }) =>
+  updateLegal: (page: string, data: { content_en?: string; content_ar?: string }) =>
     api.put(`/admin/settings/legal/${page}`, data),
 };
 
