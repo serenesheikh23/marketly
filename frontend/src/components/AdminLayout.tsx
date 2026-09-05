@@ -105,7 +105,7 @@ export default function AdminLayout() {
       {/* ── Sidebar ── */}
       <aside
         className={`
-          fixed inset-y-0 start-0 z-50 w-64 flex flex-col
+          fixed inset-y-0 start-0 z-40 w-64 flex flex-col
           bg-white dark:bg-ink-50
           border border-gray-200 dark:border-ink-200
           ltr:border-r rtl:border-l
@@ -130,8 +130,9 @@ export default function AdminLayout() {
           </Link>
           {/* Close button — inside sidebar, mobile only */}
           <button
+            type="button"
             onClick={closeSidebar}
-            className="lg:hidden p-1.5 rounded-md text-gray-600 dark:text-ink-500 hover:text-gray-900 dark:hover:text-ink-900 hover:bg-gray-100 dark:hover:bg-ink-100 transition-colors"
+            className="lg:hidden relative z-50 p-1.5 rounded-md text-gray-600 dark:text-ink-500 hover:text-gray-900 dark:hover:text-ink-900 hover:bg-gray-100 dark:hover:bg-ink-100 transition-colors"
             aria-label="Close menu"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

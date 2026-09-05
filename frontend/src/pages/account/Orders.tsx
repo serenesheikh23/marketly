@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { orderApi } from '@/api/client';
 import EmptyState from '@/components/EmptyState';
 import PageTransition from '@/components/PageTransition';
-import { formatPrice } from '@/utils/format';
+import { formatPrice, formatDateTime } from '@/utils/format';
 import { useI18n } from '@/i18n';
 
 export default function Orders() {
@@ -58,7 +58,7 @@ export default function Orders() {
                     {t('orders.orderNumber')}{order.id}
                   </h3>
                   <p className="text-small text-gray-600 dark:text-ink-500">
-                    {new Date(order.created_at).toLocaleString()}
+                    {formatDateTime(order.created_at)}
                   </p>
                 </div>
                 <div className="text-right">
