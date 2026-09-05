@@ -1,117 +1,108 @@
 # Marketly — Digital Marketplace & Services Platform
 
-A production-grade digital marketplace with VIP tiers, manual services, and crypto payments.
-Built as a portfolio-ready full-stack reference app: Laravel 11 + React 19 + TypeScript,
-deployed on Railway.
+A production-grade digital marketplace with VIP tiers, manual services, and crypto
+payments. A full-stack reference app combining a Laravel 13 API with a React 19 + TypeScript
+single-page application, deployed end-to-end on Railway.
 
-> **Live demo:** [https://eliasproject-production.up.railway.app](https://eliasproject-production.up.railway.app)
+> **Live demo:** [https://marketly-frontend-production.up.railway.app](https://marketly-frontend-production.up.railway.app)
 
 ---
 
-## Why this project exists
+## Overview
 
-A single repo that demonstrates the kind of choices a senior full-stack engineer makes every day:
-eager-loaded queries to prevent N+1, a thin caching layer, role-gated admin endpoints,
-idempotent webhooks, and a frontend that lazy-loads each route and keeps state in Redux with
-localStorage persistence. It's a complete loop: a customer can register, browse, deposit
-via USDT, buy a digital product, and get an auto-delivered order — and an admin can manage
-every step from a dashboard.
+Marketly is a complete commerce loop in a single repository. A customer can register, browse
+a multi-category catalog, deposit funds via USDT or Binance Pay, buy a digital product, and
+receive either instant auto-delivery or a manually-fulfilled service order. A separate admin
+surface manages users, products, orders, deposits, withdrawals, and platform settings —
+all behind a role-gated API.
+
+The codebase demonstrates the daily choices a senior full-stack engineer makes: eager-loaded
+queries to prevent N+1, a thin caching layer, idempotent payment webhooks, signed Laravel
+Reverb broadcasts, a Redux store with localStorage persistence, and a bilingual
+(English / Arabic, full RTL) frontend that lazy-loads each route.
+
+---
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| **Backend** | Laravel 11, PHP 8.3 |
-| **Frontend** | React 19, TypeScript, Vite 5, Tailwind CSS |
-| **State** | Redux Toolkit, RTK |
-| **Database** | MySQL 8.4 |
-| **Cache / Queue** | Redis 7.2 |
-| **Auth** | Laravel Sanctum (SPA) |
-| **Real-time** | Laravel Reverb + Echo |
-| **RBAC** | Spatie Laravel Permission |
-| **Image storage** | Cloudinary (CDN) |
-| **Payments** | Binance Pay, USDT (BEP-20), Cash Wallet |
-| **Hosting** | Railway |
+### Backend
+- **PHP 8.3** on **Laravel 13**
+- **Eloquent ORM** with API Resources for stable response shapes
+- **Laravel Sanctum 4** (SPA token authentication)
+- **Spatie Laravel Permission 8** (RBAC: `admin`, `moderator`, `user`)
+- **MySQL 8.4** as primary datastore
+- **Redis 7** via **Predis 3.6** (cache + queue + broadcasting)
+- **Laravel Reverb 1.11** (real-time WebSockets) with **Laravel Echo** + **Pusher JS** on the client
+- **Cloudinary** for image storage and on-the-fly optimization
+- **Idempotent webhooks** — HMAC-SHA512 for Binance Pay, HMAC-SHA256 for USDT
+- **PHPUnit 12** feature and unit tests
+- **Laravel Pint** for code style
+
+### Frontend
+- **React 19** + **TypeScript 5** on **Vite 5**
+- **Tailwind CSS 3.4** (light + dark mode)
+- **Redux Toolkit 2.2** + **React Redux 9** (with `localStorage` persistence)
+- **React Router 6** (route-level code splitting via `React.lazy` + `Suspense`)
+- **Framer Motion 11** (page and component transitions)
+- **Lucide React** (icon set)
+- **React Hook Form 7** + **Zod 3** (typed forms and validation)
+- **Axios** with auth interceptors
+- **React Hot Toast** (notifications)
+- **Laravel Echo** + **Pusher JS** (Reverb client)
+- **i18n** (English / Arabic, full RTL)
+- **Vitest 2.1** + **Testing Library** (component and reducer tests)
+
+### DevOps & Infrastructure
+- **Docker** + **docker-compose** (PHP-FPM, Nginx, MySQL, Redis stack)
+- **GitHub Actions** CI on every push and PR to `main`
+- **Railway** (hosting for frontend, backend API, and Reverb worker)
+- **Nginx** (reverse proxy and static asset serving)
+
+---
 
 ## Features
 
-### User
-- Email/password auth, role-gated admin access
-- Browse categories and products, debounced search
-- Cart with localStorage persistence, multi-quantity items
-- Checkout via **Binance Pay**, **USDT (BEP-20)**, or **Cash Wallet**
-- Balance, deposit & withdrawal flows
-- VIP upgrades, manual service orders
-- **Bilingual UI** (English / Arabic with full RTL layout)
-- **Dark / light theme** with localStorage persistence
+### User-Facing
+- **User Auth** — email/password registration and login, session persistence
+- **Bilingual UI** — full English / Arabic translation with RTL layout
+- **Catalog Browsing** — categories, products, debounced search (350 ms)
+- **Cart** — multi-quantity, `localStorage`-backed, survives reloads
+- **Crypto & Wallet Payments** — Binance Pay, USDT (BEP-20), internal Cash Wallet
+- **VIP System** — multi-tier upgrades, VIP-gated prices and discounts
+- **Order Management** — auto-delivery for digital products, manual order queue for services
+- **Deposit & Withdrawal** flows with admin approval
+- **Dark / Light Mode** — `data-theme` toggle persisted in `localStorage`
+- **Responsive Design** — mobile, tablet, and desktop layouts
+- **Legal Pages** — Terms of Service, Privacy Policy, Refund Policy
+- **Dynamic Company Info** — footer name, contact, social links loaded from the API
 
 ### Admin / Moderator
-- Dashboard with KPIs (users, revenue, pending items)
-- User management: ban, change VIP level
-- Product & category CRUD
-- Auto-order, manual-order, deposit, and withdrawal queues
-- Approve / reject financial transactions
-- Settings store (VIP limits, fees, gateway credentials)
+- **Admin Dashboard** — KPIs for users, revenue, pending items
+- **User Management** — ban / unban, change VIP level
+- **Product & Category CRUD**
+- **Order Queues** — auto orders, manual orders, deposits, withdrawals
+- **Settings Store** — VIP limits, fees, payment gateway credentials, company info, legal content
+- **Real-time Health** — database, storage, Reverb, payment providers
 
-### Engineering
-- Eager loading + query constraints everywhere — zero N+1 in hot paths
-- Webhook signature verification (HMAC-SHA512 for Binance Pay, HMAC-SHA256 for USDT)
-- Idempotent transaction state machine (pending → approved / rejected)
-- Image uploads via Cloudinary with auto-format/quality optimization
-- PHPUnit feature tests for auth, cart, orders, admin permissions, webhooks
-- Vitest tests for cart state, formatters, components
-- GitHub Actions CI on every push to `main`
+---
 
-## Optimizations Implemented
+## Live Demo
 
-- **N+1 prevention** — `with(['category', 'externalStore'])` and `whereHas` everywhere
-- **Database indexes** on `user_id`, `status`, `slug`, and `gateway_ref`
-- **Laravel cache** for the category tree and settings (`Cache::remember`)
-- **API Resources** to keep response shape stable
-- **React route-level code splitting** with `React.lazy` + `Suspense`
-- **Debounced search** in catalog and category pages (350 ms)
-- **Image lazy loading** (`<img loading="lazy" decoding="async">`) and `aria-*` for a11y
-- **Production-grade bundle** — single gzipped main chunk under 200 kB
-- **Eagerly validated** through `FormRequest` classes, no inline validation
+🔗 **[https://marketly-frontend-production.up.railway.app](https://marketly-frontend-production.up.railway.app)**
 
-## Project Structure
+API base URL: `https://marketly-backend-production.up.railway.app/api`
 
-```
-.
-├── backend/                 # Laravel 11 API
-│   ├── app/
-│   │   ├── Http/Controllers/Api/
-│   │   ├── Models/
-│   │   └── Services/        # CloudinaryService, PaymentGatewayManager, …
-│   ├── database/migrations/
-│   ├── tests/Feature/
-│   └── ...
-├── frontend/                # React 19 SPA
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── store/           # Redux Toolkit slices
-│   │   └── i18n/            # English / Arabic translations
-│   ├── tests/ (co-located)
-│   └── ...
-├── docker/
-│   ├── nginx/
-│   └── php/
-├── .github/workflows/ci.yml
-└── docker-compose.yml
-```
+---
 
 ## Local Setup
 
 ### Prerequisites
-
-- PHP 8.3+ with extensions (pdo_mysql, bcmath, ctype, json, openssl, tokenizer, xml)
+- PHP 8.3+ with extensions (`pdo_mysql`, `bcmath`, `ctype`, `json`, `openssl`, `tokenizer`, `xml`)
 - Composer 2.x
 - Node 20+ / npm 10+
-- MySQL 8.4 and Redis 7.2 — or use Docker (recommended)
+- MySQL 8.4 and Redis 7.2 — or use the included Docker stack (recommended)
 
 ### 1. Install dependencies
-
 ```bash
 # Backend
 cd backend
@@ -123,12 +114,11 @@ npm install --legacy-peer-deps
 ```
 
 ### 2. Configure environment
-
 ```bash
 cp backend/.env.example backend/.env
 ```
 
-Edit `backend/.env` and set your `DB_*`, `REDIS_*`, and `CLOUDINARY_URL` values.
+Edit `backend/.env` and set `DB_*`, `REDIS_*`, and `CLOUDINARY_URL` values, then:
 
 ```bash
 php artisan key:generate
@@ -136,87 +126,70 @@ php artisan migrate:fresh --seed
 ```
 
 ### 3. Run the app
-
 ```bash
-# Backend (terminal 1)
+# Terminal 1 — backend API
 cd backend && php artisan serve --port=8000
 
-# Reverb (terminal 2 — optional, for real-time)
+# Terminal 2 — Reverb (optional, for real-time)
 cd backend && php artisan reverb:start --port=8080
 
-# Frontend (terminal 3)
+# Terminal 3 — frontend dev server
 cd frontend && npm run dev
 ```
 
 App is now running at **http://localhost:5173**.
 
-### Demo Accounts
+---
 
-All accounts use password `password`.
+## Demo Accounts
 
-| Email | Role | VIP |
-|-------|------|-----|
-| `admin@demo.test` | Admin | VIP2 |
-| `mod@demo.test` | Moderator | VIP1 |
-| `vip2@demo.test` | User | VIP2 |
-| `vip1@demo.test` | User | VIP1 |
-| `user@demo.test` | User | None |
+All accounts use the password **`password`**.
+
+| Email | Role | Access |
+|-------|------|--------|
+| `admin@demo.test` | Admin | Full Admin Dashboard — every queue, every setting |
+| `mod@demo.test` | Moderator | Operational queues (orders, manual services) |
+| `vip1@demo.test` | User | VIP Tier 1 pricing and discounts |
+| `vip2@demo.test` | User | VIP Tier 2 pricing and discounts |
+| `user@demo.test` | User | Regular customer |
+
+---
 
 ## Local Development with Docker
 
 A full stack (PHP-FPM, Nginx, MySQL, Redis) is provided via `docker-compose.yml`.
 
 ```bash
-# Start the stack
 docker compose up -d
-
-# Install dependencies
 docker compose exec app composer install
-
-# Run migrations + seed
 docker compose exec app php artisan migrate:fresh --seed
-
-# Build the frontend (Vite outputs to frontend/dist)
 docker compose exec app npm --prefix ../frontend install --legacy-peer-deps
 docker compose exec app npm --prefix ../frontend run build
-
-# Stop
-docker compose down
 ```
 
-After the build, `nginx` serves the Laravel API and the static frontend from `http://localhost:8080`.
+After the build, Nginx serves the Laravel API and the static frontend from `http://localhost:8080`.
+
+---
 
 ## Running Tests
 
 ```bash
-# Backend — 32 tests
+# Backend
 cd backend && php artisan test --testdox
 
-# Frontend — 19 tests
+# Frontend
 cd frontend && npm test
 ```
 
+---
+
 ## CI
 
-Every push to `main` (and every PR) runs:
+Every push and PR to `main` runs (see `.github/workflows/ci.yml`):
 - `composer install` + `php artisan test` (MySQL 8.4 + Redis 7.2 services)
 - `npm ci` + `npm run build`
 
-See `.github/workflows/ci.yml`.
-
-## Payment Gateways
-
-Production-ready adapters for:
-
-- **Binance Pay** — HMAC-SHA512 webhook signature verification, returns a checkout URL
-- **USDT (BEP-20)** — HMAC-SHA256 webhook signature, amount tolerance, memo-based reconciliation
-- **Cash Wallet** — Admin-approval flow (no external API)
-
-To go live, replace the env-var placeholders with real API keys — no code changes required.
-
-## API
-
-Import `postman/Marketplace.postman_collection.json` into Postman. Base URL: `http://localhost:8000/api`.
+---
 
 ## License
 
