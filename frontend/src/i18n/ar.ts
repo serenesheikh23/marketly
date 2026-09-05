@@ -45,6 +45,8 @@ const ar: import('./en').Translations = {
     hotRightNow: 'الأكثر طلباً الآن',
     viewAll: 'عرض الكل',
     browse: 'تصفح',
+    welcomeBack: 'أهلاً بعودتك',
+    siteAdmin: 'مدير الموقع',
   },
 
   // Cart / Checkout

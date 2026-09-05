@@ -4,6 +4,7 @@ import { adminOrderApi } from '@/api/client';
 import toast from 'react-hot-toast';
 import Button from '@/components/Button';
 import PageTransition from '@/components/PageTransition';
+import { formatDateTime } from '@/utils/format';
 import { useI18n } from '@/i18n';
 
 export default function AdminManualOrders() {
@@ -55,7 +56,7 @@ export default function AdminManualOrders() {
                   {t('admin.orderNumber')} {order.id} — {order.user?.name ?? 'Unknown'}
                 </p>
                 <p className="text-micro text-gray-500 dark:text-ink-500 mt-0.5">
-                  {new Date(order.created_at).toLocaleString()}
+                  {formatDateTime(order.created_at)}
                 </p>
               </div>
               <span className={`badge-${order.status}`}>{order.status}</span>

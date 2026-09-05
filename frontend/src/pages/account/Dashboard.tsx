@@ -5,7 +5,7 @@ import { useAppSelector, useAppDispatch, updateBalance } from '@/store';
 import { vipApi, transactionApi } from '@/api/client';
 import EmptyState from '@/components/EmptyState';
 import PageTransition from '@/components/PageTransition';
-import { formatPrice } from '@/utils/format';
+import { formatPrice, formatDateTime } from '@/utils/format';
 import { useI18n } from '@/i18n';
 
 const QUICK_ACTIONS = [
@@ -79,7 +79,7 @@ export default function Dashboard() {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <p className="eyebrow mb-1">{t('home.welcomeBack')}</p>
+          <p className="eyebrow mb-1">{t('account.welcomeBack')}</p>
           <h1 className="text-h1 text-gray-900 dark:text-ink-900">{user?.name ?? 'User'}</h1>
         </div>
         <div className="text-right">
@@ -184,7 +184,7 @@ export default function Dashboard() {
                       {isPositive ? '+' : '-'}{formatPrice(t.amount)}
                     </td>
                     <td><span className={`badge-${t.status}`}>{t.status}</span></td>
-                    <td className="text-gray-500 dark:text-ink-500">{new Date(t.created_at).toLocaleDateString()}</td>
+                    <td className="text-gray-500 dark:text-ink-500">{formatDateTime(t.created_at)}</td>
                   </tr>
                 );
               })}

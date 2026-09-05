@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { categoryApi, orderApi } from '@/api/client';
+import { categoryApi, orderApi, productApi } from '@/api/client';
 import toast from 'react-hot-toast';
 import Button from '@/components/Button';
 import PageTransition from '@/components/PageTransition';
@@ -35,6 +35,14 @@ export default function ManualServices() {
       setFields(r.data.fields ?? []);
     } catch {
       setFields([]);
+    }
+    // Also fetch products for this category so the order can reference one
+    try {
+      const pr = await productApi.list({ category_id: cat.id, type: 'manual' });
+      // attach products to selected for later use
+      setSelected((prev: any) => ({ ...(prev ?? cat), products: pr.data.data ?? pr.data.products ?? [] }));
+    } catch {
+      // keep products on cat if any
     }
     setFormData({});
     setQuantity(1);
