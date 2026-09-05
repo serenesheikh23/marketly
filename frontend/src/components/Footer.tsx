@@ -115,7 +115,7 @@ export default function Footer() {
           <div>
             <h3 className="text-small font-semibold text-gray-900 dark:text-ink-900 mb-3">{t('footer.followUs')}</h3>
             {activeSocials.length > 0 ? (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-4">
                 {activeSocials.map((link) => (
                   <a
                     key={link.name}
@@ -137,8 +137,8 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-8 pt-6 border-t border-gray-200 dark:border-ink-200 flex flex-col sm:flex-row items-center justify-between gap-2 text-micro text-gray-600 dark:text-ink-500">
-          <span>{t('footer.copyright', { year: new Date().getFullYear() })}</span>
+        <div className="mt-8 pt-6 border-t border-gray-200 dark:border-ink-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-micro text-gray-600 dark:text-ink-500">
+          <span dir="ltr">{t('footer.copyright', { year: new Date().getFullYear() })}</span>
           <span>{t('footer.poweredBy')}</span>
         </div>
       </div>

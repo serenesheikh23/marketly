@@ -43,7 +43,7 @@ export default function Layout() {
     <div className="min-h-screen bg-gray-50 dark:bg-ink flex flex-col overflow-x-hidden">
       {/* ── Header ─────────────────────────────────────────── */}
       <header className="sticky top-0 z-50 border-b border-gray-200 dark:border-ink-200 bg-white/90 dark:bg-ink/90 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4 flex-wrap">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-2 flex-wrap">
 
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 flex-shrink-0">
@@ -54,9 +54,9 @@ export default function Layout() {
           <nav className="hidden md:flex items-center gap-2 flex-1 flex-wrap">
             {isAuthenticated ? (
               <>
-                <Link to="/dashboard" className="nav-link text-sm">{t('nav.dashboard')}</Link>
+                <Link to="/dashboard" className="nav-link text-sm hidden md:inline">{t('nav.dashboard')}</Link>
                 {(roles.includes('admin') || roles.includes('moderator')) && (
-                  <Link to="/admin" className="nav-link text-sm text-accent-400">{t('nav.admin')}</Link>
+                  <Link to="/admin" className="nav-link text-sm text-accent-400 hidden md:inline">{t('nav.admin')}</Link>
                 )}
                 <div className="mx-2 w-px h-5 bg-gray-300 dark:bg-ink-200" />
                 <span className="text-sm text-gray-600 dark:text-ink-600 font-medium tabular-nums">

@@ -137,12 +137,12 @@ export default function Dashboard() {
       {/* Quick actions */}
       <div>
         <h2 className="text-h3 text-gray-900 dark:text-ink-900 mb-4">{t('admin.quickActions')}</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           {QUICK_ACTIONS.map((a, i) => (
-            <motion.div key={a.to} {...stagger(i)}>
+            <motion.div key={a.to} {...stagger(i)} className="flex items-center justify-center">
               <Link
                 to={a.to}
-                className={`card-hover flex flex-col items-center gap-3 p-4 text-center ${
+                className={`card-hover flex flex-col items-center justify-center gap-3 p-4 text-center w-full ${
                   a.color === 'accent' ? 'border-accent-500/30 bg-accent-500/5' : ''
                 }`}
               >

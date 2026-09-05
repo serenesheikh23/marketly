@@ -263,6 +263,11 @@ const ar: import('./en').Translations = {
     poweredBy: 'مدعوم من Marketly',
   },
 
+  // Legal pages
+  legal: {
+    beingUpdated: 'هذه الصفحة قيد التحديث حالياً. يرجى العودة لاحقاً.',
+  },
+
   // Toasts / Errors (fallback)
   toast: {
     error: 'خطأ',
