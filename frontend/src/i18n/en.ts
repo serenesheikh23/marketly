@@ -296,6 +296,9 @@ const en = {
 
   // Legal pages
   legal: {
+    terms: 'Terms of Service',
+    privacy: 'Privacy Policy',
+    refund: 'Refund Policy',
     beingUpdated: 'This page is currently being updated. Please check back shortly.',
   },
 

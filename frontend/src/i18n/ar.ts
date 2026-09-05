@@ -296,6 +296,9 @@ const ar: import('./en').Translations = {
 
   // Legal pages
   legal: {
+    terms: 'شروط الخدمة',
+    privacy: 'سياسة الخصوصية',
+    refund: 'سياسة الاسترداد',
     beingUpdated: 'هذه الصفحة قيد التحديث حالياً. يرجى العودة لاحقاً.',
   },
 
