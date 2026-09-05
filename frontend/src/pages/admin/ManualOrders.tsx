@@ -34,7 +34,6 @@ export default function AdminManualOrders() {
       <div>
         <p className="eyebrow mb-1">{t('admin.operations')}</p>
         <h1 className="text-h1 text-gray-900 dark:text-ink-900">{t('admin.manualOrders')}</h1>
-        <p className="text-body text-gray-600 dark:text-ink-600 mt-1">{t('admin.noPendingManual')}</p>
       </div>
 
       <div className="space-y-3">

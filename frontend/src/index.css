@@ -54,7 +54,7 @@
   body {
     background: var(--bg-page);
     color: var(--text-body);
-    @apply antialiased font-sans;
+    @apply antialiased font-sans overflow-x-hidden;
     font-feature-settings: 'cv11', 'ss01', 'ss03';
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
@@ -185,7 +185,7 @@
   }
   /* Responsive table wrapper — scroll horizontally on small screens */
   .table-wrap {
-    @apply -mx-6 px-6 overflow-x-auto;
+    @apply sm:-mx-6 sm:px-6 overflow-x-auto;
   }
   .table-wrap table {
     @apply min-w-full;
