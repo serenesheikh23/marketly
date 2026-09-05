@@ -26,8 +26,8 @@ export default function Withdraw() {
   };
 
   return (
-    <PageTransition className="max-w-lg">
-      <h1 className="text-h1 text-gray-900 dark:text-ink-900 mb-8">Withdraw</h1>
+    <PageTransition className="max-w-xl mx-auto w-full">
+      <h1 className="text-h1 text-gray-900 dark:text-ink-900 mb-8 text-center">Withdraw</h1>
 
       <motion.div
         className="card-pad space-y-6"
