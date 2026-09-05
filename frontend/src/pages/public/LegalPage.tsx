@@ -4,26 +4,14 @@ import { settingsApi } from '@/api/client';
 import PageTransition from '@/components/PageTransition';
 import { useI18n } from '@/i18n';
 
-interface LegalMeta {
-  terms:   { title: string; heading: string };
-  privacy: { title: string; heading: string };
-  refund:  { title: string; heading: string };
-}
-
-const META: LegalMeta = {
-  terms:   { title: 'Terms of Service',   heading: 'Terms of Service' },
-  privacy: { title: 'Privacy Policy',       heading: 'Privacy Policy' },
-  refund:  { title: 'Refund Policy',       heading: 'Refund Policy' },
-};
-
 export default function LegalPage() {
   const { page } = useParams<{ page: string }>();
   const { t } = useI18n();
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(true);
 
-  const key = (page ?? 'terms') as keyof typeof META;
-  const meta = META[key];
+  const key = (page ?? 'terms') as 'terms' | 'privacy' | 'refund';
+  const titleKey = `legal.${key}` as const;
 
   useEffect(() => {
     setLoading(true);
@@ -35,7 +23,7 @@ export default function LegalPage() {
 
   return (
     <PageTransition className="max-w-3xl mx-auto">
-      <h1 className="text-h1 text-gray-900 dark:text-ink-900 mb-2">{meta.heading}</h1>
+      <h1 className="text-h1 text-gray-900 dark:text-ink-900 mb-2">{t(titleKey)}</h1>
       {loading ? (
         <div className="space-y-3 animate-pulse">
           {[100, 90, 100, 75, 100, 85].map((w, i) => (
