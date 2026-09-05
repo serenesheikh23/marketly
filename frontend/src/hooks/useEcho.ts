@@ -34,21 +34,18 @@ function initializeEcho(): Echo<'reverb'> | null {
 
   window.Pusher = Pusher;
 
-  // Temporarily disabled to fix mobile crash
-  if (false) {
-    if (!echoInstance) {
-      const instance: Echo<'reverb'> = new Echo<'reverb'>({
-        broadcaster: 'reverb',
-        key,
-        wsHost: host,
-        wsPort: Number(port),
-        wssPort: Number(port),
-        forceTLS: false,
-        enabledTransports: ['ws', 'wss'],
-      });
-      echoInstance = instance;
-      window.Echo = instance;
-    }
+  if (!echoInstance) {
+    const instance: Echo<'reverb'> = new Echo<'reverb'>({
+      broadcaster: 'reverb',
+      key,
+      wsHost: host,
+      wsPort: Number(port),
+      wssPort: Number(port),
+      forceTLS: false,
+      enabledTransports: ['ws', 'wss'],
+    });
+    echoInstance = instance;
+    window.Echo = instance;
   }
 
   return echoInstance;

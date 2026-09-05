@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 
 interface PaymentGatewayInterface
 {
+    /** Returns true when the gateway is in demo/placeholder mode (no real API keys configured). */
+    public function isDemoMode(): bool;
+
     public function name(): string;
 
     /**

@@ -11,6 +11,11 @@ use Illuminate\Http\Request;
  */
 class CashWalletGateway implements PaymentGatewayInterface
 {
+    public function isDemoMode(): bool
+    {
+        return false; // cash wallet is always real (admin-credited)
+    }
+
     public function name(): string
     {
         return 'cash_wallet';

@@ -1,49 +1,20 @@
-@component('mail::layout')
-{{-- Header --}}
-@slot('header')
-@component('mail::header', ['url' => config('app.url')])
-    {{ config('app.name') }}
-@endcomponent
-@endslot
-
-{{-- Body --}}
-# Order Confirmed
-
-Hi **{{ $order->user->name ?? 'there' }}**,
-
-Thanks for your order. We've received your payment and the details are below.
-
-## Order #{{ $order->id ?? '—' }}
-**Placed:** {{ $order->created_at?->toDayDateTimeString() ?? now()->toDayDateTimeString() }}
-**Total:** ${{ number_format((float) ($order->total ?? 0), 2) }}
-**Status:** {{ ucfirst($order->status ?? 'processing') }}
-
-@if(!empty($order->items) && count($order->items) > 0)
-| Item | Qty | Price |
-| --- | ---: | ---: |
-@foreach($order->items as $item)
-| {{ $item->product->name ?? 'Item' }} | {{ $item->quantity }} | ${{ number_format((float) $item->price, 2) }} |
-@endforeach
-@endif
-
-@if($order->status === 'completed')
-Your digital products are ready. Sign in to download them from your dashboard.
-@else
-Your order is being processed. We'll email you the moment it's ready.
-@endif
-
-@component('mail::button', ['url' => config('app.url') . '/dashboard/orders'])
-    View Order
-@endcomponent
-
-If you have any questions, just reply to this email — we're here to help.
-
-Thanks,
-**The {{ config('app.name') }} Team**
-
-@slot('footer')
-@component('mail::footer')
-    © {{ date('Y') }} {{ config('app.name') }}. All rights reserved.
-@endcomponent
-@endslot
-@endcomponent
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Order #{{ $order->id }} confirmed</title>
+</head>
+<body style="font-family: Inter, system-ui, sans-serif; background-color: #f8fafc; margin: 0; padding: 24px;">
+    <div style="max-width: 560px; margin: 0 auto; background: #ffffff; border-radius: 12px; padding: 32px; border: 1px solid #e2e8f0;">
+        <h1 style="font-size: 22px; color: #0f172a; margin: 0 0 12px;">Thanks for your order</h1>
+        <p style="color: #475569; margin: 0 0 24px;">Your order <strong>#{{ $order->id }}</strong> has been received and is being processed.</p>
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr><td style="padding: 6px 0; color: #64748b;">Order ID</td><td style="padding: 6px 0; text-align: right;">#{{ $order->id }}</td></tr>
+            <tr><td style="padding: 6px 0; color: #64748b;">Total</td><td style="padding: 6px 0; text-align: right;">${{ number_format($order->total, 2) }}</td></tr>
+            <tr><td style="padding: 6px 0; color: #64748b;">Payment method</td><td style="padding: 6px 0; text-align: right;">{{ $order->payment_method }}</td></tr>
+            <tr><td style="padding: 6px 0; color: #64748b;">Status</td><td style="padding: 6px 0; text-align: right;">{{ $order->status }}</td></tr>
+        </table>
+        <p style="color: #94a3b8; font-size: 12px; margin-top: 24px;">If you have any questions, just reply to this email.</p>
+    </div>
+</body>
+</html>

@@ -8,6 +8,16 @@ use Illuminate\Support\Str;
 
 class UsdtGateway implements PaymentGatewayInterface
 {
+    /**
+     * Demo mode is active when the webhook secret is the placeholder string.
+     * In demo mode the gateway auto-approves via simulatePayment();
+     * in real mode it expects a valid HMAC-SHA256 signature.
+     */
+    public function isDemoMode(): bool
+    {
+        return (string) config('services.usdt.secret') === 'placeholder';
+    }
+
     public function name(): string
     {
         return 'usdt';
@@ -89,10 +99,22 @@ class UsdtGateway implements PaymentGatewayInterface
 
     /**
      * Demo-mode simulator: returns a fake successful USDT transaction.
-     * No balance deduction, no external API call.
+     * Only succeeds when in demo mode (USDT_WEBHOOK_SECRET == 'placeholder').
+     * When real webhook secret is configured this returns failure so the
+     * caller knows to wait for a real webhook callback.
      */
     public function simulatePayment(array $meta = []): array
     {
+        if (! $this->isDemoMode()) {
+            return [
+                'success' => false,
+                'transaction_id' => null,
+                'status' => 'real_mode',
+                'method' => 'usdt',
+                'error' => 'Real USDT mode active — simulation disabled.',
+            ];
+        }
+
         $txid = 'usdt_'.strtoupper(Str::random(16));
 
         Log::info('USDT simulated payment', [

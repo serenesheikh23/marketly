@@ -8,12 +8,15 @@ use App\Http\Controllers\Api\Admin\AdminSettingsController;
 use App\Http\Controllers\Api\Admin\AdminTransactionController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\Auth\ForgotPasswordController;
 use App\Http\Controllers\Api\Category\CategoryController;
 use App\Http\Controllers\Api\Deposit\DepositController;
 use App\Http\Controllers\Api\Order\OrderController;
 use App\Http\Controllers\Api\Product\ProductController;
 use App\Http\Controllers\Api\SettingsController;
 use App\Http\Controllers\Api\Vip\VipController;
+use App\Http\Controllers\Api\Webhook\BinanceWebhookController;
+use App\Http\Controllers\Api\Webhook\UsdtWebhookController;
 use App\Http\Controllers\Api\WebhookController;
 use App\Http\Controllers\Api\Withdrawal\WithdrawalController;
 use App\Models\Transaction;
@@ -23,6 +26,7 @@ use Illuminate\Support\Facades\Route;
 // Public auth
 Route::middleware('throttle:register')->post('/auth/register', [AuthController::class, 'register']);
 Route::middleware('throttle:login')->post('/auth/login', [AuthController::class, 'login']);
+Route::middleware('throttle:login')->post('/auth/forgot-password', [ForgotPasswordController::class, 'sendResetLink']);
 
 // Public content
 Route::get('/categories', [CategoryController::class, 'index']);
@@ -38,6 +42,8 @@ Route::get('/settings/legal/{page}', [SettingsController::class, 'legal']);
 
 // Webhooks (no auth)
 Route::post('/webhooks/payments/{gateway}', [WebhookController::class, 'handle']);
+Route::post('/webhooks/binance', [BinanceWebhookController::class, 'handle']);
+Route::post('/webhooks/usdt', [UsdtWebhookController::class, 'handle']);
 
 // Authenticated user routes
 Route::middleware('auth:sanctum')->group(function () {
