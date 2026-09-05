@@ -1,13 +1,5 @@
 <?php
 
-use App\Http\Controllers\Api\Auth\AuthController;
-use App\Http\Controllers\Api\Category\CategoryController;
-use App\Http\Controllers\Api\Deposit\DepositController;
-use App\Http\Controllers\Api\Order\OrderController;
-use App\Http\Controllers\Api\Product\ProductController;
-use App\Http\Controllers\Api\Vip\VipController;
-use App\Http\Controllers\Api\Withdrawal\WithdrawalController;
-use App\Http\Controllers\Api\WebhookController;
 use App\Http\Controllers\Api\Admin\AdminCategoryController;
 use App\Http\Controllers\Api\Admin\AdminDashboardController;
 use App\Http\Controllers\Api\Admin\AdminOrderController;
@@ -15,6 +7,17 @@ use App\Http\Controllers\Api\Admin\AdminProductController;
 use App\Http\Controllers\Api\Admin\AdminSettingsController;
 use App\Http\Controllers\Api\Admin\AdminTransactionController;
 use App\Http\Controllers\Api\Admin\UserController;
+use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\Category\CategoryController;
+use App\Http\Controllers\Api\Deposit\DepositController;
+use App\Http\Controllers\Api\Order\OrderController;
+use App\Http\Controllers\Api\Product\ProductController;
+use App\Http\Controllers\Api\SettingsController;
+use App\Http\Controllers\Api\Vip\VipController;
+use App\Http\Controllers\Api\WebhookController;
+use App\Http\Controllers\Api\Withdrawal\WithdrawalController;
+use App\Models\Transaction;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // Public auth
@@ -28,6 +31,10 @@ Route::get('/categories/{slug}/form-schema', [CategoryController::class, 'formSc
 
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{slug}', [ProductController::class, 'show']);
+
+// Public settings (company info, legal pages)
+Route::get('/settings/company', [SettingsController::class, 'company']);
+Route::get('/settings/legal/{page}', [SettingsController::class, 'legal']);
 
 // Webhooks (no auth)
 Route::post('/webhooks/payments/{gateway}', [WebhookController::class, 'handle']);
@@ -56,8 +63,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/vip/upgrade', [VipController::class, 'upgrade']);
 
     // User transactions list
-    Route::get('/transactions', function (\Illuminate\Http\Request $request) {
-        return \App\Models\Transaction::where('user_id', $request->user()->id)
+    Route::get('/transactions', function (Request $request) {
+        return Transaction::where('user_id', $request->user()->id)
             ->latest()
             ->paginate(20);
     });
@@ -87,6 +94,7 @@ Route::middleware(['auth:sanctum', 'role:admin|moderator'])->prefix('admin')->gr
 
     Route::get('/orders', [AdminOrderController::class, 'index']);
     Route::get('/orders/pending-manual', [AdminOrderController::class, 'pendingManual']);
+    Route::get('/orders/pending-manual/count', [AdminOrderController::class, 'pendingManualCount']);
     Route::patch('/orders/{order}/status', [AdminOrderController::class, 'updateStatus']);
 
     Route::get('/deposits', [AdminTransactionController::class, 'deposits']);
@@ -104,5 +112,7 @@ Route::middleware(['auth:sanctum', 'role:admin|moderator'])->prefix('admin')->gr
         Route::get('/settings', [AdminSettingsController::class, 'index']);
         Route::post('/settings', [AdminSettingsController::class, 'update']);
         Route::post('/settings/bulk', [AdminSettingsController::class, 'bulkUpdate']);
+        Route::put('/settings/company', [AdminSettingsController::class, 'updateCompany']);
+        Route::put('/settings/legal/{page}', [AdminSettingsController::class, 'updateLegal']);
     });
 });

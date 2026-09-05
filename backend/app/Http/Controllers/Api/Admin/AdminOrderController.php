@@ -41,6 +41,15 @@ class AdminOrderController extends Controller
         return response()->json($orders);
     }
 
+    public function pendingManualCount(): JsonResponse
+    {
+        $count = Order::whereIn('status', ['pending', 'processing'])
+            ->whereHas('items.product', fn ($q) => $q->where('type', 'manual'))
+            ->count();
+
+        return response()->json(['count' => $count]);
+    }
+
     public function updateStatus(Request $request, Order $order): JsonResponse
     {
         $data = $request->validate([

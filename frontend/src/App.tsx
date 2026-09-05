@@ -30,6 +30,8 @@ const AdminManualOrders= lazy(() => import('@/pages/admin/ManualOrders'));
 const AdminDeposits    = lazy(() => import('@/pages/admin/Deposits'));
 const AdminWithdrawals = lazy(() => import('@/pages/admin/Withdrawals'));
 const AdminSettings    = lazy(() => import('@/pages/admin/Settings'));
+const LegalPage        = lazy(() => import('@/pages/public/LegalPage'));
+const NotFound         = lazy(() => import('@/pages/NotFound'));
 
 function LoadingSpinner() {
   return (
@@ -67,6 +69,7 @@ export default function App() {
             <Route path="/cart" element={<Cart />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/legal/:page" element={<LegalPage />} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/dashboard/deposit" element={<ProtectedRoute><Deposit /></ProtectedRoute>} />
             <Route path="/dashboard/withdraw" element={<ProtectedRoute><Withdraw /></ProtectedRoute>} />
@@ -86,6 +89,8 @@ export default function App() {
             <Route path="/admin/withdrawals" element={<AdminWithdrawals />} />
             <Route path="/admin/settings" element={<AdminSettings />} />
           </Route>
+
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
     </ErrorBoundary>
