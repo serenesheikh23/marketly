@@ -19,6 +19,12 @@ class StoreOrderRequest extends FormRequest
             'items.*.quantity' => ['required', 'integer', 'min:1'],
             'items.*.payload' => ['nullable', 'array'],
             'payment_method' => ['required', 'string', 'in:cash_wallet,binance_pay,usdt'],
+            'meta' => ['nullable', 'array'],
+            'meta.binance_id' => ['required_if:payment_method,binance_pay', 'nullable', 'string', 'max:255'],
+            'meta.binance_email' => ['nullable', 'string', 'email', 'max:255'],
+            'meta.wallet_address' => ['required_if:payment_method,usdt', 'nullable', 'string', 'max:255'],
+            'meta.tx_hash' => ['nullable', 'string', 'max:255'],
+            'meta.network' => ['nullable', 'string', 'max:32'],
         ];
     }
 }

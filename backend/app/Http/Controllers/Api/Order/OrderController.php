@@ -11,9 +11,7 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    public function __construct(private readonly OrderService $orders)
-    {
-    }
+    public function __construct(private readonly OrderService $orders) {}
 
     public function index(Request $request): JsonResponse
     {
@@ -32,7 +30,9 @@ class OrderController extends Controller
                 $request->user(),
                 $request->input('items'),
                 $request->string('payment_method')->toString(),
+                (array) $request->input('meta', []),
             );
+
             return response()->json(['order' => $order->load('items.product')], 201);
         } catch (\DomainException $e) {
             return response()->json(['message' => $e->getMessage()], 422);
@@ -44,6 +44,7 @@ class OrderController extends Controller
         if ($order->user_id !== $request->user()->id) {
             return response()->json(['message' => 'Forbidden.'], 403);
         }
+
         return response()->json(['order' => $order->load('items.product')]);
     }
 }

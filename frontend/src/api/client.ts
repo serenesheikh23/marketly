@@ -62,7 +62,7 @@ export const productApi = {
 // Orders
 export const orderApi = {
   list: () => api.get('/orders'),
-  create: (data: { items: Array<{ product_id: number; quantity: number; payload?: Record<string, unknown> }>; payment_method: string }) =>
+  create: (data: { items: Array<{ product_id: number; quantity: number; payload?: Record<string, unknown> }>; payment_method: string; meta?: Record<string, string> }) =>
     api.post('/orders', data),
   show: (id: number) => api.get(`/orders/${id}`),
 };
