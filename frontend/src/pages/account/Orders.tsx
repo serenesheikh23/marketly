@@ -4,8 +4,10 @@ import { orderApi } from '@/api/client';
 import EmptyState from '@/components/EmptyState';
 import PageTransition from '@/components/PageTransition';
 import { formatPrice } from '@/utils/format';
+import { useI18n } from '@/i18n';
 
 export default function Orders() {
+  const { t } = useI18n();
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -25,8 +27,8 @@ export default function Orders() {
   }
 
   return (
-    <PageTransition className="space-y-6">
-      <h1 className="text-h1 text-gray-900 dark:text-ink-900">My Orders</h1>
+    <PageTransition className="max-w-4xl mx-auto w-full space-y-6">
+      <h1 className="text-h1 text-gray-900 dark:text-ink-900 text-center">{t('orders.title')}</h1>
 
       {orders.length === 0 ? (
         <EmptyState
@@ -36,9 +38,9 @@ export default function Orders() {
               <rect x="9" y="3" width="6" height="4" rx="1" />
             </svg>
           }
-          title="No orders yet"
+          title={t('orders.empty')}
           description="When you place your first order, it will appear here with real-time status updates. Browse the catalog to get started."
-          action={{ label: 'Browse products', to: '/products' }}
+          action={{ label: t('home.browseProducts'), to: '/products' }}
         />
       ) : (
         <div className="space-y-4">
@@ -53,7 +55,7 @@ export default function Orders() {
               <div className="flex items-start justify-between gap-4 mb-4">
                 <div>
                   <h3 className="text-body font-semibold text-gray-900 dark:text-ink-900">
-                    Order #{order.id}
+                    {t('orders.orderNumber')}{order.id}
                   </h3>
                   <p className="text-small text-gray-600 dark:text-ink-500">
                     {new Date(order.created_at).toLocaleString()}
@@ -84,7 +86,7 @@ export default function Orders() {
 
               {order.notes && (
                 <p className="text-micro text-gray-600 dark:text-ink-500 mt-2 pt-2 border-t border-ink-200">
-                  Note: {order.notes}
+                  {order.notes}
                 </p>
               )}
             </motion.div>

@@ -103,7 +103,7 @@ export default function ManualServices() {
             {t('manualServices.backToCategories')}
           </button>
 
-          <div className="card-pad max-w-lg w-full space-y-5">
+          <div className="card-pad max-w-xl mx-auto w-full flex flex-col items-center space-y-5">
             <div>
               <p className="eyebrow mb-1">{localized(selected, 'name', 'name_ar', locale)}</p>
               <h2 className="text-h2 text-gray-900 dark:text-ink-900">{t('manualServices.serviceDetails')}</h2>
@@ -169,7 +169,7 @@ export default function ManualServices() {
                   loading={submitting}
                   className="w-full"
                 >
-                  {t('manualServices.placeOrder')}
+                  {t('manualServices.submit')}
                 </Button>
               </form>
             ) : (
