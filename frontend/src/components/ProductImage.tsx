@@ -26,27 +26,14 @@ export default function ProductImage({ name, imageBase64, imageUrl, className = 
     );
   }
 
-  // Fallback: professional gray placeholder, no first letter or emoji.
+  // Fallback: package emoji, no first letter.
   return (
     <div
       className={`relative w-full overflow-hidden rounded-lg bg-gray-100 dark:bg-ink-100 flex items-center justify-center ${className}`}
       role="img"
       aria-label={name}
     >
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.25"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="w-1/3 h-1/3 text-gray-300 dark:text-ink-300"
-        aria-hidden="true"
-      >
-        <rect x="3" y="4" width="18" height="16" rx="2" />
-        <circle cx="9" cy="10" r="1.5" />
-        <path d="m21 16-5-5-9 9" />
-      </svg>
+      <span className="text-4xl" aria-hidden="true">📦</span>
     </div>
   );
 }
