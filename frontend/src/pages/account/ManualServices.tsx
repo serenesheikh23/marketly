@@ -134,7 +134,7 @@ export default function ManualServices() {
                 {fields.length > 0 && fields.map((f: any) => (
                   <div key={f.key}>
                     <label className="label">
-                      {f.label}{f.required ? ' *' : ''}
+                      {locale === 'ar' && f.label_ar ? f.label_ar : f.label}{f.required ? ' *' : ''}
                     </label>
                     {f.type === 'textarea' ? (
                       <textarea className="input" rows={3} required={f.required} placeholder={f.placeholder} value={formData[f.key] ?? ''} onChange={(e) => setFormData((p) => ({ ...p, [f.key]: e.target.value }))} />

@@ -181,11 +181,11 @@ Refunds at Marketly are evaluated on a case-by-case basis. Digital products that
         $social = Category::where('slug', 'social-media-services')->first();
         if ($social) {
             $fields = [
-                ['key' => 'platform', 'label' => 'Platform', 'type' => 'select', 'required' => true, 'options' => ['telegram', 'facebook', 'twitter', 'instagram', 'youtube'], 'sort_order' => 1, 'placeholder' => 'Select platform'],
-                ['key' => 'service_type', 'label' => 'Service Type', 'type' => 'select', 'required' => true, 'options' => ['members', 'followers', 'likes', 'views', 'reactions'], 'sort_order' => 2, 'placeholder' => 'Select service'],
-                ['key' => 'link', 'label' => 'Profile / Channel Link', 'type' => 'text', 'required' => true, 'sort_order' => 3, 'placeholder' => 'https://t.me/...'],
-                ['key' => 'quantity', 'label' => 'Quantity', 'type' => 'number', 'required' => true, 'sort_order' => 4, 'placeholder' => 'e.g. 1000'],
-                ['key' => 'notes', 'label' => 'Additional Notes', 'type' => 'textarea', 'required' => false, 'sort_order' => 5, 'placeholder' => 'Any special instructions'],
+                ['key' => 'platform', 'label' => 'Platform', 'label_ar' => 'المنصة', 'type' => 'select', 'required' => true, 'options' => ['telegram', 'facebook', 'twitter', 'instagram', 'youtube'], 'sort_order' => 1, 'placeholder' => 'Select platform'],
+                ['key' => 'service_type', 'label' => 'Service Type', 'label_ar' => 'نوع الخدمة', 'type' => 'select', 'required' => true, 'options' => ['members', 'followers', 'likes', 'views', 'reactions'], 'sort_order' => 2, 'placeholder' => 'Select service'],
+                ['key' => 'link', 'label' => 'Profile / Channel Link', 'label_ar' => 'رابط الملف الشخصي', 'type' => 'text', 'required' => true, 'sort_order' => 3, 'placeholder' => 'https://t.me/...'],
+                ['key' => 'quantity', 'label' => 'Quantity', 'label_ar' => 'الكمية', 'type' => 'number', 'required' => true, 'sort_order' => 4, 'placeholder' => 'e.g. 1000'],
+                ['key' => 'notes', 'label' => 'Additional Notes', 'label_ar' => 'ملاحظات إضافية', 'type' => 'textarea', 'required' => false, 'sort_order' => 5, 'placeholder' => 'Any special instructions'],
             ];
             foreach ($fields as $field) {
                 ManualOrderField::updateOrCreate(
@@ -199,9 +199,9 @@ Refunds at Marketly are evaluated on a case-by-case basis. Digital products that
         $verify = Category::where('slug', 'account-verification')->first();
         if ($verify) {
             $fields = [
-                ['key' => 'service', 'label' => 'Verification Service', 'type' => 'select', 'required' => true, 'options' => ['facebook_blue', 'instagram_blue', 'twitter_blue', 'youtube_monetization', 'telegram_premium'], 'sort_order' => 1, 'placeholder' => 'Select service'],
-                ['key' => 'account_link', 'label' => 'Account Link / Username', 'type' => 'text', 'required' => true, 'sort_order' => 2, 'placeholder' => '@username or profile URL'],
-                ['key' => 'documents_info', 'label' => 'Document Description', 'type' => 'textarea', 'required' => true, 'sort_order' => 3, 'placeholder' => 'Describe the documents you can provide'],
+                ['key' => 'service', 'label' => 'Verification Service', 'label_ar' => 'خدمة التحقق', 'type' => 'select', 'required' => true, 'options' => ['facebook_blue', 'instagram_blue', 'twitter_blue', 'youtube_monetization', 'telegram_premium'], 'sort_order' => 1, 'placeholder' => 'Select service'],
+                ['key' => 'account_link', 'label' => 'Account Link / Username', 'label_ar' => 'رابط الحساب', 'type' => 'text', 'required' => true, 'sort_order' => 2, 'placeholder' => '@username or profile URL'],
+                ['key' => 'documents_info', 'label' => 'Document Description', 'label_ar' => 'وصف المستند', 'type' => 'textarea', 'required' => true, 'sort_order' => 3, 'placeholder' => 'Describe the documents you can provide'],
             ];
             foreach ($fields as $field) {
                 ManualOrderField::updateOrCreate(
@@ -216,9 +216,9 @@ Refunds at Marketly are evaluated on a case-by-case basis. Digital products that
         if ($manualCharging) {
             $manualCharging->update([
                 'form_schema' => [
-                    ['key' => 'store_type', 'label' => 'Store Type', 'type' => 'select', 'required' => true, 'options' => ['Product Reseller', 'Digital Service', 'Custom Order']],
-                    ['key' => 'profile_link', 'label' => 'Profile / Order Link', 'type' => 'text', 'required' => true, 'options' => []],
-                    ['key' => 'order_description', 'label' => 'Order Description', 'type' => 'textarea', 'required' => false, 'options' => []],
+                    ['key' => 'store_type', 'label' => 'Store Type', 'label_ar' => 'نوع المتجر', 'type' => 'select', 'required' => true, 'options' => ['Product Reseller', 'Digital Service', 'Custom Order']],
+                    ['key' => 'profile_link', 'label' => 'Profile / Order Link', 'label_ar' => 'الرابط / ملف الطلب', 'type' => 'text', 'required' => true, 'options' => []],
+                    ['key' => 'order_description', 'label' => 'Order Description', 'label_ar' => 'وصف الطلب', 'type' => 'textarea', 'required' => false, 'options' => []],
                 ],
             ]);
         }

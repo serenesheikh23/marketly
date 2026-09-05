@@ -260,6 +260,8 @@ const en = {
     addField: 'Add Field',
     newCategoryCreated: 'Category created.',
     fieldLabel: 'Field Label',
+    fieldLabelEn: 'Label (EN)',
+    fieldLabelAr: 'Label (AR)',
     fieldType: 'Field Type',
     fieldRequired: 'Required',
     fieldOptions: 'Options',
