@@ -151,7 +151,7 @@ export const adminSettingsApi = {
 // Public settings
 export const settingsApi = {
   company: () => api.get('/settings/company'),
-  legal: (page: string) => api.get(`/settings/legal/${page}`),
+  legal: (page: string, locale = 'en') => api.get(`/settings/legal/${page}?locale=${locale}`),
 };
 
 // Admin — Dashboard

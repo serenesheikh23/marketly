@@ -68,28 +68,28 @@ class DemoSeeder extends Seeder
         }
 
         // Seed demo legal content (English)
-        Setting::set('legal_terms', 'Terms of Service
+        Setting::set('legal_terms_en', 'Terms of Service
 
 By using Marketly, you agree to the following terms. Marketly is a digital marketplace that facilitates the purchase of digital products, software licenses, and online services. All transactions are final once the product is delivered. You are responsible for ensuring that your purchase complies with local laws and regulations in your jurisdiction. Refunds are processed at our discretion for undelivered or defective products only. We reserve the right to suspend accounts that violate these terms or engage in fraudulent activity. All prices are listed in USD unless otherwise stated. By completing a purchase, you confirm that you are at least 18 years of age or have parental consent to use this platform.', 'legal');
 
-        Setting::set('legal_privacy', 'Privacy Policy
+        Setting::set('legal_privacy_en', 'Privacy Policy
 
 Marketly is committed to protecting your privacy. We collect minimal personal information necessary to process your orders, including your name, email address, and payment details. Payment information is processed securely through Binance Pay and is never stored on our servers. We may use your email address to send order confirmations and account-related notifications. We do not sell or share your personal data with third parties for marketing purposes. Cookies are used to maintain session state and improve your browsing experience. You have the right to request access to or deletion of your personal data at any time by contacting our support team.', 'legal');
 
-        Setting::set('legal_refund', 'Refund Policy
+        Setting::set('legal_refund_en', 'Refund Policy
 
 Refunds at Marketly are evaluated on a case-by-case basis. Digital products that have been delivered and accessed are generally non-refundable. If you experience a technical issue or have not received your order within 24 hours, please contact our support team with your order details. Approved refunds are processed to your Marketly wallet balance within 3–5 business days. Chargebacks initiated through your payment provider without prior contact may result in account suspension. VIP membership upgrades and one-time fee payments are non-refundable once activated. We reserve the right to deny refund requests that appear fraudulent or abusive.', 'legal');
 
         // Seed demo legal content (Arabic)
-        Setting::set('legal_terms', 'شروط الخدمة
+        Setting::set('legal_terms_ar', 'شروط الخدمة
 
 باستخدامك لـ Marketly، فإنك توافق على الشروط التالية. Marketly هو سوق رقمي يسهّل شراء المنتجات الرقمية وتراخيص البرامج والخدمات عبر الإنترنت. جميع المعاملات نهائية بمجرد تسليم المنتج. أنت مسؤول عن التأكد من أن عملية الشراء الخاصة بك تتوافق مع القوانين واللوائح المحلية في ولايتك القضائية. تتم معالجة المبالغ المستردة حسب تقديرنا للمنتجات غير المسلمة أو المعيبة فقط. نحتفظ بالحق في تعليق الحسابات التي تنتهك هذه الشروط أو تنخرط في أنشطة احتيالية. يتم عرض جميع الأسعار بالدولار الأمريكي ما لم يُذكر خلاف ذلك. بإتمام عملية الشراء، فإنك تؤكد أن عمرك 18 عاماً على الأقل أو أن لديك موافقة الوالدين على استخدام هذه المنصة.', 'legal');
 
-        Setting::set('legal_privacy', 'سياسة الخصوصية
+        Setting::set('legal_privacy_ar', 'سياسة الخصوصية
 
 تلتزم Marketly بحماية خصوصيتك. نجمع الحد الأدنى من المعلومات الشخصية اللازمة لمعالجة طلباتك، بما في ذلك اسمك وعنوان بريدك الإلكتروني وتفاصيل الدفع. تتم معالجة معلومات الدفع بشكل آمن عبر Binance Pay ولا يتم تخزينها أبداً على خوادمنا. قد نستخدم عنوان بريدك الإلكتروني لإرسال تأكيدات الطلبات وإشعارات الحساب. لا نبيع أو نشارك بياناتك الشخصية مع أطراف ثالثة لأغراض التسويق. تُستخدم ملفات تعريف الارتباط للحفاظ على حالة الجلسة وتحسين تجربة التصفح الخاصة بك. لديك الحق في طلب الوصول إلى بياناتك الشخصية أو حذفها في أي وقت عن طريق الاتصال بفريق الدعم لدينا.', 'legal');
 
-        Setting::set('legal_refund', 'سياسة الاسترداد
+        Setting::set('legal_refund_ar', 'سياسة الاسترداد
 
 يتم تقييم المبالغ المستردة في Marketly على أساس كل حالة على حدة. المنتجات الرقمية التي تم تسليمها والوصول إليها غير قابلة للاسترداد بشكل عام. إذا واجهت مشكلة تقنية أو لم تستلم طلبك خلال 24 ساعة، يرجى الاتصال بفريق الدعم لدينا مع تفاصيل طلبك. تتم معالجة المبالغ المستردة المعتمدة على رصيد محفظتك في Marketly خلال 3-5 أيام عمل. قد يؤدي بدء استرداد المبالغ من خلال مزود الدفع الخاص بك دون اتصال مسبق إلى تعليق الحساب. ترقيات عضوية VIP والمدفوعات لمرة واحدة غير قابلة للاسترداد بمجرد تنشيطها. نحتفظ بالحق في رفض طلبات الاسترداد التي تبدو احتيالية أو مسيئة.', 'legal');
     }

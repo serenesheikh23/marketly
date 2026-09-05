@@ -22,13 +22,15 @@ class SettingsController extends Controller
     }
 
     /** Legal page content */
-    public function legal(string $page): JsonResponse
+    public function legal(string $page, \Illuminate\Http\Request $request): JsonResponse
     {
+        $locale = $request->query('locale', 'en');
+
         $key = match ($page) {
-            'terms' => 'legal_terms',
-            'privacy' => 'legal_privacy',
-            'refund' => 'legal_refund',
-            default => null,
+            'terms'   => "legal_terms_{$locale}",
+            'privacy' => "legal_privacy_{$locale}",
+            'refund'  => "legal_refund_{$locale}",
+            default   => null,
         };
 
         if (! $key) {
