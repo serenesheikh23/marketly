@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 import Logo from '@/components/Logo';
 import Button from '@/components/Button';
 import PageTransition from '@/components/PageTransition';
+import HeroArt from '@/components/HeroArt';
 import { useI18n } from '@/i18n';
 
 export default function Register() {
@@ -36,10 +37,14 @@ export default function Register() {
     setForm((p) => ({ ...p, [key]: e.target.value }));
 
   return (
-    <PageTransition className="min-h-screen flex">
-      {/* Left: floating icons — visible on all screens */}
-      <div className="flex lg:w-1/2 items-center justify-center px-6 py-12 lg:px-16 lg:py-20">
-        <div className="relative w-full h-64 lg:h-80 flex-shrink-0 mt-8 lg:mt-0">
+    <PageTransition className="min-h-screen flex flex-col lg:flex-row-reverse">
+      {/* Right: floating icons — visible on all screens */}
+      <div className="relative w-full lg:w-1/2 flex items-center justify-center px-6 py-12 lg:px-16 lg:py-20 mt-8 lg:mt-0">
+        {/* Full-width aurora background */}
+        <div className="absolute inset-0 opacity-40 dark:opacity-40 pointer-events-none">
+          <HeroArt variant="aurora" className="w-full h-full" />
+        </div>
+        <div className="relative w-full h-64 lg:h-80 flex-shrink-0">
           <motion.div
             animate={{ y: [0, -15, 0], x: [0, 5, 0], rotate: [0, 8, 0] }}
             transition={{ duration: 5, delay: 0, repeat: Infinity, ease: 'easeInOut' }}
@@ -90,7 +95,7 @@ export default function Register() {
         </div>
       </div>
 
-      {/* Right: form */}
+      {/* Left: form */}
       <div className="flex-1 flex items-center justify-center px-6 py-12 lg:px-16">
         <div className="w-full max-w-md">
           <div className="lg:hidden mb-10 flex justify-center">

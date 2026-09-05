@@ -1,7 +1,7 @@
 import { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAppSelector } from '@/hooks/useAuth';
-import { useEcho } from '@/hooks/useEcho';
+// import { useEcho } from '@/hooks/useEcho'; // Temporarily commented out for mobile stability
 import Layout from '@/components/Layout';
 import AdminLayout from '@/components/AdminLayout';
 import ErrorBoundary from '@/components/ErrorBoundary';
@@ -52,7 +52,7 @@ function AdminRoute({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  useEcho();
+  // useEcho(); // Temporarily disabled to prevent mobile crashes
 
   return (
     <ErrorBoundary>
