@@ -91,12 +91,17 @@ export default function Footer() {
             <ul className="space-y-1.5 text-micro text-gray-600 dark:text-ink-500">
               {company.support_email && (
                 <li>
-                  <a href={`mailto:${company.support_email}`} className="hover:text-accent-400 transition-colors">
+                  <a href={`mailto:${company.support_email}`} className="hover:text-accent-400 transition-colors" dir="ltr">
                     {company.support_email}
                   </a>
                 </li>
               )}
-              {company.phone && <li>{company.phone}</li>}
+              {/* FIX: Force phone number to LTR so + sign stays on the left */}
+              {company.phone && (
+                <li>
+                  <span dir="ltr">{company.phone}</span>
+                </li>
+              )}
               {company.address && <li>{company.address}</li>}
             </ul>
           </div>
