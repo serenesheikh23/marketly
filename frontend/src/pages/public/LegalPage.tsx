@@ -6,7 +6,7 @@ import { useI18n } from '@/i18n';
 
 export default function LegalPage() {
   const { page } = useParams<{ page: string }>();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(true);
 
@@ -15,11 +15,11 @@ export default function LegalPage() {
 
   useEffect(() => {
     setLoading(true);
-    settingsApi.legal(key)
+    settingsApi.legal(key, locale)
       .then((r) => setContent(r.data.content ?? ''))
       .catch(() => setContent(''))
       .finally(() => setLoading(false));
-  }, [key]);
+  }, [key, locale]);
 
   return (
     <PageTransition className="max-w-3xl mx-auto">
