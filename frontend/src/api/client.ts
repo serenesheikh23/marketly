@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://amused-youth-production-20b6.up.railway.app/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://marketly-backend-production.up.railway.app/api';
 
 console.log('[API] Using backend URL:', API_URL);
 

@@ -14,6 +14,7 @@ return [
 
     'allowed_origins' => [
         'https://marketly-production.up.railway.app',
+        'https://marketly-frontend-production.up.railway.app',
         'https://eliasproject-production.up.railway.app',
     ],
 
