@@ -14,7 +14,7 @@ const CATEGORY_ICON: Record<string, string> = {
 };
 
 export default function ManualServices() {
-  const { locale } = useI18n();
+  const { locale, t } = useI18n();
   const [categories, setCategories] = useState<any[]>([]);
   const [selected, setSelected] = useState<any>(null);
   const [fields, setFields] = useState<any[]>([]);
@@ -45,30 +45,30 @@ export default function ManualServices() {
     setSubmitting(true);
     try {
       const products = (selected.products ?? []).filter((p: any) => p.type === 'manual');
-      if (products.length === 0) { toast.error('No products in this category.'); return; }
+      if (products.length === 0) { toast.error(t('manualServices.noProducts')); return; }
       await orderApi.create({
         items: [{ product_id: products[0].id, quantity, payload: formData }],
         payment_method: 'cash_wallet',
       });
-      toast.success('Manual service order submitted!');
+      toast.success(t('manualServices.success'));
       setSelected(null);
       setFormData({});
     } catch (err: any) {
-      toast.error(err.response?.data?.message ?? 'Failed');
+      toast.error(err.response?.data?.message ?? t('manualServices.failed'));
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <PageTransition className="max-w-7xl mx-auto w-full space-y-8">
-      <div>
-        <p className="eyebrow mb-2">Services</p>
-        <h1 className="text-h1 text-gray-900 dark:text-ink-900">Manual Services</h1>
+    <div className="max-w-7xl mx-auto w-full space-y-8">
+      <PageTransition className="space-y-2">
+        <p className="eyebrow mb-2">{t('manualServices.title')}</p>
+        <h1 className="text-h1 text-gray-900 dark:text-ink-900">{t('manualServices.title')}</h1>
         <p className="text-body text-gray-600 dark:text-ink-600 mt-2">
-          Custom services handled by our team. Fill in the details below and we'll get started.
+          {t('manualServices.description')}
         </p>
-      </div>
+      </PageTransition>
 
       {!selected ? (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -94,19 +94,19 @@ export default function ManualServices() {
           initial={{ opacity: 0, x: 16 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.3 }}
-          className="space-y-6"
+          className="flex flex-col items-center"
         >
           <button
             onClick={() => setSelected(null)}
-            className="nav-link text-sm"
+            className="nav-link text-sm self-start mb-2"
           >
-            ← Back to categories
+            {t('manualServices.backToCategories')}
           </button>
 
-          <div className="card-pad max-w-lg space-y-5">
+          <div className="card-pad max-w-lg w-full space-y-5">
             <div>
               <p className="eyebrow mb-1">{localized(selected, 'name', 'name_ar', locale)}</p>
-              <h2 className="text-h2 text-gray-900 dark:text-ink-900">Service Details</h2>
+              <h2 className="text-h2 text-gray-900 dark:text-ink-900">{t('manualServices.serviceDetails')}</h2>
               {selected.description && (
                 <p className="text-body text-gray-600 dark:text-ink-600 mt-2">{localized(selected, 'description', 'description_ar', locale)}</p>
               )}
@@ -135,7 +135,7 @@ export default function ManualServices() {
                         value={formData[f.key] ?? ''}
                         onChange={(e) => setFormData((p) => ({ ...p, [f.key]: e.target.value }))}
                       >
-                        <option value="">Select…</option>
+                        <option value="">{t('manualServices.select')}</option>
                         {(f.options ?? []).map((o: string) => (
                           <option key={o} value={o}>{o}</option>
                         ))}
@@ -153,7 +153,7 @@ export default function ManualServices() {
                   </div>
                 ))}
                 <div>
-                  <label className="label">Quantity</label>
+                  <label className="label">{t('manualServices.quantity')}</label>
                   <input
                     type="number"
                     min="1"
@@ -169,15 +169,18 @@ export default function ManualServices() {
                   loading={submitting}
                   className="w-full"
                 >
-                  Place Order
+                  {t('manualServices.placeOrder')}
                 </Button>
               </form>
             ) : (
-              <p className="text-body text-gray-600 dark:text-ink-500">No form fields defined for this category yet.</p>
+              <div className="text-center py-6 space-y-3">
+                <p className="text-3xl">📋</p>
+                <p className="text-body text-gray-600 dark:text-ink-500">{t('manualServices.noFields')}</p>
+              </div>
             )}
           </div>
         </motion.div>
       )}
-    </PageTransition>
+    </div>
   );
 }

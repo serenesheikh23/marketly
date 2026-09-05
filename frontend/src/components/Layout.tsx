@@ -72,14 +72,14 @@ export default function Layout() {
                 <Link to="/register" className="btn-accent btn-sm">{t('nav.getStarted')}</Link>
               </>
             )}
-            <div className="ml-auto flex items-center gap-2">
+            <div className="ms-auto flex items-center gap-2">
               <LanguageSwitcher />
               <ThemeToggle />
             </div>
           </nav>
 
           {/* Mobile right side: only toggles + hamburger */}
-          <div className="ml-auto flex items-center gap-1 md:hidden">
+          <div className="ms-auto flex items-center gap-1 md:hidden">
             <LanguageSwitcher />
             <ThemeToggle />
             <button

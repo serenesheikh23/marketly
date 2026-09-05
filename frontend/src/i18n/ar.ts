@@ -268,6 +268,33 @@ const ar: import('./en').Translations = {
     beingUpdated: 'هذه الصفحة قيد التحديث حالياً. يرجى العودة لاحقاً.',
   },
 
+  // Withdraw
+  withdraw: {
+    title: 'سحب',
+    notice: 'تنبيه',
+    noticeText: 'تتم معالجة السحوبات يدوياً. يرجى التأكد من صحة عنوان محفظتك — التحويلات غير قابلة للتراجع.',
+    amount: 'المبلغ (بالدولار الأمريكي)',
+    walletAddress: 'عنوان المحفظة (USDT BEP-20)',
+    submit: 'إرسال طلب السحب',
+    success: 'تم إرسال طلب السحب!',
+    failed: 'فشل إرسال طلب السحب.',
+  },
+
+  // Manual services
+  manualServices: {
+    title: 'الخدمات اليدوية',
+    description: 'خدمات مخصصة يتولاها فريقنا. املأ التفاصيل أدناه وسنبدأ فوراً.',
+    backToCategories: '→ العودة للفئات',
+    serviceDetails: 'تفاصيل الخدمة',
+    quantity: 'الكمية',
+    placeOrder: 'تقديم الطلب',
+    noFields: 'لم يتم تعريف حقول لهذا القسم بعد. يرجى التواصل مع الدعم.',
+    noProducts: 'لا توجد منتجات في هذا القسم.',
+    success: 'تم تقديم طلب الخدمة اليدوية!',
+    failed: 'فشل تقديم الطلب.',
+    select: 'اختر…',
+  },
+
   // Toasts / Errors (fallback)
   toast: {
     error: 'خطأ',
