@@ -268,6 +268,33 @@ const en = {
     beingUpdated: 'This page is currently being updated. Please check back shortly.',
   },
 
+  // Withdraw
+  withdraw: {
+    title: 'Withdraw',
+    notice: 'Notice',
+    noticeText: 'Withdrawals are processed manually. Please ensure your wallet address is correct — transfers are irreversible.',
+    amount: 'Amount (USD)',
+    walletAddress: 'Wallet Address (USDT BEP-20)',
+    submit: 'Submit Withdrawal',
+    success: 'Withdrawal request submitted!',
+    failed: 'Failed to submit withdrawal.',
+  },
+
+  // Manual services
+  manualServices: {
+    title: 'Manual Services',
+    description: 'Custom services handled by our team. Fill in the details below and we\'ll get started.',
+    backToCategories: '← Back to categories',
+    serviceDetails: 'Service Details',
+    quantity: 'Quantity',
+    placeOrder: 'Place Order',
+    noFields: 'No form fields defined for this category yet. Please contact support.',
+    noProducts: 'No products in this category.',
+    success: 'Manual service order submitted!',
+    failed: 'Failed to submit order.',
+    select: 'Select…',
+  },
+
   // Toasts / Errors (fallback)
   toast: {
     error: 'Error',
