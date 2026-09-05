@@ -5,6 +5,7 @@ import { useAppSelector } from '@/store';
 import toast from 'react-hot-toast';
 import Button from '@/components/Button';
 import PageTransition from '@/components/PageTransition';
+import { useI18n } from '@/i18n';
 
 const TIER_ICONS: Record<string, ReactNode> = {
   none: (
@@ -27,6 +28,7 @@ const TIER_ICONS: Record<string, ReactNode> = {
 
 export default function VipPage() {
   const user = useAppSelector((s) => s.auth.user);
+  const { t } = useI18n();
   const [vip, setVip] = useState<any>(null);
   const [upgrading, setUpgrading] = useState<string | null>(null);
 
@@ -87,10 +89,10 @@ export default function VipPage() {
   const currentIndex = tiers.findIndex((t) => t.key === (user as any)?.vip_level);
 
   return (
-    <PageTransition className="space-y-8">
+    <PageTransition className="max-w-4xl mx-auto w-full space-y-8">
       <div>
-        <p className="eyebrow mb-2">Membership</p>
-        <h1 className="text-h1 text-gray-900 dark:text-ink-900">VIP Status</h1>
+        <p className="eyebrow mb-2">{t('vip.title')}</p>
+        <h1 className="text-h1 text-gray-900 dark:text-ink-900 text-center">{t('vip.title')}</h1>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -108,7 +110,7 @@ export default function VipPage() {
               transition={{ delay: idx * 0.1, duration: 0.35 }}
             >
               {isCurrent && (
-                <span className="absolute top-4 right-4 badge-vip">Current</span>
+                <span className="absolute top-4 end-4 badge-vip">{t('vip.current')}</span>
               )}
 
               <span className={`inline-block mb-4 ${isCurrent ? 'text-accent-400' : 'text-gray-600 dark:text-ink-500'}`}>
@@ -124,16 +126,16 @@ export default function VipPage() {
 
               <div className="space-y-2 text-small text-gray-600 dark:text-ink-600 mt-4 mb-6">
                 <div className="flex justify-between">
-                  <span>Withdrawal Limit</span>
+                  <span>{t('vip.limits')}</span>
                   <strong className="text-gray-800 dark:text-ink-800">{tier.limit}</strong>
                 </div>
                 <div className="flex justify-between">
-                  <span>Withdrawal Fee</span>
+                  <span>{t('vip.fee')}</span>
                   <strong className="text-gray-800 dark:text-ink-800">{tier.fee}</strong>
                 </div>
                 {tier.price && (
                   <div className="flex justify-between">
-                    <span>Upgrade Cost</span>
+                    <span>{t('vip.price')}</span>
                     <strong className="text-accent-400">${tier.price}</strong>
                   </div>
                 )}
@@ -146,10 +148,10 @@ export default function VipPage() {
                   loading={upgrading === tier.key}
                   onClick={() => handleUpgrade(tier.key)}
                 >
-                  Upgrade to {tier.label}
+                  {t('vip.upgrade')}
                 </Button>
               ) : isCurrent ? (
-                <p className="text-small text-accent-400">✓ Current tier</p>
+                <p className="text-small text-accent-400">✓ {t('vip.current')}</p>
               ) : null}
             </motion.div>
           );
