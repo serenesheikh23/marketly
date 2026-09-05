@@ -21,6 +21,8 @@ export default function ManualServices() {
   const [formData, setFormData] = useState<Record<string, string>>({});
   const [quantity, setQuantity] = useState(1);
   const [submitting, setSubmitting] = useState(false);
+  // *NEW* Loading state to prevent flashing
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     categoryApi.list()
@@ -30,22 +32,23 @@ export default function ManualServices() {
 
   const selectCategory = async (cat: any) => {
     setSelected(cat);
-    try {
-      const r = await categoryApi.formSchema(cat.slug);
-      setFields(r.data.fields ?? []);
-    } catch {
-      setFields([]);
-    }
-    // Also fetch products for this category so the order can reference one
-    try {
-      const pr = await productApi.list({ category_id: cat.id, type: 'manual' });
-      // attach products to selected for later use
-      setSelected((prev: any) => ({ ...(prev ?? cat), products: pr.data.data ?? pr.data.products ?? [] }));
-    } catch {
-      // keep products on cat if any
-    }
+    setFields([]);
     setFormData({});
     setQuantity(1);
+    // *NEW* Set loading to true immediately
+    setIsLoading(true); 
+
+    try {
+      // Fetch products
+      const pr = await productApi.list({ category_id: cat.id, type: 'manual' });
+      const products = pr.data.data ?? pr.data.products ?? [];
+      setSelected((prev: any) => ({ ...(prev ?? cat), products }));
+    } catch {
+      setSelected((prev: any) => ({ ...(prev ?? cat), products: [] }));
+    } finally {
+      // *NEW* Set loading to false AFTER the API finishes
+      setIsLoading(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -120,70 +123,40 @@ export default function ManualServices() {
               )}
             </div>
 
-            {fields.length > 0 ? (
-              <form onSubmit={handleSubmit} className="space-y-4">
-                {fields.map((f: any) => (
+            {/* *NEW* Check loading first! */}
+            {isLoading ? (
+              <div className="text-center py-6">
+                <p className="text-gray-500 dark:text-ink-500">{t('common.loading')}</p>
+              </div>
+            ) : (selected.products ?? []).length > 0 ? (
+              <form onSubmit={handleSubmit} className="space-y-4 w-full">
+                {fields.length > 0 && fields.map((f: any) => (
                   <div key={f.key}>
                     <label className="label">
                       {f.label}{f.required ? ' *' : ''}
                     </label>
                     {f.type === 'textarea' ? (
-                      <textarea
-                        className="input"
-                        rows={3}
-                        required={f.required}
-                        placeholder={f.placeholder}
-                        value={formData[f.key] ?? ''}
-                        onChange={(e) => setFormData((p) => ({ ...p, [f.key]: e.target.value }))}
-                      />
+                      <textarea className="input" rows={3} required={f.required} placeholder={f.placeholder} value={formData[f.key] ?? ''} onChange={(e) => setFormData((p) => ({ ...p, [f.key]: e.target.value }))} />
                     ) : f.type === 'select' ? (
-                      <select
-                        className="input"
-                        required={f.required}
-                        value={formData[f.key] ?? ''}
-                        onChange={(e) => setFormData((p) => ({ ...p, [f.key]: e.target.value }))}
-                      >
+                      <select className="input" required={f.required} value={formData[f.key] ?? ''} onChange={(e) => setFormData((p) => ({ ...p, [f.key]: e.target.value }))}>
                         <option value="">{t('manualServices.select')}</option>
-                        {(f.options ?? []).map((o: string) => (
-                          <option key={o} value={o}>{o}</option>
-                        ))}
+                        {(f.options ?? []).map((o: string) => <option key={o} value={o}>{o}</option>)}
                       </select>
                     ) : (
-                      <input
-                        type={f.type === 'number' ? 'number' : 'text'}
-                        className="input"
-                        required={f.required}
-                        placeholder={f.placeholder}
-                        value={formData[f.key] ?? ''}
-                        onChange={(e) => setFormData((p) => ({ ...p, [f.key]: e.target.value }))}
-                      />
+                      <input type={f.type === 'number' ? 'number' : 'text'} className="input" required={f.required} placeholder={f.placeholder} value={formData[f.key] ?? ''} onChange={(e) => setFormData((p) => ({ ...p, [f.key]: e.target.value }))} />
                     )}
                   </div>
                 ))}
                 <div>
                   <label className="label">{t('manualServices.quantity')}</label>
-                  <input
-                    type="number"
-                    min="1"
-                    className="input w-32"
-                    value={quantity}
-                    onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
-                  />
+                  <input type="number" min="1" className="input w-32" value={quantity} onChange={(e) => setQuantity(parseInt(e.target.value) || 1)} />
                 </div>
-                <Button
-                  type="submit"
-                  variant="accent"
-                  size="lg"
-                  loading={submitting}
-                  className="w-full"
-                >
-                  {t('manualServices.submit')}
-                </Button>
+                <Button type="submit" variant="accent" size="lg" loading={submitting} className="w-full">{t('manualServices.submit')}</Button>
               </form>
             ) : (
               <div className="text-center py-6 space-y-3">
                 <p className="text-3xl">📋</p>
-                <p className="text-body text-gray-600 dark:text-ink-500">{t('manualServices.noFields')}</p>
+                <p className="text-body text-gray-600 dark:text-ink-500">{t('manualServices.noProducts')}</p>
               </div>
             )}
           </div>
