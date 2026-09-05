@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
-import { useAppDispatch, logout } from '@/store';
+import { useAppDispatch, useAppSelector, logout } from '@/store';
 import { authApi, adminOrderApi } from '@/api/client';
 import Logo from './Logo';
 import PageTransition from './PageTransition';
@@ -77,6 +77,28 @@ export default function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [pendingCount, setPendingCount] = useState(0);
 
+  // Get current user's roles from the Redux store
+  const user = useAppSelector((s: any) => s.auth.user);
+  const roleNames: string[] = useMemo(
+    () => (user?.roles ?? []).map((r: any) => r.name),
+    [user]
+  );
+  const isAdmin = roleNames.includes('admin');
+  const isModerator = roleNames.includes('moderator') && !isAdmin;
+
+  // Items only admins can see (hidden from moderators)
+  const ADMIN_ONLY_ROUTES = new Set<string>([
+    '/admin/users',
+    '/admin/products',
+    '/admin/categories',
+    '/admin/settings',
+  ]);
+
+  const visibleNavItems = useMemo(
+    () => NAV_ITEMS.filter((item) => !isModerator || !ADMIN_ONLY_ROUTES.has(item.to)),
+    [isModerator]
+  );
+
   useEffect(() => {
     adminOrderApi.pendingManualCount()
       .then((r) => setPendingCount(r.data.count ?? 0))
@@ -148,7 +170,7 @@ export default function AdminLayout() {
 
         {/* Nav items */}
         <nav className="flex-1 px-3 py-2 space-y-0.5 overflow-y-auto no-scrollbar">
-          {NAV_ITEMS.map((item) => {
+          {visibleNavItems.map((item) => {
             const isActive = item.exact
               ? location.pathname === item.to
               : location.pathname.startsWith(item.to);
