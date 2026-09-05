@@ -66,6 +66,19 @@ class DemoSeeder extends Seeder
         foreach ($defaults as $setting) {
             Setting::updateOrCreate(['key' => $setting['key']], $setting);
         }
+
+        // Seed demo legal content
+        Setting::set('legal_terms', 'Terms of Service
+
+By using Marketly, you agree to the following terms. Marketly is a digital marketplace that facilitates the purchase of digital products, software licenses, and online services. All transactions are final once the product is delivered. You are responsible for ensuring that your purchase complies with local laws and regulations in your jurisdiction. Refunds are processed at our discretion for undelivered or defective products only. We reserve the right to suspend accounts that violate these terms or engage in fraudulent activity. All prices are listed in USD unless otherwise stated. By completing a purchase, you confirm that you are at least 18 years of age or have parental consent to use this platform.', 'legal');
+
+        Setting::set('legal_privacy', 'Privacy Policy
+
+Marketly is committed to protecting your privacy. We collect minimal personal information necessary to process your orders, including your name, email address, and payment details. Payment information is processed securely through Binance Pay and is never stored on our servers. We may use your email address to send order confirmations and account-related notifications. We do not sell or share your personal data with third parties for marketing purposes. Cookies are used to maintain session state and improve your browsing experience. You have the right to request access to or deletion of your personal data at any time by contacting our support team.', 'legal');
+
+        Setting::set('legal_refund', 'Refund Policy
+
+Refunds at Marketly are evaluated on a case-by-case basis. Digital products that have been delivered and accessed are generally non-refundable. If you experience a technical issue or have not received your order within 24 hours, please contact our support team with your order details. Approved refunds are processed to your Marketly wallet balance within 3–5 business days. Chargebacks initiated through your payment provider without prior contact may result in account suspension. VIP membership upgrades and one-time fee payments are non-refundable once activated. We reserve the right to deny refund requests that appear fraudulent or abusive.', 'legal');
     }
 
     private function seedUsers(): void

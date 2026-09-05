@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { settingsApi } from '@/api/client';
 import PageTransition from '@/components/PageTransition';
+import { useI18n } from '@/i18n';
 
 interface LegalMeta {
   terms:   { title: string; heading: string };
@@ -15,20 +16,14 @@ const META: LegalMeta = {
   refund:  { title: 'Refund Policy',       heading: 'Refund Policy' },
 };
 
-const PLACEHOLDER: Record<string, string> = {
-  terms:   'Please update these terms in the admin panel.',
-  privacy: 'Please update the privacy policy in the admin panel.',
-  refund:  'Please update the refund policy in the admin panel.',
-};
-
 export default function LegalPage() {
   const { page } = useParams<{ page: string }>();
+  const { t } = useI18n();
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(true);
 
   const key = (page ?? 'terms') as keyof typeof META;
   const meta = META[key];
-  const placeholder = PLACEHOLDER[key];
 
   useEffect(() => {
     setLoading(true);
@@ -56,7 +51,7 @@ export default function LegalPage() {
           dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, '<br>') }}
         />
       ) : (
-        <p className="mt-6 text-body text-gray-600 dark:text-ink-600">{placeholder}</p>
+        <p className="mt-6 text-body text-gray-600 dark:text-ink-600">{t('legal.beingUpdated')}</p>
       )}
     </PageTransition>
   );

@@ -263,6 +263,11 @@ const en = {
     poweredBy: 'Powered by Marketly',
   },
 
+  // Legal pages
+  legal: {
+    beingUpdated: 'This page is currently being updated. Please check back shortly.',
+  },
+
   // Toasts / Errors (fallback)
   toast: {
     error: 'Error',
