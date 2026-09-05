@@ -210,6 +210,18 @@ Refunds at Marketly are evaluated on a case-by-case basis. Digital products that
                 );
             }
         }
+
+        // Form schema for Manual Charging & Store Offers
+        $manualCharging = Category::where('slug', 'manual-charging-store-offers')->first();
+        if ($manualCharging) {
+            $manualCharging->update([
+                'form_schema' => [
+                    ['key' => 'store_type', 'label' => 'Store Type', 'type' => 'select', 'required' => true, 'options' => ['Product Reseller', 'Digital Service', 'Custom Order']],
+                    ['key' => 'profile_link', 'label' => 'Profile / Order Link', 'type' => 'text', 'required' => true, 'options' => []],
+                    ['key' => 'order_description', 'label' => 'Order Description', 'type' => 'textarea', 'required' => false, 'options' => []],
+                ],
+            ]);
+        }
     }
 
     private function seedProducts(): void
