@@ -176,8 +176,9 @@ export default function AdminLayout() {
 
         {/* Bottom actions */}
         <div className="px-3 py-4 border-t border-gray-200 dark:border-ink-200 space-y-0.5">
+          {/* FIXED: Back to site now goes to homepage (/) instead of dashboard */}
           <Link
-            to="/dashboard"
+            to="/"
             className="nav-link text-sm"
             onClick={closeSidebar}
           >
