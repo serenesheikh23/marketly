@@ -34,6 +34,7 @@ function initializeEcho(): Echo<'reverb'> | null {
 
   window.Pusher = Pusher;
 
+  // Temporarily disabled to fix mobile crash
   if (false) {
     if (!echoInstance) {
       const instance: Echo<'reverb'> = new Echo<'reverb'>({
