@@ -83,22 +83,28 @@ class AdminSettingsController extends Controller
     /** Update legal page content (admin only) */
     public function updateLegal(Request $request, string $page): JsonResponse
     {
-        $key = match ($page) {
-            'terms' => 'legal_terms',
+        $keyPrefix = match ($page) {
+            'terms'   => 'legal_terms',
             'privacy' => 'legal_privacy',
-            'refund' => 'legal_refund',
-            default => null,
+            'refund'  => 'legal_refund',
+            default   => null,
         };
 
-        if (! $key) {
+        if (! $keyPrefix) {
             return response()->json(['message' => 'Unknown legal page.'], 404);
         }
 
         $data = $request->validate([
-            'content' => ['required', 'string'],
+            'content_en' => ['present', 'nullable', 'string'],
+            'content_ar' => ['present', 'nullable', 'string'],
         ]);
 
-        Setting::set($key, $data['content'], Setting::GROUP_LEGAL);
+        if (isset($data['content_en'])) {
+            Setting::set("{$keyPrefix}_en", $data['content_en'], Setting::GROUP_LEGAL);
+        }
+        if (isset($data['content_ar'])) {
+            Setting::set("{$keyPrefix}_ar", $data['content_ar'], Setting::GROUP_LEGAL);
+        }
 
         return response()->json(['message' => 'Legal page updated.', 'page' => $page]);
     }
