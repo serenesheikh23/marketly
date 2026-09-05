@@ -83,9 +83,10 @@ export default function Layout() {
             <LanguageSwitcher />
             <ThemeToggle />
             <button
+              type="button"
               onClick={() => setMobileOpen((v) => !v)}
-              className="p-2 rounded-md text-gray-700 dark:text-ink-700 hover:bg-gray-100 dark:hover:bg-ink-100 transition-colors"
-              aria-label="Toggle menu"
+              className="relative z-50 p-2 rounded-md text-gray-700 dark:text-ink-700 hover:bg-gray-100 dark:hover:bg-ink-100 transition-colors"
+              aria-label={mobileOpen ? 'Close menu' : 'Toggle menu'}
               aria-expanded={mobileOpen}
             >
               {mobileOpen ? (

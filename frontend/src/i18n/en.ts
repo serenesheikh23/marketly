@@ -45,6 +45,8 @@ const en = {
     hotRightNow: 'Hot right now',
     viewAll: 'View all',
     browse: 'Browse',
+    welcomeBack: 'Welcome back',
+    siteAdmin: 'Site Admin',
   },
 
   // Cart / Checkout

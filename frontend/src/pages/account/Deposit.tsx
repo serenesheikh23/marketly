@@ -28,9 +28,9 @@ export default function Deposit() {
   };
 
   const methods = [
-    { value: 'binance_pay', label: t('deposit.binance') },
-    { value: 'usdt', label: t('deposit.usdt') },
-    { value: 'cash_wallet', label: t('deposit.wallet') },
+    { value: 'binance_pay', label: 'Binance Pay' },
+    { value: 'usdt', label: 'USDT (BEP-20)' },
+    { value: 'cash_wallet', label: 'Cash Wallet' },
   ];
 
   return (
