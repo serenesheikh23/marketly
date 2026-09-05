@@ -83,6 +83,9 @@ Reverb broadcasts, a Redux store with localStorage persistence, and a bilingual
 - **Order Queues** — auto orders, manual orders, deposits, withdrawals
 - **Settings Store** — VIP limits, fees, payment gateway credentials, company info, legal content
 - **Real-time Health** — database, storage, Reverb, payment providers
+- **Fully Bilingual Admin Panel** — the entire Admin Dashboard, Categories, Products, Orders, and Settings interface is fully translated between English and Arabic (RTL), with locale-aware labels, placeholders, status text, and toasts.
+- **Custom Form Fields Builder** — for Manual Service categories, admins can dynamically create custom input fields (text, select, textarea) with required flags and comma-separated options, allowing them to collect specific customer data (e.g., Platform, Profile Link, Document Description) on the order form.
+- **Webhook-Ready Payment Architecture** — backend is equipped with Binance Pay and USDT webhook endpoints ready for real API key integration, with a safe "Demo Mode" active until production keys are provided, so the full purchase flow can be exercised end-to-end without live credentials.
 
 ---
 
