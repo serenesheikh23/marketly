@@ -25,11 +25,13 @@ class Category extends Model
         'image_base64',
         'image_url',
         'sort_order',
+        'form_schema', // <-- Added this
     ];
 
     protected $casts = [
         'type' => CategoryType::class,
         'sort_order' => 'integer',
+        'form_schema' => 'array', // <-- Added this (decodes JSON string to array)
     ];
 
     protected static function booted(): void
