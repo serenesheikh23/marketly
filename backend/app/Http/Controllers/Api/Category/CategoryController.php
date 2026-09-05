@@ -53,6 +53,7 @@ class CategoryController extends Controller
                         return [
                             'key' => $f->key,
                             'label' => $f->label,
+                            'label_ar' => $f->label_ar ?? $f->label, // <-- Added this line
                             'type' => $f->type,
                             'required' => $f->required,
                             'options' => is_array($f->options) ? $f->options : json_decode($f->options ?? '[]', true),
