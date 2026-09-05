@@ -251,8 +251,16 @@ const en = {
 
   // Footer
   footer: {
-    copyright: '© {year} marketly',
+    copyright: '© {year} Marketly. All rights reserved.',
     tagline: 'All products delivered instantly. Secure payments via Binance Pay & USDT.',
+    contact: 'Contact',
+    legal: 'Legal',
+    followUs: 'Follow us',
+    termsOfService: 'Terms of Service',
+    privacyPolicy: 'Privacy Policy',
+    refundPolicy: 'Refund Policy',
+    noSocialLinks: 'No social links yet.',
+    poweredBy: 'Powered by Marketly',
   },
 
   // Toasts / Errors (fallback)
