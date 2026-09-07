@@ -57,9 +57,9 @@ export default function HeroArt({ variant = 'aurora', className = '' }: HeroArtP
     <svg viewBox="0 0 1440 600" preserveAspectRatio="none" className={className} aria-hidden>
       <defs>
         <linearGradient id="aurora" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#10B981" stopOpacity="0.30" />
-          <stop offset="50%" stopColor="#34D399" stopOpacity="0.15" />
-          <stop offset="100%" stopColor="#10B981" stopOpacity="0" />
+          <stop offset="0%" stopColor="#F59E0B" stopOpacity="0.25" />
+          <stop offset="50%" stopColor="#FCD34D" stopOpacity="0.12" />
+          <stop offset="100%" stopColor="#F59E0B" stopOpacity="0" />
         </linearGradient>
         <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse">
           <circle cx="2" cy="2" r="1" fill="currentColor" className="text-ink-300 dark:text-ink-200" />
@@ -72,7 +72,7 @@ export default function HeroArt({ variant = 'aurora', className = '' }: HeroArtP
       />
       <path
         d="M0 420 C400 380, 800 500, 1440 420 L1440 600 L0 600 Z"
-        fill="#10B981"
+        fill="#F59E0B"
         opacity="0.05"
       />
     </svg>
