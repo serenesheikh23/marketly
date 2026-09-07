@@ -3,6 +3,10 @@
 @import '@fontsource/inter/600.css';
 @import '@fontsource/inter/700.css';
 @import '@fontsource/inter/800.css';
+@import '@fontsource/sora/500.css';
+@import '@fontsource/sora/600.css';
+@import '@fontsource/sora/700.css';
+@import '@fontsource/sora/800.css';
 
 @tailwind base;
 @tailwind components;
@@ -31,6 +35,7 @@
     --text-sec:  #8A8A8A;
     --text-body: #B5B5B5;
     --text-head: #FAFAFA;
+    --noise-opacity: 0.025;
   }
 
   html.light {
@@ -45,10 +50,24 @@
     --text-sec:  #64748B;
     --text-body: #475569;
     --text-head: #0F172A;
+    --noise-opacity: 0.015;
   }
 
   html, body, #root {
     height: 100%;
+  }
+
+  /* Noise texture overlay — subtle grain for premium feel */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: var(--noise-opacity);
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 128px 128px;
   }
 
   body {
@@ -63,7 +82,7 @@
 
   h1, h2, h3, h4 {
     color: var(--text-head);
-    @apply tracking-tighter;
+    @apply tracking-tighter font-heading;
   }
 
   /* Subtle selection */
@@ -102,8 +121,8 @@
 
   .btn-accent {
     @apply btn bg-accent-500 text-ink
-           hover:bg-accent-400 hover:scale-[1.01] active:scale-[0.99]
-           shadow-glow;
+           hover:bg-accent-400 hover:-translate-y-1 hover:scale-[1.02] active:scale-[0.99]
+           shadow-glow transition-all duration-300 ease-smooth;
   }
 
   .btn-secondary {
@@ -131,15 +150,27 @@
 
   /* ---------- Cards ---------- */
   .card {
-    @apply bg-white dark:bg-ink-50 shadow-sm rounded-xl
+    @apply bg-white/70 dark:bg-ink-50/70 backdrop-blur-xl shadow-sm rounded-xl
+           border border-white/10 dark:border-ink-200/50
            transition-all duration-300 ease-smooth;
   }
   .card-hover {
-    @apply card hover:shadow-md hover:-translate-y-0.5;
+    @apply card hover:shadow-lg hover:-translate-y-1 hover:border-accent-500/20;
   }
 
   .card-pad { @apply card p-6; }
   .card-pad-sm { @apply card p-4; }
+
+  /* ---------- Bento Box ---------- */
+  .bento {
+    @apply grid gap-3;
+    grid-auto-rows: minmax(0, 1fr);
+  }
+  .bento-item {
+    @apply card-hover overflow-hidden;
+  }
+  .bento-span-2 { @apply col-span-2; }
+  .bento-row-2 { @apply row-span-2; }
 
   /* ---------- Form inputs ---------- */
   .input {
