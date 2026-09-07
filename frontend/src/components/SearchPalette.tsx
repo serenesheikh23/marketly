@@ -175,10 +175,7 @@ export default function SearchPalette({ isOpen, onClose }: SearchPaletteProps) {
 
             {/* Footer hint */}
             <div className="px-4 py-2.5 border-t border-gray-100 dark:border-ink-200/50 bg-gray-50/50 dark:bg-ink-100/30 flex items-center gap-2">
-              <kbd className="px-1.5 py-0.5 text-[10px] rounded bg-gray-200 dark:bg-ink-200 text-gray-500 dark:text-ink-500 border border-gray-300 dark:border-ink-300">
-                ⌘K
-              </kbd>
-              <span className="text-micro text-gray-500 dark:text-ink-500">to open</span>
+              <span className="text-micro text-gray-500 dark:text-ink-500">Press Esc to close</span>
             </div>
           </motion.div>
         </>
