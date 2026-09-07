@@ -28,6 +28,7 @@ const en = {
     getStarted: 'Get started',
     backToSite: 'Back to site',
     adminPanel: 'Admin Panel',
+    searchProducts: 'Search products...',
   },
 
   // Products page

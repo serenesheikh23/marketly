@@ -1,0 +1,30 @@
+{
+  "dependencies": {
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "react-aria-components": "^1.21.1",
+    "tailwind-merge": "^3.6.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.5.11"
+  },
+  "name": "marketly",
+  "version": "1.0.0",
+  "description": "A production-grade digital marketplace with VIP tiers, manual services, and crypto payments. A full-stack reference app combining a Laravel 13 API with a React 19 + TypeScript single-page application, deployed end-to-end on Railway.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/serenesheikh23/marketly.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/serenesheikh23/marketly/issues"
+  },
+  "homepage": "https://github.com/serenesheikh23/marketly#readme"
+}

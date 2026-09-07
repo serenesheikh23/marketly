@@ -28,6 +28,7 @@ const ar: import('./en').Translations = {
     getStarted: 'ابدأ الآن',
     backToSite: 'العودة للموقع',
     adminPanel: 'لوحة الإدارة',
+    searchProducts: 'ابحث عن المنتجات...',
   },
 
   // Products page
