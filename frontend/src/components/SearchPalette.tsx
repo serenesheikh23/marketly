@@ -94,7 +94,7 @@ export default function SearchPalette({ isOpen, onClose }: SearchPaletteProps) {
             exit={{ opacity: 0, scale: 0.95, y: -10 }}
             transition={{ duration: 0.15, ease: [0.16, 1, 0.3, 1] }}
             onClick={(e) => e.stopPropagation()}
-            className="fixed top-[15vh] start-1/2 -translate-x-1/2 w-full max-w-lg z-[999]
+            className="fixed inset-0 m-auto w-[90%] max-w-lg h-fit z-[999]
                        bg-white dark:bg-ink-50 rounded-2xl shadow-2xl border border-gray-200 dark:border-ink-200
                        overflow-hidden"
           >
