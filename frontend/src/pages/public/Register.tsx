@@ -24,10 +24,7 @@ export default function Register() {
     try {
       const res = await authApi.register(form);
       const token = res.data.token;
-
-      // Save token to localStorage for API requests
       localStorage.setItem('token', token);
-
       dispatch(setUser(res.data.user));
       toast.success('Account created!');
       navigate('/dashboard');
@@ -43,14 +40,10 @@ export default function Register() {
 
   return (
     <PageTransition className="min-h-screen flex flex-col lg:flex-row-reverse">
-      {/* Right: floating icons — visible on all screens */}
-      {/* Changed py-12 to py-4 and mt-8 to mt-4 to reduce mobile spacing */}
       <div className="relative w-full lg:w-1/2 flex items-center justify-center px-6 py-4 lg:px-16 lg:py-20 mt-4 lg:mt-0">
-        {/* Full-width aurora background */}
         <div className="absolute inset-0 opacity-40 dark:opacity-40 pointer-events-none">
           <HeroArt variant="aurora" className="w-full h-full" />
         </div>
-        {/* Changed h-64 to h-32 to make it half size on mobile */}
         <div className="relative w-full h-32 lg:h-80 flex-shrink-0">
           <motion.div
             animate={{ y: [0, -15, 0], x: [0, 5, 0], rotate: [0, 8, 0] }}
@@ -59,7 +52,6 @@ export default function Register() {
           >
             <Gamepad2 size={34} className="text-green-400 drop-shadow-lg" />
           </motion.div>
-
           <motion.div
             animate={{ y: [0, 18, 0], x: [0, -8, 0], rotate: [0, -6, 0] }}
             transition={{ duration: 6, delay: 0.4, repeat: Infinity, ease: 'easeInOut' }}
@@ -67,7 +59,6 @@ export default function Register() {
           >
             <MessageCircle size={28} className="text-green-300 drop-shadow-lg" />
           </motion.div>
-
           <motion.div
             animate={{ y: [0, -20, 0], x: [0, 10, 0], rotate: [0, 12, 0] }}
             transition={{ duration: 4.8, delay: 0.8, repeat: Infinity, ease: 'easeInOut' }}
@@ -75,7 +66,6 @@ export default function Register() {
           >
             <CreditCard size={30} className="text-green-500 drop-shadow-lg" />
           </motion.div>
-
           <motion.div
             animate={{ y: [0, 12, 0], x: [0, -5, 0], rotate: [0, -4, 0] }}
             transition={{ duration: 5.5, delay: 0.2, repeat: Infinity, ease: 'easeInOut' }}
@@ -83,7 +73,6 @@ export default function Register() {
           >
             <Wallet size={24} className="text-green-400 drop-shadow-lg" />
           </motion.div>
-
           <motion.div
             animate={{ y: [0, -10, 0], x: [0, 6, 0], rotate: [0, 7, 0] }}
             transition={{ duration: 6.5, delay: 1.1, repeat: Infinity, ease: 'easeInOut' }}
@@ -91,7 +80,6 @@ export default function Register() {
           >
             <Palette size={26} className="text-green-300 drop-shadow-lg" />
           </motion.div>
-
           <motion.div
             animate={{ y: [0, 15, 0], x: [0, -8, 0], rotate: [0, -8, 0] }}
             transition={{ duration: 5.2, delay: 0.6, repeat: Infinity, ease: 'easeInOut' }}
@@ -102,13 +90,11 @@ export default function Register() {
         </div>
       </div>
 
-      {/* Left: form */}
       <div className="flex-1 flex items-center justify-center px-6 py-12 lg:px-16">
         <div className="w-full max-w-md">
           <div className="lg:hidden mb-10 flex justify-center">
             <Logo size="lg" />
           </div>
-
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
@@ -122,7 +108,6 @@ export default function Register() {
               </Link>
             </p>
           </motion.div>
-
           <motion.form
             onSubmit={handleSubmit}
             className="space-y-5"
@@ -157,17 +142,9 @@ export default function Register() {
                 )}
               </div>
             ))}
-
-            <Button
-              type="submit"
-              variant="accent"
-              size="lg"
-              loading={loading}
-              className="w-full mt-2"
-            >
+            <Button type="submit" variant="accent" size="lg" loading={loading} className="w-full mt-2">
               {t('auth.createAccount')}
             </Button>
-
             <p className="text-micro text-gray-600 dark:text-ink-500 text-center">
               By creating an account you agree to our{' '}
               <span className="text-gray-600 dark:text-ink-600">Terms of Service</span>.
@@ -176,5 +153,5 @@ export default function Register() {
         </div>
       </div>
     </PageTransition>
-  );
+  )
 }
