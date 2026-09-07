@@ -184,7 +184,7 @@ export default function AdminLayout() {
       </aside>
 
       <div className="flex-1 flex flex-col min-w-0 lg:ltr:ml-64 lg:rtl:mr-64">
-        <header className="sticky top-0 z-30 h-14 px-4 lg:px-8 flex items-center justify-between gap-2 bg-white/80 dark:bg-ink/80 backdrop-blur-md border-b border-gray-200 dark:border-ink-200">
+        <header className="sticky top-0 z-40 h-14 px-4 lg:px-8 flex items-center justify-between gap-2 bg-white/80 dark:bg-ink/80 backdrop-blur-md border-b border-gray-200 dark:border-ink-200">
           <button onClick={toggleSidebar} className="lg:hidden p-2 rounded-md bg-white dark:bg-ink-50 border border-gray-200 dark:border-ink-200 text-gray-700 dark:text-ink-700 hover:bg-gray-100 dark:hover:bg-ink-100" aria-label="Toggle sidebar">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="3" y1="6" x2="21" y2="6"/>

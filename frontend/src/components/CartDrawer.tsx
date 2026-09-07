@@ -96,7 +96,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[998]"
             onClick={onClose}
           />
 
@@ -106,15 +106,16 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-            className="fixed inset-y-0 end-0 w-full sm:w-[420px] z-50 flex flex-col
+            className="fixed inset-y-0 end-0 w-full sm:w-[420px] z-[999] flex flex-col
                        bg-white dark:bg-ink-50 shadow-2xl"
           >
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-5 border-b border-gray-200 dark:border-ink-200">
               <h2 className="text-h3 text-gray-900 dark:text-ink-900">{t('cart.yourCart')}</h2>
               <button
+                type="button"
                 onClick={onClose}
-                className="p-2 rounded-lg text-gray-500 dark:text-ink-500 hover:bg-gray-100 dark:hover:bg-ink-100 hover:text-gray-700 dark:hover:text-ink-700 transition-colors"
+                className="absolute top-4 end-4 p-2 rounded-lg text-gray-500 dark:text-ink-500 hover:bg-gray-100 dark:hover:bg-ink-100 hover:text-gray-700 dark:hover:text-ink-700 transition-colors z-[1000]"
                 aria-label="Close cart"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
