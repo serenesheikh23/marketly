@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Outlet, Link, useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch, logout } from '@/store';
 import { authApi } from '@/api/client';
@@ -7,17 +7,29 @@ import PageTransition from './PageTransition';
 import LanguageSwitcher from './LanguageSwitcher';
 import ThemeToggle from './ThemeToggle';
 import Footer from './Footer';
+import CartDrawer from './CartDrawer';
+import SearchPalette from './SearchPalette';
 import { useI18n } from '@/i18n';
 import { formatPrice } from '@/utils/format';
 
 export default function Layout() {
   const { user, isAuthenticated } = useAppSelector((s) => s.auth);
+  const cartItems = useAppSelector((s) => s.cart.items);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { t } = useI18n();
   const roles = (user as unknown as { roles?: Array<{ name: string }> })?.roles?.map((r) => r.name) ?? [];
 
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+
+  // Listen for global search open event
+  useEffect(() => {
+    const handler = () => setSearchOpen(true);
+    window.addEventListener('open-search-palette', handler);
+    return () => window.removeEventListener('open-search-palette', handler);
+  }, []);
 
   const handleLogout = async () => {
     try { await authApi.logout(); } catch (_) { /* ignore */ }
@@ -60,6 +72,40 @@ export default function Layout() {
               </>
             )}
             <div className="ms-auto flex items-center gap-2">
+              <button
+                onClick={() => setSearchOpen(true)}
+                className="hidden sm:flex items-center gap-2 px-3 py-1.5 text-xs text-gray-500 dark:text-ink-500
+                           bg-gray-100 dark:bg-ink-100 hover:bg-gray-200 dark:hover:bg-ink-200
+                           border border-gray-200 dark:border-ink-200 rounded-lg transition-colors"
+                aria-label="Search (Cmd+K)"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+                <span>Search</span>
+                <kbd className="ms-2 px-1.5 py-0.5 text-[10px] rounded bg-white dark:bg-ink-50 border border-gray-200 dark:border-ink-200">
+                  ⌘K
+                </kbd>
+              </button>
+              {isAuthenticated && (
+                <button
+                  onClick={() => setCartOpen(true)}
+                  className="relative p-1.5 rounded-lg text-gray-600 dark:text-ink-500 hover:text-gray-900 dark:hover:text-ink-900 hover:bg-gray-100 dark:hover:bg-ink-100 transition-all duration-200"
+                  aria-label="Open cart"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                    <line x1="3" y1="6" x2="21" y2="6" />
+                    <path d="M16 10a4 4 0 0 1-8 0" />
+                  </svg>
+                  {cartItems.length > 0 && (
+                    <span className="absolute -top-1 -end-1 bg-accent-500 text-ink text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                      {cartItems.length}
+                    </span>
+                  )}
+                </button>
+              )}
               <LanguageSwitcher />
               <ThemeToggle />
             </div>
@@ -107,7 +153,7 @@ export default function Layout() {
                   {(roles.includes('admin') || roles.includes('moderator')) && (
                     <Link to="/admin" className="nav-link text-accent-400" onClick={closeMenu}>{t('nav.admin')}</Link>
                   )}
-                  <Link to="/cart" className="nav-link" onClick={closeMenu}>{t('nav.cart')}</Link>
+                  <button onClick={() => { closeMenu(); setCartOpen(true); }} className="nav-link w-full text-left">{t('nav.cart')}</button>
                   <div className="pt-2 pb-1 text-xs text-gray-500 dark:text-ink-500 font-semibold uppercase tracking-wider">Balance: {formatPrice(user?.balance)}</div>
                   <button onClick={handleLogout} className="nav-link text-status-rejected/80 hover:text-status-rejected hover:bg-status-rejected/10 w-full text-left">
                     {t('nav.signOut')}
@@ -132,6 +178,9 @@ export default function Layout() {
       </main>
 
       <Footer />
+
+      <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />
+      <SearchPalette isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
     </div>
   );
 }

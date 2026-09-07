@@ -5,6 +5,7 @@ import { useAppSelector, useAppDispatch, updateBalance } from '@/store';
 import { vipApi, transactionApi } from '@/api/client';
 import EmptyState from '@/components/EmptyState';
 import PageTransition from '@/components/PageTransition';
+import TrendChart from '@/components/TrendChart';
 import { formatPrice, formatDateTime } from '@/utils/format';
 import { useI18n } from '@/i18n';
 import Breadcrumbs from '@/components/Breadcrumbs';
@@ -135,6 +136,34 @@ export default function Dashboard() {
           </motion.div>
         ))}
       </div>
+
+      {/* Trend chart */}
+      {(() => {
+        // Build last-7-days spending chart from txns
+        const days = Array.from({ length: 7 }, (_, i) => {
+          const d = new Date();
+          d.setDate(d.getDate() - (6 - i));
+          return d.toISOString().split('T')[0];
+        });
+        const spendPerDay = days.map((day) =>
+          txns
+            .filter((t) => t.created_at?.startsWith(day) && !['deposit', 'refund', 'vip_upgrade'].includes(t.type))
+            .reduce((sum, t) => sum + Math.abs(t.amount), 0)
+        );
+        const labels = days.map((d) => {
+          const dt = new Date(d);
+          return dt.toLocaleDateString('en', { weekday: 'short' });
+        });
+
+        return (
+          <motion.div {...stagger(3)} className="card-pad">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-h3 text-gray-900 dark:text-ink-900">{t('admin.spendingTrend') ?? 'Spending Trend (7 days)'}</h2>
+            </div>
+            <TrendChart data={spendPerDay} labels={labels} showAxis className="text-gray-500 dark:text-ink-500" />
+          </motion.div>
+        );
+      })()}
 
       {/* Quick actions */}
       <div>
