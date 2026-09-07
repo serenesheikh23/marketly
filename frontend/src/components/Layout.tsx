@@ -43,7 +43,7 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-ink flex flex-col overflow-x-hidden">
-      <header className="sticky top-0 z-[100] border-b border-gray-200 dark:border-ink-200 bg-white/90 dark:bg-ink/90 backdrop-blur-md">
+      <header className="sticky top-0 z-50 border-b border-gray-200 dark:border-ink-200 bg-white/90 dark:bg-ink/90 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-2 flex-wrap">
           <Link to="/" className="flex items-center gap-2 flex-shrink-0">
             <Logo size="sm" showText />
