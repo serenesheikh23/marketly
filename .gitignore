@@ -49,3 +49,4 @@ composer.phar
 *.cache
 *.tsbuildinfo
 vite.config.d.ts
+.aider*
