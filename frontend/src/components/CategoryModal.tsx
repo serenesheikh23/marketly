@@ -253,7 +253,7 @@ export default function CategoryModal({ category, onClose, onSaved }: CategoryMo
                       <div className="flex items-center h-[42px]">
                         <input
                           type="checkbox"
-                          className="w-4 h-4 accent-accent-400"
+                          className="w-4 h-4 green-green-400"
                           checked={field.required}
                           onChange={(e) => updateField(index, { required: e.target.checked })}
                         />

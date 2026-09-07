@@ -55,7 +55,7 @@ export default function Layout() {
               <>
                 <Link to="/dashboard" className="nav-link text-sm">{t('nav.dashboard')}</Link>
                 {(roles.includes('admin') || roles.includes('moderator')) && (
-                  <Link to="/admin" className="nav-link text-sm text-accent-400">{t('nav.admin')}</Link>
+                  <Link to="/admin" className="nav-link text-sm text-green-400">{t('nav.admin')}</Link>
                 )}
                 <div className="mx-2 w-px h-5 bg-gray-300 dark:bg-ink-200" />
                 <span className="text-sm text-gray-600 dark:text-ink-600 font-medium tabular-nums">
@@ -108,7 +108,7 @@ export default function Layout() {
                   <path d="M16 10a4 4 0 0 1-8 0" />
                 </svg>
                 {cartItems.length > 0 && (
-                  <span className="absolute -top-0.5 -end-0.5 bg-accent-500 text-ink text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                  <span className="absolute -top-0.5 -end-0.5 bg-green-500 text-ink text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
                     {cartItems.length}
                   </span>
                 )}
@@ -155,7 +155,7 @@ export default function Layout() {
                 <>
                   <Link to="/dashboard" className="nav-link" onClick={closeMenu}>{t('nav.dashboard')}</Link>
                   {(roles.includes('admin') || roles.includes('moderator')) && (
-                    <Link to="/admin" className="nav-link text-accent-400" onClick={closeMenu}>{t('nav.admin')}</Link>
+                    <Link to="/admin" className="nav-link text-green-400" onClick={closeMenu}>{t('nav.admin')}</Link>
                   )}
                   <button onClick={() => { closeMenu(); setCartOpen(true); }} className="nav-link w-full text-left">{t('nav.cart')}</button>
                   <div className="pt-2 pb-1 text-xs text-gray-500 dark:text-ink-500 font-semibold uppercase tracking-wider">Balance: {formatPrice(user?.balance)}</div>

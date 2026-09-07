@@ -5,7 +5,7 @@ import Button from '@/components/Button';
 export default function NotFound() {
   return (
     <PageTransition className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-6">
-      <div className="text-8xl font-extrabold text-accent-500/20 select-none" aria-hidden>
+      <div className="text-8xl font-extrabold text-green-500/20 select-none" aria-hidden>
         404
       </div>
       <div>

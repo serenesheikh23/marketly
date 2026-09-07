@@ -24,8 +24,8 @@ export default function EmptyState({
   return (
     <div className="text-center py-16 px-6 max-w-lg mx-auto" role="status">
       <div className="relative w-24 h-24 mx-auto mb-6">
-        <div className="absolute inset-0 rounded-2xl bg-accent-500/10 border border-accent-500/20" aria-hidden="true" />
-        <div className="relative w-full h-full flex items-center justify-center text-accent-400">
+        <div className="absolute inset-0 rounded-2xl bg-green-500/10 border border-green-500/20" aria-hidden="true" />
+        <div className="relative w-full h-full flex items-center justify-center text-green-400">
           {icon}
         </div>
       </div>

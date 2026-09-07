@@ -66,7 +66,7 @@ export default function Home() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-24">
-        <span className="w-8 h-8 rounded-full border-2 border-accent-500 border-t-transparent animate-spin" />
+        <span className="w-8 h-8 rounded-full border-2 border-green-500 border-t-transparent animate-spin" />
       </div>
     );
   }
@@ -83,7 +83,7 @@ export default function Home() {
         <div
           className="pointer-events-none absolute inset-0 z-0 opacity-50 dark:opacity-40"
           style={{
-            background: `radial-gradient(600px circle at ${mousePos.x}px ${mousePos.y}px, rgba(245,158,11,0.10), transparent 45%)`,
+            background: `radial-gradient(600px circle at ${mousePos.x}px ${mousePos.y}px, rgba(34,197,94,0.10), transparent 45%)`,
           }}
         />
         <div className="pointer-events-none absolute inset-0 z-0 opacity-[0.04] dark:opacity-[0.06] dot-bg" />
@@ -97,8 +97,8 @@ export default function Home() {
               {...reveal(0)}
               className="flex items-center gap-3 mb-8"
             >
-              <span className="inline-block w-10 h-px bg-accent-500" />
-              <span className="eyebrow text-accent-400">{t('home.digitalMarketplace')}</span>
+              <span className="inline-block w-10 h-px bg-green-500" />
+              <span className="eyebrow text-green-400">{t('home.digitalMarketplace')}</span>
             </motion.div>
 
             <motion.h1
@@ -109,9 +109,9 @@ export default function Home() {
               {t('home.heroTitle1')}
               <br />
               <span className="relative inline-block">
-                <span className="text-accent-500">{t('home.heroTitle2')}</span>
+                <span className="text-green-500">{t('home.heroTitle2')}</span>
                 {/* hand-drawn underline */}
-                <svg className="absolute -bottom-3 start-0 w-full h-3 text-accent-500" viewBox="0 0 200 12" fill="none" preserveAspectRatio="none" aria-hidden>
+                <svg className="absolute -bottom-3 start-0 w-full h-3 text-green-500" viewBox="0 0 200 12" fill="none" preserveAspectRatio="none" aria-hidden>
                   <path d="M2 8 Q 50 1, 100 6 T 198 4" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" fill="none" />
                 </svg>
               </span>
@@ -131,7 +131,7 @@ export default function Home() {
                     {t('home.continueShopping')}
                     <ArrowUpRight size={16} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                   </Link>
-                  <Link to="/dashboard" className="btn-secondary hover:-translate-y-1 hover:border-accent-500/40 hover:shadow-glow">
+                  <Link to="/dashboard" className="btn-secondary hover:-translate-y-1 hover:border-green-500/40 hover:shadow-glow">
                     {t('home.goToDashboard')}
                   </Link>
                 </>
@@ -141,26 +141,13 @@ export default function Home() {
                     {t('home.browseProducts')}
                     <ArrowUpRight size={16} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                   </Link>
-                  <Link to="/register" className="btn-secondary hover:-translate-y-1 hover:border-accent-500/40 hover:shadow-glow">
+                  <Link to="/register" className="btn-secondary hover:-translate-y-1 hover:border-green-500/40 hover:shadow-glow">
                     {t('home.createAccount')}
                   </Link>
                 </>
               )}
             </motion.div>
 
-            {/* Trust strip — inline stats */}
-            <motion.div {...reveal(4)} className="mt-14 flex flex-wrap gap-x-10 gap-y-4">
-              {[
-                { k: '24/7', v: 'Instant delivery' },
-                { k: '150+', v: 'Digital products' },
-                { k: '4.9★', v: 'User rating' },
-              ].map((s) => (
-                <div key={s.v}>
-                  <div className="font-heading text-2xl text-gray-900 dark:text-ink-900 font-semibold">{s.k}</div>
-                  <div className="text-micro uppercase tracking-wider text-gray-500 dark:text-ink-500">{s.v}</div>
-                </div>
-              ))}
-            </motion.div>
           </div>
 
           {/* RIGHT — floating bento of icons, NOT a circle/box, offset to the right */}
@@ -171,16 +158,16 @@ export default function Home() {
               transition={{ delay: 0.2, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
               className="absolute inset-0"
             >
-              {/* Soft amber halo behind the cluster */}
+              {/* Soft green halo behind the cluster */}
               <div className="absolute top-1/2 start-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 rounded-full
-                              bg-accent-500/20 dark:bg-accent-500/10 blur-3xl pointer-events-none" />
+                              bg-green-500/20 dark:bg-green-500/10 blur-3xl pointer-events-none" />
 
               <motion.div
                 animate={{ y: [0, -14, 0], rotate: [0, 6, 0] }}
                 transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
                 className="absolute top-[2%] start-[8%]"
               >
-                <Gamepad2 size={36} className="text-accent-500 drop-shadow-[0_8px_24px_rgba(245,158,11,0.4)]" />
+                <Gamepad2 size={36} className="text-green-500 drop-shadow-[0_8px_24px_rgba(34,197,94,0.4)]" />
               </motion.div>
 
               <motion.div
@@ -188,7 +175,7 @@ export default function Home() {
                 transition={{ duration: 6, delay: 0.3, repeat: Infinity, ease: 'easeInOut' }}
                 className="absolute top-[40%] end-[2%]"
               >
-                <MessageCircle size={28} className="text-accent-400 drop-shadow-[0_8px_20px_rgba(245,158,11,0.3)]" />
+                <MessageCircle size={28} className="text-green-400 drop-shadow-[0_8px_20px_rgba(34,197,94,0.3)]" />
               </motion.div>
 
               <motion.div
@@ -196,7 +183,7 @@ export default function Home() {
                 transition={{ duration: 4.6, delay: 0.7, repeat: Infinity, ease: 'easeInOut' }}
                 className="absolute bottom-[18%] start-[12%]"
               >
-                <CreditCard size={32} className="text-accent-500 drop-shadow-[0_8px_20px_rgba(245,158,11,0.4)]" />
+                <CreditCard size={32} className="text-green-500 drop-shadow-[0_8px_20px_rgba(34,197,94,0.4)]" />
               </motion.div>
 
               <motion.div
@@ -204,7 +191,7 @@ export default function Home() {
                 transition={{ duration: 5.4, delay: 0.15, repeat: Infinity, ease: 'easeInOut' }}
                 className="absolute top-[14%] start-[48%]"
               >
-                <Wallet size={24} className="text-accent-400 drop-shadow-[0_8px_18px_rgba(245,158,11,0.3)]" />
+                <Wallet size={24} className="text-green-400 drop-shadow-[0_8px_18px_rgba(34,197,94,0.3)]" />
               </motion.div>
 
               <motion.div
@@ -212,7 +199,7 @@ export default function Home() {
                 transition={{ duration: 6.4, delay: 1, repeat: Infinity, ease: 'easeInOut' }}
                 className="absolute bottom-[8%] end-[28%]"
               >
-                <Palette size={26} className="text-accent-400 drop-shadow-[0_8px_18px_rgba(245,158,11,0.3)]" />
+                <Palette size={26} className="text-green-400 drop-shadow-[0_8px_18px_rgba(34,197,94,0.3)]" />
               </motion.div>
 
               <motion.div
@@ -220,7 +207,7 @@ export default function Home() {
                 transition={{ duration: 5.1, delay: 0.5, repeat: Infinity, ease: 'easeInOut' }}
                 className="absolute bottom-[32%] end-[10%]"
               >
-                <Bot size={32} className="text-accent-500 drop-shadow-[0_8px_22px_rgba(245,158,11,0.4)]" />
+                <Bot size={32} className="text-green-500 drop-shadow-[0_8px_22px_rgba(34,197,94,0.4)]" />
               </motion.div>
             </motion.div>
           </div>
@@ -277,7 +264,7 @@ export default function Home() {
                     )}
 
                     <div className="mt-6">
-                      <h3 className={`font-heading ${isFirst ? 'text-2xl md:text-3xl' : 'text-sm'} font-semibold text-gray-900 dark:text-ink-900 group-hover:text-accent-500 transition-colors`}>
+                      <h3 className={`font-heading ${isFirst ? 'text-2xl md:text-3xl' : 'text-sm'} font-semibold text-gray-900 dark:text-ink-900 group-hover:text-green-500 transition-colors`}>
                         {localized(cat, 'name', 'name_ar', locale)}
                       </h3>
                       <p className="text-micro text-gray-600 dark:text-ink-500 uppercase mt-1.5 tracking-wider">{cat.type}</p>
@@ -285,7 +272,7 @@ export default function Home() {
 
                     {/* Arrow appears on hover */}
                     {isFirst && (
-                      <div className="mt-6 inline-flex items-center gap-2 text-sm text-accent-500 font-medium">
+                      <div className="mt-6 inline-flex items-center gap-2 text-sm text-green-500 font-medium">
                         Explore
                         <ArrowUpRight size={16} className="transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
                       </div>
@@ -309,28 +296,27 @@ export default function Home() {
           </div>
           <Link
             to="/products"
-            className="group inline-flex items-center gap-1 text-sm text-accent-500 hover:text-accent-400 transition-colors"
+            className="group inline-flex items-center gap-1 text-sm text-green-500 hover:text-green-400 transition-colors"
           >
             {t('home.viewAll')}
             <ArrowUpRight size={14} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </Link>
         </motion.div>
 
-        {/* Asymmetric: 1 hero product spanning 2 rows on the left, then 3 smaller ones on the right */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {(featured ?? []).slice(0, 4).map((p, i) => {
-            const isHero = i === 0;
+        {/* Clean uniform grid: 1 col mobile, 2 cols tablet, 3-4 cols desktop */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {(featured ?? []).slice(0, 8).map((p, i) => {
             return (
               <motion.div
                 key={p.id}
                 {...reveal(i)}
-                className={isHero ? 'sm:col-span-2 lg:col-span-2 lg:row-span-2' : 'sm:col-span-1 lg:col-span-1'}
+                className="h-full"
               >
                 <Link
                   to={`/product/${p.slug}`}
-                  className="card-hover group block overflow-hidden h-full"
+                  className="card-hover group block overflow-hidden h-full bg-white dark:bg-ink-50 rounded-2xl border border-gray-200 dark:border-ink-200 shadow-sm"
                 >
-                  <div className={`relative ${isHero ? 'h-64 lg:h-80' : 'h-44'} overflow-hidden`}>
+                  <div className="relative h-44 overflow-hidden">
                     <ProductImage
                       name={localized(p, 'name', 'name_ar', locale)}
                       category={localized(p.category, 'name', 'name_ar', locale)}
@@ -338,28 +324,20 @@ export default function Home() {
                       imageUrl={p.image_url}
                       className="w-full h-full transition-transform duration-700 group-hover:scale-110"
                     />
-                    {/* Hot tag on hero card */}
-                    {isHero && (
-                      <div className="absolute top-4 start-4 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full
-                                      bg-accent-500 text-ink text-[10px] font-bold uppercase tracking-wider">
-                        <span className="w-1.5 h-1.5 rounded-full bg-ink animate-pulse" />
-                        Trending
-                      </div>
-                    )}
                   </div>
 
-                  <div className={`${isHero ? 'p-7' : 'p-5'}`}>
-                    <h3 className={`font-heading ${isHero ? 'text-2xl' : 'text-sm'} font-semibold text-gray-900 dark:text-ink-900 group-hover:text-accent-500 transition-colors line-clamp-2 mb-2`}>
+                  <div className="p-5">
+                    <h3 className="font-heading text-sm font-semibold text-gray-900 dark:text-ink-900 group-hover:text-green-500 transition-colors line-clamp-2 mb-2">
                       {localized(p, 'name', 'name_ar', locale)}
                     </h3>
-                    <p className={`text-gray-500 dark:text-ink-500 line-clamp-1 mb-4 ${isHero ? 'text-sm' : 'text-micro'}`}>
+                    <p className="text-micro text-gray-500 dark:text-ink-500 line-clamp-1 mb-4">
                       {localized(p, 'description', 'description_ar', locale)}
                     </p>
                     <div className="flex items-center justify-between">
-                      <span className={`font-heading ${isHero ? 'text-3xl' : 'text-h3'} text-accent-500 font-bold tabular-nums`}>
+                      <span className="font-heading text-h3 text-green-500 font-bold tabular-nums">
                         {formatPrice(p.price)}
                       </span>
-                      <div className="inline-flex items-center gap-1.5 text-xs text-gray-500 dark:text-ink-500 group-hover:text-accent-500 transition-colors">
+                      <div className="inline-flex items-center gap-1.5 text-xs text-gray-500 dark:text-ink-500 group-hover:text-green-500 transition-colors">
                         View
                         <ArrowUpRight size={14} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                       </div>

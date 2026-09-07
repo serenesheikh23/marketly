@@ -107,7 +107,7 @@ export default function AdminProducts() {
                       onClick={() => toggleActive(p)}
                       className={`text-small font-medium ${
                         p.is_active
-                          ? 'text-accent-400 hover:text-accent-300'
+                          ? 'text-green-400 hover:text-green-300'
                           : 'text-status-rejected hover:text-status-rejected/80'
                       }`}
                     >
