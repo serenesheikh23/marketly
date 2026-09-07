@@ -65,7 +65,7 @@ class AdminTransactionController extends Controller
 
         $transaction->update([
             'status' => TransactionStatus::Rejected,
-            'notes' => $request->string('reason')->toString(),
+            'rejection_reason' => $request->string('reason')->toString(),
         ]);
 
         $this->safeBroadcast(new DepositStatusChanged($transaction));
@@ -96,7 +96,7 @@ class AdminTransactionController extends Controller
 
         $transaction->update([
             'status' => TransactionStatus::Rejected,
-            'notes' => $request->string('reason')->toString(),
+            'rejection_reason' => $request->string('reason')->toString(),
         ]);
 
         $this->safeBroadcast(new WithdrawalStatusChanged($transaction));
