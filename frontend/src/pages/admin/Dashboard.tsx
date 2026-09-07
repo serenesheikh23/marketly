@@ -91,10 +91,10 @@ export default function AdminDashboard() {
               whileHover={{ y: -4 }}
               className={
                 isHero
-                  ? 'col-span-2 md:col-span-2 lg:row-span-2 group relative overflow-hidden rounded-2xl p-7 md:p-8 ' +
-                    'bg-gradient-to-br from-ink-50/80 to-white/60 dark:from-ink-50/40 dark:to-ink-100/30 ' +
-                    'border border-white/10 dark:border-ink-200/50 backdrop-blur-xl ' +
-                    'shadow-sm hover:shadow-glow hover:border-green-500/40 transition-all duration-300'
+                  ? 'col-span-2 md:col-span-2 lg:row-span-2 group relative overflow-hidden rounded-2xl p-6 ' +
+                    'bg-white dark:bg-ink-100 ' +
+                    'border border-gray-200 dark:border-ink-200 shadow-sm ' +
+                    'hover:shadow-glow hover:border-green-500/40 transition-all duration-300'
                   : 'col-span-1 group relative overflow-hidden rounded-2xl p-5 ' +
                     'bg-white/70 dark:bg-ink-50/70 backdrop-blur-xl ' +
                     'border border-white/10 dark:border-ink-200/50 ' +
@@ -120,13 +120,6 @@ export default function AdminDashboard() {
                     {tile.trend.startsWith('+') ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
                     {tile.trend}
                     <span className="text-gray-500 dark:text-ink-500 ms-1">vs last week</span>
-                  </div>
-                )}
-
-                {isHero && (
-                  <div className="mt-6 inline-flex items-center gap-2 text-sm text-green-500 font-medium">
-                    View analytics
-                    <ArrowUpRight size={16} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                   </div>
                 )}
               </div>
