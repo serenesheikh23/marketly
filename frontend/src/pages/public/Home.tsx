@@ -76,7 +76,7 @@ export default function Home() {
 
       {/* ── HERO — Asymmetric editorial layout ──────────────── */}
       <motion.section
-        className="relative w-full"
+        className="relative w-full overflow-hidden"
         style={{ y: heroY, opacity: heroOpacity }}
       >
         {/* Layered noise + mouse glow + grid texture */}
@@ -151,7 +151,7 @@ export default function Home() {
           </div>
 
           {/* RIGHT — floating bento of icons, NOT a circle/box, offset to the right */}
-          <div className="relative lg:col-span-4 lg:col-start-9 lg:row-start-1 h-72 lg:h-[28rem] mt-8 lg:mt-0">
+          <div className="relative overflow-hidden pointer-events-none lg:col-span-4 lg:col-start-9 lg:row-start-1 h-72 lg:h-[28rem] mt-8 lg:mt-0 flex-shrink-0">
             <motion.div
               initial={{ opacity: 0, scale: 0.92 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -225,58 +225,38 @@ export default function Home() {
           </div>
         </motion.div>
 
-        {/* Asymmetric 12-col grid: first item big, rest smaller */}
-        <div className="grid grid-cols-2 md:grid-cols-12 gap-3 md:gap-4">
+        {/* Balanced uniform grid: 2 col mobile, 3 col tablet, 4 col desktop */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {(categories ?? []).map((cat, i) => {
-            // First item — large, spans 6 cols + tall
-            const isFirst = i === 0;
-            // Items 1-2 — medium, span 3 cols each
-            const isMid = i === 1 || i === 2;
-            // Rest — small, span 3 cols
             return (
               <motion.div
                 key={cat.id}
                 {...reveal(i)}
-                className={
-                  isFirst
-                    ? 'col-span-2 md:col-span-6 md:row-span-2'
-                    : isMid
-                      ? 'col-span-1 md:col-span-3'
-                      : 'col-span-1 md:col-span-3'
-                }
               >
                 <Link
                   to={`/category/${cat.slug}`}
-                  className="card-hover group block overflow-hidden h-full"
+                  className="card-hover group block overflow-hidden h-full bg-white dark:bg-ink-50 rounded-2xl border border-gray-200 dark:border-ink-200 shadow-sm"
                 >
-                  <div className={`relative ${isFirst ? 'p-8 md:p-10 min-h-[220px]' : 'p-5 min-h-[140px]'} flex flex-col`}>
+                  <div className="relative p-5 min-h-[160px] flex flex-col">
                     {cat.image_url ? (
                       <img
                         src={cat.image_url}
                         alt={localized(cat, 'name', 'name_ar', locale)}
                         loading="lazy"
-                        className={`${isFirst ? 'w-20 h-20' : 'w-12 h-12'} rounded-xl object-cover mb-auto transition-transform duration-700 group-hover:scale-110`}
+                        className="w-12 h-12 rounded-xl object-cover mb-auto transition-transform duration-700 group-hover:scale-110"
                       />
                     ) : (
-                      <div className={`${isFirst ? 'w-20 h-20 text-5xl' : 'w-12 h-12 text-2xl'} rounded-xl bg-gray-100 dark:bg-ink-100 flex items-center justify-center mb-auto`}>
+                      <div className="w-12 h-12 text-2xl rounded-xl bg-gray-100 dark:bg-ink-100 flex items-center justify-center mb-auto">
                         <span aria-hidden="true">{CATEGORY_ICON[cat.icon] ?? '📦'}</span>
                       </div>
                     )}
 
-                    <div className="mt-6">
-                      <h3 className={`font-heading ${isFirst ? 'text-2xl md:text-3xl' : 'text-sm'} font-semibold text-gray-900 dark:text-ink-900 group-hover:text-green-500 transition-colors`}>
+                    <div className="mt-4">
+                      <h3 className="font-heading text-sm font-semibold text-gray-900 dark:text-ink-900 group-hover:text-green-500 transition-colors">
                         {localized(cat, 'name', 'name_ar', locale)}
                       </h3>
-                      <p className="text-micro text-gray-600 dark:text-ink-500 uppercase mt-1.5 tracking-wider">{cat.type}</p>
+                      <p className="text-micro text-gray-600 dark:text-ink-500 uppercase mt-1 tracking-wider">{cat.type}</p>
                     </div>
-
-                    {/* Arrow appears on hover */}
-                    {isFirst && (
-                      <div className="mt-6 inline-flex items-center gap-2 text-sm text-green-500 font-medium">
-                        Explore
-                        <ArrowUpRight size={16} className="transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
-                      </div>
-                    )}
                   </div>
                 </Link>
               </motion.div>
