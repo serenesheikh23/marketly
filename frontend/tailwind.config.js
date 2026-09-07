@@ -14,6 +14,13 @@ export default {
           'Roboto',
           'sans-serif',
         ],
+        heading: [
+          'Sora',
+          'Space Grotesk',
+          'ui-sans-serif',
+          'system-ui',
+          'sans-serif',
+        ],
         mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'monospace'],
       },
       colors: {

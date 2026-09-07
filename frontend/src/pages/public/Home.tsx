@@ -36,6 +36,13 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const isAuthenticated = useAppSelector((s) => s.auth.isAuthenticated);
   const { t, locale } = useI18n();
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => setMousePos({ x: e.clientX, y: e.clientY });
+    window.addEventListener('mousemove', handler);
+    return () => window.removeEventListener('mousemove', handler);
+  }, []);
 
   useEffect(() => {
     Promise.all([
@@ -62,40 +69,65 @@ export default function Home() {
     <PageTransition className="space-y-16">
 
       {/* ── Hero ──────────────────────────────────────────── */}
-      <section className="relative w-full rounded-2xl shadow-xl shadow-gray-200/50 dark:shadow-black/20">
+      <section className="relative w-full rounded-2xl shadow-xl shadow-gray-200/50 dark:shadow-black/20 overflow-hidden">
         {/* Full-width aurora background */}
         <div className="absolute inset-0 opacity-40 dark:opacity-40 pointer-events-none">
           <HeroArt variant="aurora" className="w-full h-full" />
         </div>
 
+        {/* Mouse-following radial gradient — pointer-events-none so it doesn't block clicks */}
+        <div
+          className="pointer-events-none absolute inset-0 z-0 opacity-40 dark:opacity-30"
+          style={{
+            background: `radial-gradient(500px circle at ${mousePos.x}px ${mousePos.y}px, rgba(16,185,129,0.12), transparent 40%)`,
+          }}
+        />
+
         {/* Hero content + modern visual */}
         <div className="relative z-10 px-8 py-14 md:px-14 md:py-20 flex flex-col lg:flex-row items-center gap-12">
           {/* Left: text */}
           <div className="flex-1 max-w-2xl">
-            <p className="eyebrow mb-4">{t('home.digitalMarketplace')}</p>
-            <h1 className="text-display-2 text-gray-900 dark:text-ink-900 mb-4 text-balance">
+            <motion.p
+              className="eyebrow mb-4"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            >
+              {t('home.digitalMarketplace')}
+            </motion.p>
+            <motion.h1
+              className="text-display-2 text-gray-900 dark:text-ink-900 mb-4 text-balance font-heading"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.06, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            >
               {t('home.heroTitle1')}<br />
               <span className="text-accent-400">{t('home.heroTitle2')}</span>
-            </h1>
-            <p className="text-body-lg text-gray-600 dark:text-ink-600 mb-8 max-w-lg">
+            </motion.h1>
+            <motion.p
+              className="text-body-lg text-gray-600 dark:text-ink-600 mb-8 max-w-lg"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.12, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            >
               {t('home.heroDescription')}
-            </p>
+            </motion.p>
             <div className="flex flex-wrap gap-3">
               {isAuthenticated ? (
                 <>
-                  <Link to="/products" className="btn-accent">
+                  <Link to="/products" className="btn-accent hover:-translate-y-1 hover:shadow-glow">
                     {t('home.continueShopping')}
                   </Link>
-                  <Link to="/dashboard" className="btn-secondary">
+                  <Link to="/dashboard" className="btn-secondary hover:-translate-y-1 hover:border-accent-500/40 hover:shadow-glow">
                     {t('home.goToDashboard')}
                   </Link>
                 </>
               ) : (
                 <>
-                  <Link to="/products" className="btn-accent">
+                  <Link to="/products" className="btn-accent hover:-translate-y-1 hover:shadow-glow">
                     {t('home.browseProducts')}
                   </Link>
-                  <Link to="/register" className="btn-secondary">
+                  <Link to="/register" className="btn-secondary hover:-translate-y-1 hover:border-accent-500/40 hover:shadow-glow">
                     {t('home.createAccount')}
                   </Link>
                 </>
@@ -172,23 +204,25 @@ export default function Home() {
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
           {(categories ?? []).map((cat, i) => (
-            <motion.div key={cat.id} {...stagger(i)}>
+            <motion.div key={cat.id} {...stagger(i)} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.99 }}>
               <Link
                 to={`/category/${cat.slug}`}
                 className="card-hover block p-5 text-center group"
               >
-                {cat.image_url ? (
-                  <img
-                    src={cat.image_url}
-                    alt={localized(cat, 'name', 'name_ar', locale)}
-                    loading="lazy"
-                    className="w-12 h-12 mx-auto mb-3 rounded-xl object-cover"
-                  />
-                ) : (
-                  <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-gray-100 dark:bg-ink-100 flex items-center justify-center">
-                    <span className="text-2xl" aria-hidden="true">{CATEGORY_ICON[cat.icon] ?? '📦'}</span>
-                  </div>
-                )}
+                <div className="relative overflow-hidden">
+                  {cat.image_url ? (
+                    <img
+                      src={cat.image_url}
+                      alt={localized(cat, 'name', 'name_ar', locale)}
+                      loading="lazy"
+                      className="w-12 h-12 mx-auto mb-3 rounded-xl object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                  ) : (
+                    <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-gray-100 dark:bg-ink-100 flex items-center justify-center">
+                      <span className="text-2xl" aria-hidden="true">{CATEGORY_ICON[cat.icon] ?? '📦'}</span>
+                    </div>
+                  )}
+                </div>
                 <h3 className="text-sm font-semibold text-gray-900 dark:text-ink-900 group-hover:text-accent-400 transition-colors">
                   {localized(cat, 'name', 'name_ar', locale)}
                 </h3>
@@ -215,18 +249,20 @@ export default function Home() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {(featured ?? []).map((p, i) => (
-            <motion.div key={p.id} {...stagger(i)}>
+            <motion.div key={p.id} {...stagger(i)} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
               <Link
                 to={`/product/${p.slug}`}
                 className="card-hover group block overflow-hidden"
               >
-                <ProductImage
-                  name={localized(p, 'name', 'name_ar', locale)}
-                  category={localized(p.category, 'name', 'name_ar', locale)}
-                  imageBase64={p.image_base64}
-                  imageUrl={p.image_url}
-                  className="h-40 mb-4"
-                />
+                <div className="relative overflow-hidden">
+                  <ProductImage
+                    name={localized(p, 'name', 'name_ar', locale)}
+                    category={localized(p.category, 'name', 'name_ar', locale)}
+                    imageBase64={p.image_base64}
+                    imageUrl={p.image_url}
+                    className="h-40 mb-4 transition-transform duration-500 group-hover:scale-110"
+                  />
+                </div>
                 <div className="px-4 pb-4">
                   <h3 className="text-sm font-semibold text-gray-900 dark:text-ink-900 group-hover:text-accent-400 transition-colors line-clamp-2 mb-1">
                     {localized(p, 'name', 'name_ar', locale)}
