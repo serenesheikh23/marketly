@@ -27,10 +27,7 @@ export default function Login() {
       const userData = res.data.user;
       const token = res.data.token;
       const roles = userData.roles ?? [];
-
-      // Save token to localStorage for API requests
       localStorage.setItem('token', token);
-
       dispatch(setUser({ ...userData, roles }));
       toast.success('Welcome back!');
       const isAdmin = roles.some(
@@ -46,13 +43,10 @@ export default function Login() {
 
   return (
     <PageTransition className="min-h-screen flex flex-col lg:flex-row-reverse">
-      {/* Right: floating icons — visible on all screens */}
       <div className="relative w-full lg:w-1/2 flex items-center justify-center px-6 py-4 lg:px-16 lg:py-20 mt-4 lg:mt-0">
-        {/* Full-width aurora background */}
         <div className="absolute inset-0 opacity-40 dark:opacity-40 pointer-events-none">
           <HeroArt variant="aurora" className="w-full h-full" />
         </div>
-        {/* Reduced height container for mobile (h-32) - full size on desktop (lg:h-80) */}
         <div className="relative w-full h-32 lg:h-80 flex-shrink-0">
           <motion.div
             animate={{ y: [0, -15, 0], x: [0, 5, 0], rotate: [0, 8, 0] }}
@@ -61,7 +55,6 @@ export default function Login() {
           >
             <Gamepad2 size={34} className="text-green-400 drop-shadow-lg" />
           </motion.div>
-
           <motion.div
             animate={{ y: [0, 18, 0], x: [0, -8, 0], rotate: [0, -6, 0] }}
             transition={{ duration: 6, delay: 0.4, repeat: Infinity, ease: 'easeInOut' }}
@@ -69,7 +62,6 @@ export default function Login() {
           >
             <MessageCircle size={28} className="text-green-300 drop-shadow-lg" />
           </motion.div>
-
           <motion.div
             animate={{ y: [0, -20, 0], x: [0, 10, 0], rotate: [0, 12, 0] }}
             transition={{ duration: 4.8, delay: 0.8, repeat: Infinity, ease: 'easeInOut' }}
@@ -77,7 +69,6 @@ export default function Login() {
           >
             <CreditCard size={30} className="text-green-500 drop-shadow-lg" />
           </motion.div>
-
           <motion.div
             animate={{ y: [0, 12, 0], x: [0, -5, 0], rotate: [0, -4, 0] }}
             transition={{ duration: 5.5, delay: 0.2, repeat: Infinity, ease: 'easeInOut' }}
@@ -85,7 +76,6 @@ export default function Login() {
           >
             <Wallet size={24} className="text-green-400 drop-shadow-lg" />
           </motion.div>
-
           <motion.div
             animate={{ y: [0, -10, 0], x: [0, 6, 0], rotate: [0, 7, 0] }}
             transition={{ duration: 6.5, delay: 1.1, repeat: Infinity, ease: 'easeInOut' }}
@@ -93,7 +83,6 @@ export default function Login() {
           >
             <Palette size={26} className="text-green-300 drop-shadow-lg" />
           </motion.div>
-
           <motion.div
             animate={{ y: [0, 15, 0], x: [0, -8, 0], rotate: [0, -8, 0] }}
             transition={{ duration: 5.2, delay: 0.6, repeat: Infinity, ease: 'easeInOut' }}
@@ -104,13 +93,11 @@ export default function Login() {
         </div>
       </div>
 
-      {/* Right: form */}
       <div className="flex-1 flex items-center justify-center px-6 py-12 lg:px-16">
         <div className="w-full max-w-md">
           <div className="lg:hidden mb-10 flex justify-center">
             <Logo size="lg" />
           </div>
-
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
@@ -124,7 +111,6 @@ export default function Login() {
               </Link>
             </p>
           </motion.div>
-
           <motion.form
             onSubmit={handleSubmit}
             className="space-y-5"
@@ -168,7 +154,6 @@ export default function Login() {
               {t('auth.signIn')}
             </Button>
           </motion.form>
-
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
