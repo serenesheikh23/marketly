@@ -83,7 +83,7 @@ export default function SearchPalette({ isOpen, onClose }: SearchPaletteProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
-            className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 z-[998] bg-black/60 backdrop-blur-sm"
             onClick={onClose}
           />
 
@@ -93,7 +93,8 @@ export default function SearchPalette({ isOpen, onClose }: SearchPaletteProps) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -10 }}
             transition={{ duration: 0.15, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed top-[15vh] start-1/2 -translate-x-1/2 w-full max-w-lg z-[101]
+            onClick={(e) => e.stopPropagation()}
+            className="fixed top-[15vh] start-1/2 -translate-x-1/2 w-full max-w-lg z-[999]
                        bg-white dark:bg-ink-50 rounded-2xl shadow-2xl border border-gray-200 dark:border-ink-200
                        overflow-hidden"
           >
@@ -109,11 +110,14 @@ export default function SearchPalette({ isOpen, onClose }: SearchPaletteProps) {
                 placeholder={t('nav.searchProducts') ?? 'Search products...'}
                 className="flex-1 bg-transparent text-gray-900 dark:text-ink-900 placeholder:text-gray-400 dark:placeholder:text-ink-500 outline-none text-sm"
               />
-              {query && (
-                <button onClick={() => setQuery('')} className="text-gray-400 dark:text-ink-500 hover:text-gray-600 dark:hover:text-ink-700">
-                  <X size={16} />
-                </button>
-              )}
+              <button
+                type="button"
+                onClick={onClose}
+                className="text-gray-400 dark:text-ink-500 hover:text-gray-600 dark:hover:text-ink-700 transition-colors"
+                aria-label="Close search"
+              >
+                <X size={16} />
+              </button>
               <kbd className="hidden sm:inline-flex items-center px-2 py-0.5 text-micro rounded-md bg-gray-100 dark:bg-ink-100 text-gray-500 dark:text-ink-500 border border-gray-200 dark:border-ink-200">
                 Esc
               </kbd>
