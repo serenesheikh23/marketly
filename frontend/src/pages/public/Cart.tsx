@@ -150,7 +150,7 @@ export default function Cart() {
                 </button>
               </div>
 
-              <span className="text-h3 text-accent-400 w-24 text-right tabular-nums">
+              <span className="text-h3 text-green-400 w-24 text-right tabular-nums">
                 {formatPrice(item.price * item.quantity)}
               </span>
 
@@ -178,7 +178,7 @@ export default function Cart() {
                   key={m.value}
                   className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all duration-150 ${
                     paymentMethod === m.value
-                      ? 'border-accent-500 bg-accent-500/5'
+                      ? 'border-green-500 bg-green-500/5'
                       : 'border-ink-200 bg-gray-100 dark:bg-ink-100 hover:border-ink-300'
                   }`}
                 >
@@ -188,7 +188,7 @@ export default function Cart() {
                     value={m.value}
                     checked={paymentMethod === m.value}
                     onChange={(e) => handleMethodChange(e.target.value)}
-                    className="accent-accent-500"
+                    className="green-green-500"
                   />
                   <span className="text-sm text-gray-800 dark:text-ink-800">{m.label}</span>
                 </label>
@@ -260,7 +260,7 @@ export default function Cart() {
               </div>
               <div className="flex justify-between text-body text-gray-600 dark:text-ink-600">
                 <span>{t('cart.total')}</span>
-                <span className="text-h3 text-accent-400">{formatPrice(total)}</span>
+                <span className="text-h3 text-green-400">{formatPrice(total)}</span>
               </div>
             </div>
 
@@ -271,7 +271,7 @@ export default function Cart() {
                     <strong className="text-gray-900 dark:text-ink-900">{items.length}</strong>{' '}
                     {items.length === 1 ? t('cart.item') : t('cart.items')}{' '}
                     {t('cart.for')}{' '}
-                    <strong className="text-accent-400">{formatPrice(total)}</strong>
+                    <strong className="text-green-400">{formatPrice(total)}</strong>
                   </p>
                   <p className="text-gray-600 dark:text-ink-500">
                     {t('cart.payWith')}{' '}

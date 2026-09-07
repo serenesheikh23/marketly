@@ -87,7 +87,7 @@ export default function Dashboard() {
         </div>
         <div className="text-right">
           <p className="text-micro text-gray-500 dark:text-ink-500 uppercase">{t('account.balance')}</p>
-          <p className="text-h2 text-accent-400 tabular-nums">
+          <p className="text-h2 text-green-400 tabular-nums">
             {formatPrice(user?.balance ?? 0)}
           </p>
         </div>
@@ -124,7 +124,7 @@ export default function Dashboard() {
             <p
               className={`text-h2 ${
                 kpi.color === 'accent'
-                  ? 'text-accent-400'
+                  ? 'text-green-400'
                   : kpi.color === 'vip'
                   ? 'text-status-vip'
                   : 'text-gray-900 dark:text-ink-900'
@@ -174,10 +174,10 @@ export default function Dashboard() {
               <Link
                 to={a.to}
                 className={`card-hover flex flex-col items-center justify-center gap-3 p-4 text-center w-full ${
-                  a.color === 'accent' ? 'border-accent-500/30 bg-accent-500/5' : ''
+                  a.color === 'accent' ? 'border-green-500/30 bg-green-500/5' : ''
                 }`}
               >
-                <span className={a.color === 'accent' ? 'text-accent-400' : 'text-gray-500 dark:text-ink-600'}>
+                <span className={a.color === 'accent' ? 'text-green-400' : 'text-gray-500 dark:text-ink-600'}>
                   {ACTION_ICONS[a.icon]}
                 </span>
                 <span className="text-small font-medium text-gray-900 dark:text-ink-900">{t(a.label)}</span>
@@ -191,7 +191,7 @@ export default function Dashboard() {
       <div className="card-pad">
         <div className="flex items-center justify-between mb-5">
           <h2 className="text-h3 text-gray-900 dark:text-ink-900">{t('admin.recentTransactions')}</h2>
-          <Link to="/dashboard/orders" className="text-micro text-accent-400 hover:text-accent-300">
+          <Link to="/dashboard/orders" className="text-micro text-green-400 hover:text-green-300">
             {t('home.viewAll')} →
           </Link>
         </div>
@@ -211,7 +211,7 @@ export default function Dashboard() {
                 return (
                   <tr key={t.id}>
                     <td className="capitalize text-gray-900 dark:text-ink-800">{t.type.replace('_', ' ')}</td>
-                    <td className={`font-semibold tabular-nums ${isPositive ? 'text-accent-400' : 'text-status-rejected'}`}>
+                    <td className={`font-semibold tabular-nums ${isPositive ? 'text-green-400' : 'text-status-rejected'}`}>
                       {isPositive ? '+' : '-'}{formatPrice(t.amount)}
                     </td>
                     <td><span className={`badge-${t.status}`}>{t.status}</span></td>

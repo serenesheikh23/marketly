@@ -91,7 +91,7 @@ export default function Footer() {
             <ul className="space-y-1.5 text-micro text-gray-600 dark:text-ink-500">
               {company.support_email && (
                 <li>
-                  <a href={`mailto:${company.support_email}`} className="hover:text-accent-400 transition-colors" dir="ltr">
+                  <a href={`mailto:${company.support_email}`} className="hover:text-green-400 transition-colors" dir="ltr">
                     {company.support_email}
                   </a>
                 </li>
@@ -110,9 +110,9 @@ export default function Footer() {
           <div>
             <h3 className="text-small font-semibold text-gray-900 dark:text-ink-900 mb-3">{t('footer.legal')}</h3>
             <ul className="space-y-1.5 text-micro text-gray-600 dark:text-ink-500">
-              <li><Link to="/legal/terms" className="hover:text-accent-400 transition-colors">{t('footer.termsOfService')}</Link></li>
-              <li><Link to="/legal/privacy" className="hover:text-accent-400 transition-colors">{t('footer.privacyPolicy')}</Link></li>
-              <li><Link to="/legal/refund" className="hover:text-accent-400 transition-colors">{t('footer.refundPolicy')}</Link></li>
+              <li><Link to="/legal/terms" className="hover:text-green-400 transition-colors">{t('footer.termsOfService')}</Link></li>
+              <li><Link to="/legal/privacy" className="hover:text-green-400 transition-colors">{t('footer.privacyPolicy')}</Link></li>
+              <li><Link to="/legal/refund" className="hover:text-green-400 transition-colors">{t('footer.refundPolicy')}</Link></li>
             </ul>
           </div>
 
@@ -128,7 +128,7 @@ export default function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={link.name}
-                    className="text-gray-600 dark:text-ink-500 hover:text-accent-400 transition-colors"
+                    className="text-gray-600 dark:text-ink-500 hover:text-green-400 transition-colors"
                   >
                     <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
                       <g dangerouslySetInnerHTML={{ __html: link.svg }} />

@@ -33,7 +33,7 @@ export default function ProductPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-24">
-        <span className="w-8 h-8 rounded-full border-2 border-accent-500 border-t-transparent animate-spin" />
+        <span className="w-8 h-8 rounded-full border-2 border-green-500 border-t-transparent animate-spin" />
       </div>
     );
   }
@@ -135,7 +135,7 @@ export default function ProductPage() {
             </div>
             <h1 className="text-h1 text-gray-900 dark:text-ink-900 mb-2">{localized(product, 'name', 'name_ar', locale)}</h1>
             <div className="text-small text-gray-600 dark:text-ink-500">
-              <span>{t('product.category')}: <Link to={`/category/${product.category?.slug}`} className="text-accent-400 hover:underline">{localized(product.category, 'name', 'name_ar', locale)}</Link></span>
+              <span>{t('product.category')}: <Link to={`/category/${product.category?.slug}`} className="text-green-400 hover:underline">{localized(product.category, 'name', 'name_ar', locale)}</Link></span>
               <span className="mx-2">·</span>
               <span>{t('product.inStock')}: <strong className="text-gray-700 dark:text-ink-700">{product.stock}</strong></span>
             </div>
@@ -147,7 +147,7 @@ export default function ProductPage() {
 
           <div className="card-pad space-y-5">
             <div className="flex items-baseline gap-3">
-              <span className="text-display-1 text-accent-400 font-bold">
+              <span className="text-display-1 text-green-400 font-bold">
                 {formatPrice(product.price)}
               </span>
               <span className="text-body text-gray-600 dark:text-ink-500">{t('product.perUnit')}</span>

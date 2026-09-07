@@ -58,18 +58,18 @@ export default {
           800:     '#343A40',
           900:     '#212529',
         },
-        // Accent — Amber Gold (premium non-purple anchor)
+        // Accent — Emerald Green
         accent: {
-          50:  '#FFFBEB',
-          100: '#FEF3C7',
-          200: '#FDE68A',
-          300: '#FCD34D',
-          400: '#FBBF24',
-          500: '#F59E0B',
-          600: '#D97706',
-          700: '#B45309',
-          800: '#92400E',
-          900: '#78350F',
+          50:  '#ECFDF5',
+          100: '#D1FAE5',
+          200: '#A7F3D0',
+          300: '#6EE7B7',
+          400: '#34D399',
+          500: '#22C55E',
+          600: '#16A34A',
+          700: '#15803D',
+          800: '#166534',
+          900: '#14532D',
         },
         // Status colors — same in both themes
         status: {
@@ -83,8 +83,8 @@ export default {
       boxShadow: {
         'soft':   '0 1px 2px 0 rgba(0,0,0,0.4)',
         'lift':   '0 18px 40px -16px rgba(0,0,0,0.45), 0 1px 2px 0 rgba(0,0,0,0.3)',
-        'glow':   '0 0 0 1px rgba(245,158,11,0.45), 0 12px 32px -10px rgba(245,158,11,0.35)',
-        'glow-lg': '0 0 0 1px rgba(245,158,11,0.55), 0 24px 60px -16px rgba(245,158,11,0.45)',
+        'glow':   '0 0 0 1px rgba(34,197,94,0.45), 0 12px 32px -10px rgba(34,197,94,0.35)',
+        'glow-lg': '0 0 0 1px rgba(34,197,94,0.55), 0 24px 60px -16px rgba(34,197,94,0.45)',
       },
       letterSpacing: {
         tightest: '-0.04em',

@@ -84,7 +84,7 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
             title={name}
             className={`w-9 h-9 rounded-lg flex items-center justify-center text-base transition-all ${
               value === name
-                ? 'bg-accent-500 text-gray-900 dark:text-ink text-lg'
+                ? 'bg-green-500 text-gray-900 dark:text-ink text-lg'
                 : 'bg-gray-100 dark:bg-ink-100 text-gray-700 dark:text-ink-700 hover:bg-gray-200 dark:hover:bg-ink-200'
             }`}
           >
