@@ -55,8 +55,8 @@ export default function TrendChart({
       >
         <defs>
           <linearGradient id={`trend-fill-${id}`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="currentColor" stopOpacity="0.35" className="text-accent-500" />
-            <stop offset="100%" stopColor="currentColor" stopOpacity="0" className="text-accent-500" />
+            <stop offset="0%" stopColor="currentColor" stopOpacity="0.35" className="text-green-500" />
+            <stop offset="100%" stopColor="currentColor" stopOpacity="0" className="text-green-500" />
           </linearGradient>
         </defs>
 
@@ -83,7 +83,7 @@ export default function TrendChart({
           d={pathD}
           fill="none"
           stroke="currentColor"
-          className="text-accent-500"
+          className="text-green-500"
           strokeWidth="0.6"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -97,7 +97,7 @@ export default function TrendChart({
             cy={y}
             r="0.6"
             fill="currentColor"
-            className="text-accent-500"
+            className="text-green-500"
           />
         ))}
       </svg>

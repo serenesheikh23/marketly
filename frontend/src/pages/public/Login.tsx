@@ -59,7 +59,7 @@ export default function Login() {
             transition={{ duration: 5, delay: 0, repeat: Infinity, ease: 'easeInOut' }}
             className="absolute top-[5%] left-[8%]"
           >
-            <Gamepad2 size={34} className="text-accent-400 drop-shadow-lg" />
+            <Gamepad2 size={34} className="text-green-400 drop-shadow-lg" />
           </motion.div>
 
           <motion.div
@@ -67,7 +67,7 @@ export default function Login() {
             transition={{ duration: 6, delay: 0.4, repeat: Infinity, ease: 'easeInOut' }}
             className="absolute top-[35%] right-[5%]"
           >
-            <MessageCircle size={28} className="text-accent-300 drop-shadow-lg" />
+            <MessageCircle size={28} className="text-green-300 drop-shadow-lg" />
           </motion.div>
 
           <motion.div
@@ -75,7 +75,7 @@ export default function Login() {
             transition={{ duration: 4.8, delay: 0.8, repeat: Infinity, ease: 'easeInOut' }}
             className="absolute bottom-[20%] left-[15%]"
           >
-            <CreditCard size={30} className="text-accent-500 drop-shadow-lg" />
+            <CreditCard size={30} className="text-green-500 drop-shadow-lg" />
           </motion.div>
 
           <motion.div
@@ -83,7 +83,7 @@ export default function Login() {
             transition={{ duration: 5.5, delay: 0.2, repeat: Infinity, ease: 'easeInOut' }}
             className="absolute top-[15%] left-[45%]"
           >
-            <Wallet size={24} className="text-accent-400 drop-shadow-lg" />
+            <Wallet size={24} className="text-green-400 drop-shadow-lg" />
           </motion.div>
 
           <motion.div
@@ -91,7 +91,7 @@ export default function Login() {
             transition={{ duration: 6.5, delay: 1.1, repeat: Infinity, ease: 'easeInOut' }}
             className="absolute bottom-[10%] right-[25%]"
           >
-            <Palette size={26} className="text-accent-300 drop-shadow-lg" />
+            <Palette size={26} className="text-green-300 drop-shadow-lg" />
           </motion.div>
 
           <motion.div
@@ -99,7 +99,7 @@ export default function Login() {
             transition={{ duration: 5.2, delay: 0.6, repeat: Infinity, ease: 'easeInOut' }}
             className="absolute bottom-[35%] left-[70%]"
           >
-            <Bot size={32} className="text-accent-500 drop-shadow-lg" />
+            <Bot size={32} className="text-green-500 drop-shadow-lg" />
           </motion.div>
         </div>
       </div>
@@ -119,7 +119,7 @@ export default function Login() {
             <h2 className="text-h2 text-gray-900 dark:text-ink-900 mb-2">{t('auth.login')}</h2>
             <p className="text-body text-gray-600 dark:text-ink-600 mb-8">
               {t('auth.noAccount')}{' '}
-              <Link to="/register" className="text-accent-400 hover:text-accent-300 transition-colors">
+              <Link to="/register" className="text-green-400 hover:text-green-300 transition-colors">
                 {t('auth.createAccount')}
               </Link>
             </p>
@@ -176,7 +176,7 @@ export default function Login() {
             className="mt-8 p-4 bg-gray-100 dark:bg-ink-100 border border-ink-200 rounded-xl"
           >
             <p className="text-micro text-gray-600 dark:text-ink-500 uppercase tracking-wide mb-2">Demo accounts</p>
-            <p className="text-micro text-gray-600 dark:text-ink-600 mb-1">Password for all: <code className="text-accent-400">password</code></p>
+            <p className="text-micro text-gray-600 dark:text-ink-600 mb-1">Password for all: <code className="text-green-400">password</code></p>
             <div className="space-y-0.5 mt-2">
               {[
                 'admin@demo.test — full admin',

@@ -82,7 +82,7 @@ export default function VipPage() {
       limit: `$${vip?.vip2_limit ?? 5000}`,
       fee: '1.5%',
       price: vip?.upgrade_prices?.vip2,
-      color: 'accent-400',
+      color: 'green-400',
       icon: TIER_ICONS.vip2,
     },
   ];
@@ -110,7 +110,7 @@ export default function VipPage() {
             <motion.div
               key={tier.key}
               className={`card-pad text-center relative ${
-                isCurrent ? 'border-accent-500/50 bg-accent-500/5' : ''
+                isCurrent ? 'border-green-500/50 bg-green-500/5' : ''
               }`}
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
@@ -120,12 +120,12 @@ export default function VipPage() {
                 <span className="absolute top-4 end-4 badge-vip">{t('vip.current')}</span>
               )}
 
-              <span className={`inline-block mb-4 ${isCurrent ? 'text-accent-400' : 'text-gray-600 dark:text-ink-500'}`}>
+              <span className={`inline-block mb-4 ${isCurrent ? 'text-green-400' : 'text-gray-600 dark:text-ink-500'}`}>
                 {tier.icon}
               </span>
 
               <h3 className={`text-h3 mb-1 ${
-                tier.key === 'vip2' ? 'text-accent-400' :
+                tier.key === 'vip2' ? 'text-green-400' :
                 tier.key === 'vip1' ? 'text-status-vip' : 'text-gray-800 dark:text-ink-800'
               }`}>
                 {tier.label}
@@ -143,7 +143,7 @@ export default function VipPage() {
                 {tier.price && (
                   <div className="flex justify-between">
                     <span>{t('vip.price')}</span>
-                    <strong className="text-accent-400">${tier.price}</strong>
+                    <strong className="text-green-400">${tier.price}</strong>
                   </div>
                 )}
               </div>
@@ -158,7 +158,7 @@ export default function VipPage() {
                   {t('vip.upgrade')}
                 </Button>
               ) : isCurrent ? (
-                <p className="text-small text-accent-400">✓ {t('vip.current')}</p>
+                <p className="text-small text-green-400">✓ {t('vip.current')}</p>
               ) : null}
             </motion.div>
           );

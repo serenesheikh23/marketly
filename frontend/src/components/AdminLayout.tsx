@@ -150,9 +150,9 @@ export default function AdminLayout() {
             const showBadge = item.to === '/admin/orders' && pendingCount > 0;
             return (
               <Link key={item.to} to={item.to} onClick={closeSidebar} className={`nav-link text-sm flex items-center gap-2 ${isActive ? 'nav-link-active' : ''}`}>
-                <span className={isActive ? 'text-accent-500 dark:text-accent-400' : 'text-gray-500 dark:text-ink-500'}>{item.icon}</span>
+                <span className={isActive ? 'text-green-500 dark:text-green-400' : 'text-gray-500 dark:text-ink-500'}>{item.icon}</span>
                 <span className="flex-1">{t(item.key)}</span>
-                {showBadge && <span className="ml-auto inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-bold text-white bg-accent-500 rounded-full">{pendingCount > 99 ? '99+' : pendingCount}</span>}
+                {showBadge && <span className="ml-auto inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-bold text-white bg-green-500 rounded-full">{pendingCount > 99 ? '99+' : pendingCount}</span>}
               </Link>
             );
           })}

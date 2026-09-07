@@ -79,7 +79,7 @@ export default function Deposit() {
                     key={m.value}
                     className={`flex items-center justify-center gap-3 p-3 rounded-lg border cursor-pointer transition-all ${
                       method === m.value
-                        ? 'border-accent-500 bg-accent-500/5'
+                        ? 'border-green-500 bg-green-500/5'
                         : 'border-ink-200 bg-gray-100 dark:bg-ink-100 hover:border-ink-300'
                     }`}
                   >
@@ -88,7 +88,7 @@ export default function Deposit() {
                       value={m.value}
                       checked={method === m.value}
                       onChange={(e) => setMethod(e.target.value)}
-                      className="accent-accent-500"
+                      className="green-green-500"
                     />
                     <span className="text-sm text-gray-800 dark:text-ink-800">{m.label}</span>
                   </label>

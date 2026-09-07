@@ -118,16 +118,13 @@ export default function SearchPalette({ isOpen, onClose }: SearchPaletteProps) {
               >
                 <X size={16} />
               </button>
-              <kbd className="hidden sm:inline-flex items-center px-2 py-0.5 text-micro rounded-md bg-gray-100 dark:bg-ink-100 text-gray-500 dark:text-ink-500 border border-gray-200 dark:border-ink-200">
-                Esc
-              </kbd>
             </div>
 
             {/* Results */}
             <div className="max-h-80 overflow-y-auto">
-              {loading && (
+              {loading && query && (
                 <div className="flex items-center justify-center py-8">
-                  <span className="w-5 h-5 rounded-full border-2 border-accent-500 border-t-transparent animate-spin" />
+                  <span className="w-5 h-5 rounded-full border-2 border-green-500 border-t-transparent animate-spin" />
                 </div>
               )}
 
@@ -155,10 +152,10 @@ export default function SearchPalette({ isOpen, onClose }: SearchPaletteProps) {
                           </p>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-semibold text-accent-400 tabular-nums">
+                          <span className="text-sm font-semibold text-green-400 tabular-nums">
                             {formatPrice(p.price)}
                           </span>
-                          <ArrowRight size={14} className="text-gray-300 dark:text-ink-300 group-hover:text-accent-400 transition-colors" />
+                          <ArrowRight size={14} className="text-gray-300 dark:text-ink-300 group-hover:text-green-400 transition-colors" />
                         </div>
                       </Link>
                     </li>
@@ -166,16 +163,6 @@ export default function SearchPalette({ isOpen, onClose }: SearchPaletteProps) {
                 </ul>
               )}
 
-              {!query && (
-                <div className="py-6 text-center text-sm text-gray-400 dark:text-ink-500">
-                  Start typing to search products…
-                </div>
-              )}
-            </div>
-
-            {/* Footer hint */}
-            <div className="px-4 py-2.5 border-t border-gray-100 dark:border-ink-200/50 bg-gray-50/50 dark:bg-ink-100/30 flex items-center gap-2">
-              <span className="text-micro text-gray-500 dark:text-ink-500">Press Esc to close</span>
             </div>
           </motion.div>
         </>

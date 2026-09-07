@@ -67,7 +67,7 @@ export default function AdminDeposits() {
                 <tr key={d.id}>
                   <td className="font-medium text-gray-900 dark:text-ink-900 whitespace-nowrap">#{d.id}</td>
                   <td className="whitespace-nowrap">{d.user?.name ?? '—'}</td>
-                  <td className="font-medium tabular-nums text-accent-400 whitespace-nowrap">
+                  <td className="font-medium tabular-nums text-green-400 whitespace-nowrap">
                     {formatPrice(d.amount)}
                   </td>
                   <td className="whitespace-nowrap">{d.method}</td>

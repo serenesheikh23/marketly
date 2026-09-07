@@ -23,7 +23,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   const { items } = useAppSelector((s) => s.cart);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { t } = useI18n();
+  const { t, isRtl } = useI18n();
   const [paymentMethod, setPaymentMethod] = useState('cash_wallet');
   const [submitting, setSubmitting] = useState(false);
   const [confirming, setConfirming] = useState(false);
@@ -100,11 +100,12 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
             onClick={onClose}
           />
 
-          {/* Drawer — right side on desktop, full screen on mobile */}
+          {/* Drawer — anchored to the end side (right in LTR, left in RTL).
+              Framer-motion x uses physical direction, so we flip it for RTL. */}
           <motion.div
-            initial={{ x: '100%' }}
+            initial={{ x: isRtl ? '-100%' : '100%' }}
             animate={{ x: 0 }}
-            exit={{ x: '100%' }}
+            exit={{ x: isRtl ? '-100%' : '100%' }}
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
             className="fixed inset-y-0 end-0 w-full sm:w-[420px] z-[999] flex flex-col
                        bg-white dark:bg-ink-50 shadow-2xl"
@@ -174,7 +175,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                       </button>
                     </div>
 
-                    <span className="text-sm font-semibold text-accent-400 tabular-nums min-w-[70px] text-end">
+                    <span className="text-sm font-semibold text-green-400 tabular-nums min-w-[70px] text-end">
                       {formatPrice(item.price * item.quantity)}
                     </span>
 
@@ -203,7 +204,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                         key={m.value}
                         className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all duration-150 ${
                           paymentMethod === m.value
-                            ? 'border-accent-500 bg-accent-500/5'
+                            ? 'border-green-500 bg-green-500/5'
                             : 'border-gray-200 dark:border-ink-200 bg-gray-50 dark:bg-ink-100/50 hover:border-ink-300'
                         }`}
                       >
@@ -213,7 +214,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                           value={m.value}
                           checked={paymentMethod === m.value}
                           onChange={(e) => handleMethodChange(e.target.value)}
-                          className="accent-accent-500"
+                          className="green-green-500"
                         />
                         <span className="text-sm text-gray-800 dark:text-ink-800">{m.label}</span>
                       </label>
@@ -251,7 +252,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 {/* Total */}
                 <div className="flex items-center justify-between pt-2 border-t border-gray-200 dark:border-ink-200">
                   <span className="text-gray-600 dark:text-ink-500">{t('cart.total')}</span>
-                  <span className="text-h3 text-accent-400 tabular-nums">{formatPrice(total)}</span>
+                  <span className="text-h3 text-green-400 tabular-nums">{formatPrice(total)}</span>
                 </div>
 
                 {/* Confirm / Checkout */}
@@ -259,7 +260,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                   <div className="space-y-3">
                     <div className="card-pad bg-gray-50 dark:bg-ink-100/50 p-4">
                       <p className="text-sm text-gray-700 dark:text-ink-700">
-                        <strong className="text-gray-900 dark:text-ink-900">{items.length}</strong> {items.length === 1 ? t('cart.item') : t('cart.items')} {t('cart.for')} <strong className="text-accent-400">{formatPrice(total)}</strong>
+                        <strong className="text-gray-900 dark:text-ink-900">{items.length}</strong> {items.length === 1 ? t('cart.item') : t('cart.items')} {t('cart.for')} <strong className="text-green-400">{formatPrice(total)}</strong>
                       </p>
                     </div>
                     <div className="flex gap-2">

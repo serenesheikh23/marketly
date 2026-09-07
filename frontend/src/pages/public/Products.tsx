@@ -76,14 +76,14 @@ export default function Products() {
               <Link to={`/product/${p.slug}`} className="card-hover group block overflow-hidden">
                 <ProductImage name={localized(p, 'name', 'name_ar', locale)} category={localized(p.category, 'name', 'name_ar', locale)} imageBase64={p.image_base64} imageUrl={p.image_url} className="h-40 mb-4" />
                 <div className="px-4 pb-4">
-                  <h3 className="text-sm font-semibold text-gray-900 dark:text-ink-900 group-hover:text-accent-400 transition-colors line-clamp-2 mb-1">
+                  <h3 className="text-sm font-semibold text-gray-900 dark:text-ink-900 group-hover:text-green-400 transition-colors line-clamp-2 mb-1">
                     {localized(p, 'name', 'name_ar', locale)}
                   </h3>
                   <p className="text-micro text-gray-600 dark:text-ink-500 line-clamp-2 mb-3">
                     {localized(p, 'description', 'description_ar', locale)}
                   </p>
                   <div className="flex items-center justify-between">
-                    <span className="text-h3 text-accent-400">
+                    <span className="text-h3 text-green-400">
                       {formatPrice(p.price)}
                     </span>
                     {p.external_store_id && (
@@ -103,7 +103,7 @@ export default function Products() {
           {search && (
             <button
               onClick={() => handleSearch('')}
-              className="text-sm text-accent-400 hover:text-accent-300 mt-2 transition-colors"
+              className="text-sm text-green-400 hover:text-green-300 mt-2 transition-colors"
             >
               Clear search
             </button>

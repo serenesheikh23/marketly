@@ -13,7 +13,7 @@ interface HealthCheck {
 
 function StatusDot({ status }: { status: HealthCheck['status'] }): ReactNode {
   const color = {
-    ok: 'bg-accent-500',
+    ok: 'bg-green-500',
     warn: 'bg-status-pending',
     error: 'bg-status-rejected',
   }[status];
@@ -55,7 +55,7 @@ export default function AdminDashboard() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-24">
-        <span className="w-8 h-8 rounded-full border-2 border-accent-500 border-t-transparent animate-spin" />
+        <span className="w-8 h-8 rounded-full border-2 border-green-500 border-t-transparent animate-spin" />
       </div>
     );
   }
@@ -64,7 +64,7 @@ export default function AdminDashboard() {
 
   // Asymmetric tile definitions — hero revenue tile is huge, rest are compact
   const tiles = [
-    { key: 'admin.revenue',             value: formatPrice(s.total_revenue ?? 0),     color: 'text-accent-500',        trend: '+12.4%', hero: true },
+    { key: 'admin.revenue',             value: formatPrice(s.total_revenue ?? 0),     color: 'text-green-500',        trend: '+12.4%', hero: true },
     { key: 'admin.totalUsers',          value: s.total_users,                          color: 'text-gray-900 dark:text-ink-900', trend: '+3.1%',  hero: false },
     { key: 'admin.pendingDeposits',     value: s.pending_deposits,                     color: 'text-status-pending',    trend: null,      hero: false },
     { key: 'admin.pendingWithdrawals',  value: s.pending_withdrawals,                  color: 'text-status-processing', trend: null,      hero: false },
@@ -94,17 +94,17 @@ export default function AdminDashboard() {
                   ? 'col-span-2 md:col-span-2 lg:row-span-2 group relative overflow-hidden rounded-2xl p-7 md:p-8 ' +
                     'bg-gradient-to-br from-ink-50/80 to-white/60 dark:from-ink-50/40 dark:to-ink-100/30 ' +
                     'border border-white/10 dark:border-ink-200/50 backdrop-blur-xl ' +
-                    'shadow-sm hover:shadow-glow hover:border-accent-500/40 transition-all duration-300'
+                    'shadow-sm hover:shadow-glow hover:border-green-500/40 transition-all duration-300'
                   : 'col-span-1 group relative overflow-hidden rounded-2xl p-5 ' +
                     'bg-white/70 dark:bg-ink-50/70 backdrop-blur-xl ' +
                     'border border-white/10 dark:border-ink-200/50 ' +
-                    'shadow-sm hover:shadow-glow hover:border-accent-500/30 hover:-translate-y-1 transition-all duration-300'
+                    'shadow-sm hover:shadow-glow hover:border-green-500/30 hover:-translate-y-1 transition-all duration-300'
               }
             >
               {/* Decorative gradient blob on hero */}
               {isHero && (
                 <div className="pointer-events-none absolute -top-20 -end-20 w-60 h-60 rounded-full
-                                bg-accent-500/20 dark:bg-accent-500/10 blur-3xl" />
+                                bg-green-500/20 dark:bg-green-500/10 blur-3xl" />
               )}
 
               <div className="relative">
@@ -116,7 +116,7 @@ export default function AdminDashboard() {
                 </p>
 
                 {tile.trend && (
-                  <div className={`mt-3 inline-flex items-center gap-1 text-xs font-medium ${tile.trend.startsWith('+') ? 'text-accent-500' : 'text-status-rejected'}`}>
+                  <div className={`mt-3 inline-flex items-center gap-1 text-xs font-medium ${tile.trend.startsWith('+') ? 'text-green-500' : 'text-status-rejected'}`}>
                     {tile.trend.startsWith('+') ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
                     {tile.trend}
                     <span className="text-gray-500 dark:text-ink-500 ms-1">vs last week</span>
@@ -124,7 +124,7 @@ export default function AdminDashboard() {
                 )}
 
                 {isHero && (
-                  <div className="mt-6 inline-flex items-center gap-2 text-sm text-accent-500 font-medium">
+                  <div className="mt-6 inline-flex items-center gap-2 text-sm text-green-500 font-medium">
                     View analytics
                     <ArrowUpRight size={16} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                   </div>
@@ -144,7 +144,7 @@ export default function AdminDashboard() {
               <h2 className="font-heading text-2xl text-gray-900 dark:text-ink-900">{t('admin.systemHealth')}</h2>
               <p className="text-micro text-gray-500 dark:text-ink-500 mt-1">
                 {t('admin.liveInfra')} · {health?.app_env ?? 'unknown'} · DEBUG:{' '}
-                <span className={health?.app_debug ? 'text-status-rejected' : 'text-accent-500'}>
+                <span className={health?.app_debug ? 'text-status-rejected' : 'text-green-500'}>
                   {String(health?.app_debug ?? '—')}
                 </span>
               </p>
@@ -167,7 +167,7 @@ export default function AdminDashboard() {
                   className="flex items-start gap-3 p-4 rounded-xl
                              bg-gray-50/80 dark:bg-ink-100/40
                              border border-gray-200/60 dark:border-ink-200/50
-                             hover:border-accent-500/30 hover:shadow-glow transition-all duration-300"
+                             hover:border-green-500/30 hover:shadow-glow transition-all duration-300"
                 >
                   <StatusDot status={check.status} />
                   <div className="flex-1 min-w-0">
@@ -196,7 +196,7 @@ export default function AdminDashboard() {
                   <p className="text-micro text-gray-500 dark:text-ink-500 truncate">{o.user?.name ?? '—'}</p>
                 </div>
                 <div className="text-end">
-                  <p className="text-sm font-semibold text-accent-500 tabular-nums">{formatPrice(o.total)}</p>
+                  <p className="text-sm font-semibold text-green-500 tabular-nums">{formatPrice(o.total)}</p>
                   <p className="text-micro text-gray-500 dark:text-ink-500">{new Date(o.created_at).toLocaleDateString()}</p>
                 </div>
               </li>

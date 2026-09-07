@@ -102,7 +102,7 @@ export default function AdminUsers() {
                       onClick={() => toggleBan(u)}
                       className={`text-small font-medium ${
                         u.banned_at
-                          ? 'text-accent-400 hover:text-accent-300'
+                          ? 'text-green-400 hover:text-green-300'
                           : 'text-status-rejected hover:text-status-rejected/80'
                       }`}
                     >
