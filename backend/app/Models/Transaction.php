@@ -20,7 +20,7 @@ class Transaction extends Model
         'status',
         'method',
         'gateway_ref',
-        'notes',
+        'rejection_reason',
         'meta',
     ];
 
