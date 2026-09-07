@@ -8,7 +8,6 @@ import toast from 'react-hot-toast';
 import Logo from '@/components/Logo';
 import Button from '@/components/Button';
 import PageTransition from '@/components/PageTransition';
-import HeroArt from '@/components/HeroArt';
 import { useI18n } from '@/i18n';
 
 export default function Login() {
@@ -43,10 +42,8 @@ export default function Login() {
 
   return (
     <PageTransition className="min-h-screen flex flex-col lg:flex-row-reverse">
+      {/* Floating icons – no background overlay */}
       <div className="relative w-full lg:w-1/2 flex items-center justify-center px-6 py-4 lg:px-16 lg:py-20 mt-4 lg:mt-0">
-        <div className="absolute inset-0 opacity-40 dark:opacity-40 pointer-events-none">
-          <HeroArt variant="aurora" className="w-full h-full" />
-        </div>
         <div className="relative w-full h-32 lg:h-80 flex-shrink-0">
           <motion.div
             animate={{ y: [0, -15, 0], x: [0, 5, 0], rotate: [0, 8, 0] }}

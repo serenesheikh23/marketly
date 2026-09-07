@@ -9,7 +9,6 @@ import TrendChart from '@/components/TrendChart';
 import { formatPrice, formatDateTime } from '@/utils/format';
 import { useI18n } from '@/i18n';
 import Breadcrumbs from '@/components/Breadcrumbs';
-import { Gamepad2, MessageCircle, CreditCard, Wallet, Palette, Bot } from 'lucide-react';
 
 const QUICK_ACTIONS = [
   { to: '/dashboard/deposit', label: 'admin.depositFunds', icon: 'deposit', color: 'accent' },
@@ -79,205 +78,154 @@ export default function Dashboard() {
   const isRtl = locale === 'ar';
 
   return (
-    <PageTransition className="relative overflow-hidden">
-      {/* Floating decorations */}
-      <div className="absolute inset-0 pointer-events-none z-0">
-        <div className="relative w-full h-full flex-shrink-0">
-          <motion.div
-            animate={{ y: [0, -15, 0], x: [0, 5, 0], rotate: [0, 8, 0] }}
-            transition={{ duration: 5, delay: 0, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute top-[5%] left-[8%]"
-          >
-            <Gamepad2 size={34} className="text-green-400 drop-shadow-lg" />
-          </motion.div>
-          <motion.div
-            animate={{ y: [0, 18, 0], x: [0, -8, 0], rotate: [0, -6, 0] }}
-            transition={{ duration: 6, delay: 0.4, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute top-[35%] right-[5%]"
-          >
-            <MessageCircle size={28} className="text-green-300 drop-shadow-lg" />
-          </motion.div>
-          <motion.div
-            animate={{ y: [0, -20, 0], x: [0, 10, 0], rotate: [0, 12, 0] }}
-            transition={{ duration: 4.8, delay: 0.8, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute bottom-[20%] left-[15%]"
-          >
-            <CreditCard size={30} className="text-green-500 drop-shadow-lg" />
-          </motion.div>
-          <motion.div
-            animate={{ y: [0, 12, 0], x: [0, -5, 0], rotate: [0, -4, 0] }}
-            transition={{ duration: 5.5, delay: 0.2, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute top-[15%] left-[45%]"
-          >
-            <Wallet size={24} className="text-green-400 drop-shadow-lg" />
-          </motion.div>
-          <motion.div
-            animate={{ y: [0, -10, 0], x: [0, 6, 0], rotate: [0, 7, 0] }}
-            transition={{ duration: 6.5, delay: 1.1, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute bottom-[10%] right-[25%]"
-          >
-            <Palette size={26} className="text-green-300 drop-shadow-lg" />
-          </motion.div>
-          <motion.div
-            animate={{ y: [0, 15, 0], x: [0, -8, 0], rotate: [0, -8, 0] }}
-            transition={{ duration: 5.2, delay: 0.6, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute bottom-[35%] left-[70%]"
-          >
-            <Bot size={32} className="text-green-500 drop-shadow-lg" />
-          </motion.div>
+    <PageTransition className="space-y-10">
+      <Breadcrumbs items={[{ label: t('nav.home'), link: '/' }, { label: t('nav.dashboard') }]} />
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-h1 text-gray-900 dark:text-ink-900">{user?.name ?? 'User'}</h1>
+        </div>
+        <div className="text-right">
+          <p className="text-micro text-gray-500 dark:text-ink-500 uppercase">{t('account.balance')}</p>
+          <p className="text-h2 text-green-400 tabular-nums">{formatPrice(user?.balance ?? 0)}</p>
         </div>
       </div>
 
-      {/* Main content */}
-      <div className="relative z-10 space-y-10">
-        <Breadcrumbs items={[{ label: t('nav.home'), link: '/' }, { label: t('nav.dashboard') }]} />
-        <div className="flex items-start justify-between">
-          <div>
-            <h1 className="text-h1 text-gray-900 dark:text-ink-900">{user?.name ?? 'User'}</h1>
-          </div>
-          <div className="text-right">
-            <p className="text-micro text-gray-500 dark:text-ink-500 uppercase">{t('account.balance')}</p>
-            <p className="text-h2 text-green-400 tabular-nums">{formatPrice(user?.balance ?? 0)}</p>
-          </div>
-        </div>
+      {/* KPI cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {[
+          {
+            label: t('account.balance'),
+            value: formatPrice(user?.balance ?? 0),
+            sub: null,
+            color: 'accent',
+          },
+          {
+            label: 'VIP Level',
+            value: vip?.label ?? '—',
+            sub: vip?.withdrawal_limit > 0 ? `${t('admin.withdrawals')}: $${vip.withdrawal_limit}` : null,
+            color: 'vip',
+          },
+          {
+            label: t('admin.thisMonth'),
+            value: `${txns.filter((t) => new Date(t.created_at).getMonth() === new Date().getMonth()).length}`,
+            sub: t('admin.recentOrders'),
+            color: 'neutral',
+          },
+        ].map((kpi, i) => (
+          <motion.div key={kpi.label} {...stagger(i)} className="card-pad">
+            <p className="text-micro text-gray-500 dark:text-ink-500 uppercase tracking-wide mb-2">{kpi.label}</p>
+            <p className={`text-h2 ${kpi.color === 'accent' ? 'text-green-400' : kpi.color === 'vip' ? 'text-status-vip' : 'text-gray-900 dark:text-ink-900'}`}>
+              {kpi.value}
+            </p>
+            {kpi.sub && <p className="text-micro text-gray-500 dark:text-ink-500 mt-1">{kpi.sub}</p>}
+          </motion.div>
+        ))}
+      </div>
 
-        {/* KPI cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {[
-            {
-              label: t('account.balance'),
-              value: formatPrice(user?.balance ?? 0),
-              sub: null,
-              color: 'accent',
-            },
-            {
-              label: 'VIP Level',
-              value: vip?.label ?? '—',
-              sub: vip?.withdrawal_limit > 0 ? `${t('admin.withdrawals')}: $${vip.withdrawal_limit}` : null,
-              color: 'vip',
-            },
-            {
-              label: t('admin.thisMonth'),
-              value: `${txns.filter((t) => new Date(t.created_at).getMonth() === new Date().getMonth()).length}`,
-              sub: t('admin.recentOrders'),
-              color: 'neutral',
-            },
-          ].map((kpi, i) => (
-            <motion.div key={kpi.label} {...stagger(i)} className="card-pad">
-              <p className="text-micro text-gray-500 dark:text-ink-500 uppercase tracking-wide mb-2">{kpi.label}</p>
-              <p className={`text-h2 ${kpi.color === 'accent' ? 'text-green-400' : kpi.color === 'vip' ? 'text-status-vip' : 'text-gray-900 dark:text-ink-900'}`}>
-                {kpi.value}
-              </p>
-              {kpi.sub && <p className="text-micro text-gray-500 dark:text-ink-500 mt-1">{kpi.sub}</p>}
+      {/* Spending Trend – professional card with RTL */}
+      {(() => {
+        const days = Array.from({ length: 7 }, (_, i) => {
+          const d = new Date();
+          d.setDate(d.getDate() - (6 - i));
+          return d.toISOString().split('T')[0];
+        });
+        const spendPerDay = days.map((day) =>
+          txns
+            .filter((t) => t.created_at?.startsWith(day) && !['deposit', 'refund', 'vip_upgrade'].includes(t.type))
+            .reduce((sum, t) => sum + Math.abs(t.amount), 0)
+        );
+        const labels = days.map((d) => {
+          const dt = new Date(d);
+          return dt.toLocaleDateString(isRtl ? 'ar' : 'en', { weekday: 'short' });
+        });
+
+        return (
+          <motion.div {...stagger(3)} className="bg-white dark:bg-ink-800 rounded-xl border border-gray-200 dark:border-ink-700 shadow-sm p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-h3 text-gray-900 dark:text-ink-900">
+                {isRtl ? 'اتجاه الإنفاق' : 'Spending Trend (7 days)'}
+              </h2>
+            </div>
+            <div dir={isRtl ? 'rtl' : 'ltr'}>
+              <TrendChart data={spendPerDay} labels={labels} showAxis className="text-gray-500 dark:text-ink-500" />
+            </div>
+            <p className="text-micro text-gray-400 dark:text-ink-400 mt-2 text-center">
+              {isRtl ? 'آخر 7 أيام' : 'Last 7 days'}
+            </p>
+          </motion.div>
+        );
+      })()}
+
+      {/* Quick actions */}
+      <div>
+        <h2 className="text-h3 text-gray-900 dark:text-ink-900 mb-4">{t('admin.quickActions')}</h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          {QUICK_ACTIONS.map((a, i) => (
+            <motion.div key={a.to} {...stagger(i)} className="flex items-center justify-center">
+              <Link
+                to={a.to}
+                className={`card-hover flex flex-col items-center justify-center gap-3 p-4 text-center w-full ${
+                  a.color === 'accent' ? 'border-green-500/30 bg-green-500/5' : ''
+                }`}
+              >
+                <span className={a.color === 'accent' ? 'text-green-400' : 'text-gray-500 dark:text-ink-600'}>
+                  {ACTION_ICONS[a.icon]}
+                </span>
+                <span className="text-small font-medium text-gray-900 dark:text-ink-900">{t(a.label)}</span>
+              </Link>
             </motion.div>
           ))}
         </div>
+      </div>
 
-        {/* Spending Trend – professional card with RTL */}
-        {(() => {
-          const days = Array.from({ length: 7 }, (_, i) => {
-            const d = new Date();
-            d.setDate(d.getDate() - (6 - i));
-            return d.toISOString().split('T')[0];
-          });
-          const spendPerDay = days.map((day) =>
-            txns
-              .filter((t) => t.created_at?.startsWith(day) && !['deposit', 'refund', 'vip_upgrade'].includes(t.type))
-              .reduce((sum, t) => sum + Math.abs(t.amount), 0)
-          );
-          const labels = days.map((d) => {
-            const dt = new Date(d);
-            return dt.toLocaleDateString(isRtl ? 'ar' : 'en', { weekday: 'short' });
-          });
-
-          return (
-            <motion.div {...stagger(3)} className="bg-white dark:bg-ink-800 rounded-xl border border-gray-200 dark:border-ink-700 shadow-sm p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-h3 text-gray-900 dark:text-ink-900">
-                  {isRtl ? 'اتجاه الإنفاق' : 'Spending Trend (7 days)'}
-                </h2>
-              </div>
-              <div dir={isRtl ? 'rtl' : 'ltr'}>
-                <TrendChart data={spendPerDay} labels={labels} showAxis className="text-gray-500 dark:text-ink-500" />
-              </div>
-              <p className="text-micro text-gray-400 dark:text-ink-400 mt-2 text-center">
-                {isRtl ? 'آخر 7 أيام' : 'Last 7 days'}
-              </p>
-            </motion.div>
-          );
-        })()}
-
-        {/* Quick actions */}
-        <div>
-          <h2 className="text-h3 text-gray-900 dark:text-ink-900 mb-4">{t('admin.quickActions')}</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {QUICK_ACTIONS.map((a, i) => (
-              <motion.div key={a.to} {...stagger(i)} className="flex items-center justify-center">
-                <Link
-                  to={a.to}
-                  className={`card-hover flex flex-col items-center justify-center gap-3 p-4 text-center w-full ${
-                    a.color === 'accent' ? 'border-green-500/30 bg-green-500/5' : ''
-                  }`}
-                >
-                  <span className={a.color === 'accent' ? 'text-green-400' : 'text-gray-500 dark:text-ink-600'}>
-                    {ACTION_ICONS[a.icon]}
-                  </span>
-                  <span className="text-small font-medium text-gray-900 dark:text-ink-900">{t(a.label)}</span>
-                </Link>
-              </motion.div>
-            ))}
-          </div>
+      {/* Recent transactions */}
+      <div className="bg-white dark:bg-ink-800 rounded-xl border border-gray-200 dark:border-ink-700 shadow-sm p-6">
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="text-h3 text-gray-900 dark:text-ink-900">{t('admin.recentTransactions')}</h2>
+          <Link to="/dashboard/orders" className="text-micro text-green-400 hover:text-green-300">
+            {t('home.viewAll')} →
+          </Link>
         </div>
-
-        {/* Recent transactions */}
-        <div className="bg-white dark:bg-ink-800 rounded-xl border border-gray-200 dark:border-ink-700 shadow-sm p-6">
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="text-h3 text-gray-900 dark:text-ink-900">{t('admin.recentTransactions')}</h2>
-            <Link to="/dashboard/orders" className="text-micro text-green-400 hover:text-green-300">
-              {t('home.viewAll')} →
-            </Link>
-          </div>
-          {txns.length > 0 ? (
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>{t('admin.type')}</th>
-                  <th>{t('admin.amount')}</th>
-                  <th>{t('admin.status')}</th>
-                  <th>{t('admin.date')}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {txns.slice(0, 10).map((t) => {
-                  const isPositive = ['deposit', 'refund', 'vip_upgrade'].includes(t.type);
-                  return (
-                    <tr key={t.id}>
-                      <td className="capitalize text-gray-900 dark:text-ink-800">{t.type.replace('_', ' ')}</td>
-                      <td className={`font-semibold tabular-nums ${isPositive ? 'text-green-400' : 'text-status-rejected'}`}>
-                        {isPositive ? '+' : '-'}{formatPrice(t.amount)}
-                      </td>
-                      <td><span className={`badge-${t.status}`}>{t.status}</span></td>
-                      <td className="text-gray-500 dark:text-ink-500">{formatDateTime(t.created_at)}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          ) : (
-            <EmptyState
-              icon={
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-                  <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" strokeLinecap="round" strokeLinejoin="round" />
-                  <rect x="9" y="3" width="6" height="4" rx="1" />
-                  <path d="M9 12h6M9 16h4" strokeLinecap="round" />
-                </svg>
-              }
-              title={t('admin.noTransactionsYet')}
-              description={t('admin.purchaseHistory')}
-              action={{ label: t('home.browseProducts'), to: '/products' }}
-            />
-          )}
-        </div>
+        {txns.length > 0 ? (
+          <table className="table">
+            <thead>
+              <tr>
+                <th>{t('admin.type')}</th>
+                <th>{t('admin.amount')}</th>
+                <th>{t('admin.status')}</th>
+                <th>{t('admin.date')}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {txns.slice(0, 10).map((t) => {
+                const isPositive = ['deposit', 'refund', 'vip_upgrade'].includes(t.type);
+                return (
+                  <tr key={t.id}>
+                    <td className="capitalize text-gray-900 dark:text-ink-800">{t.type.replace('_', ' ')}</td>
+                    <td className={`font-semibold tabular-nums ${isPositive ? 'text-green-400' : 'text-status-rejected'}`}>
+                      {isPositive ? '+' : '-'}{formatPrice(t.amount)}
+                    </td>
+                    <td><span className={`badge-${t.status}`}>{t.status}</span></td>
+                    <td className="text-gray-500 dark:text-ink-500">{formatDateTime(t.created_at)}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        ) : (
+          <EmptyState
+            icon={
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+                <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" strokeLinecap="round" strokeLinejoin="round" />
+                <rect x="9" y="3" width="6" height="4" rx="1" />
+                <path d="M9 12h6M9 16h4" strokeLinecap="round" />
+              </svg>
+            }
+            title={t('admin.noTransactionsYet')}
+            description={t('admin.purchaseHistory')}
+            action={{ label: t('home.browseProducts'), to: '/products' }}
+          />
+        )}
       </div>
     </PageTransition>
   );

@@ -72,56 +72,9 @@ export default function Home() {
 
   return (
     <PageTransition className="relative overflow-hidden">
-      {/* ── FLOATING DECORATIONS (from Login) ── */}
-      <div className="absolute inset-0 pointer-events-none z-0">
-        <div className="relative w-full h-full flex-shrink-0">
-          <motion.div
-            animate={{ y: [0, -15, 0], x: [0, 5, 0], rotate: [0, 8, 0] }}
-            transition={{ duration: 5, delay: 0, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute top-[5%] left-[8%]"
-          >
-            <Gamepad2 size={34} className="text-green-400 drop-shadow-lg" />
-          </motion.div>
-          <motion.div
-            animate={{ y: [0, 18, 0], x: [0, -8, 0], rotate: [0, -6, 0] }}
-            transition={{ duration: 6, delay: 0.4, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute top-[35%] right-[5%]"
-          >
-            <MessageCircle size={28} className="text-green-300 drop-shadow-lg" />
-          </motion.div>
-          <motion.div
-            animate={{ y: [0, -20, 0], x: [0, 10, 0], rotate: [0, 12, 0] }}
-            transition={{ duration: 4.8, delay: 0.8, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute bottom-[20%] left-[15%]"
-          >
-            <CreditCard size={30} className="text-green-500 drop-shadow-lg" />
-          </motion.div>
-          <motion.div
-            animate={{ y: [0, 12, 0], x: [0, -5, 0], rotate: [0, -4, 0] }}
-            transition={{ duration: 5.5, delay: 0.2, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute top-[15%] left-[45%]"
-          >
-            <Wallet size={24} className="text-green-400 drop-shadow-lg" />
-          </motion.div>
-          <motion.div
-            animate={{ y: [0, -10, 0], x: [0, 6, 0], rotate: [0, 7, 0] }}
-            transition={{ duration: 6.5, delay: 1.1, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute bottom-[10%] right-[25%]"
-          >
-            <Palette size={26} className="text-green-300 drop-shadow-lg" />
-          </motion.div>
-          <motion.div
-            animate={{ y: [0, 15, 0], x: [0, -8, 0], rotate: [0, -8, 0] }}
-            transition={{ duration: 5.2, delay: 0.6, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute bottom-[35%] left-[70%]"
-          >
-            <Bot size={32} className="text-green-500 drop-shadow-lg" />
-          </motion.div>
-        </div>
-      </div>
-
       {/* ── MAIN CONTENT ── */}
-      <div className="relative z-10 space-y-24">
+      <div className="relative z-10 space-y-10">
+
         {/* Hero section */}
         <motion.section
           className="relative w-full overflow-hidden"
@@ -184,6 +137,54 @@ export default function Home() {
             </div>
           </div>
         </motion.section>
+
+        {/* ── FLOATING ICONS GAP ── between hero buttons and "BROWSE Categories" */}
+        <div className="relative overflow-hidden w-full h-32 lg:h-44 flex-shrink-0">
+          <div className="relative w-full h-full">
+            <motion.div
+              animate={{ y: [0, -15, 0], x: [0, 5, 0], rotate: [0, 8, 0] }}
+              transition={{ duration: 5, delay: 0, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute top-[5%] left-[8%]"
+            >
+              <Gamepad2 size={34} className="text-green-400 drop-shadow-lg" />
+            </motion.div>
+            <motion.div
+              animate={{ y: [0, 18, 0], x: [0, -8, 0], rotate: [0, -6, 0] }}
+              transition={{ duration: 6, delay: 0.4, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute top-[35%] right-[5%]"
+            >
+              <MessageCircle size={28} className="text-green-300 drop-shadow-lg" />
+            </motion.div>
+            <motion.div
+              animate={{ y: [0, -20, 0], x: [0, 10, 0], rotate: [0, 12, 0] }}
+              transition={{ duration: 4.8, delay: 0.8, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute bottom-[20%] left-[15%]"
+            >
+              <CreditCard size={30} className="text-green-500 drop-shadow-lg" />
+            </motion.div>
+            <motion.div
+              animate={{ y: [0, 12, 0], x: [0, -5, 0], rotate: [0, -4, 0] }}
+              transition={{ duration: 5.5, delay: 0.2, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute top-[15%] left-[45%]"
+            >
+              <Wallet size={24} className="text-green-400 drop-shadow-lg" />
+            </motion.div>
+            <motion.div
+              animate={{ y: [0, -10, 0], x: [0, 6, 0], rotate: [0, 7, 0] }}
+              transition={{ duration: 6.5, delay: 1.1, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute bottom-[10%] right-[25%]"
+            >
+              <Palette size={26} className="text-green-300 drop-shadow-lg" />
+            </motion.div>
+            <motion.div
+              animate={{ y: [0, 15, 0], x: [0, -8, 0], rotate: [0, -8, 0] }}
+              transition={{ duration: 5.2, delay: 0.6, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute bottom-[35%] left-[70%]"
+            >
+              <Bot size={32} className="text-green-500 drop-shadow-lg" />
+            </motion.div>
+          </div>
+        </div>
 
         {/* Categories */}
         <section>
@@ -280,6 +281,7 @@ export default function Home() {
             ))}
           </div>
         </section>
+
       </div>
     </PageTransition>
   );
