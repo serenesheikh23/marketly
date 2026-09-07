@@ -49,13 +49,13 @@ export default function Layout() {
             <Logo size="sm" showText />
           </Link>
 
-          {/* Desktop nav */}
+          {/* Desktop nav (auth-aware links) */}
           <nav className="hidden md:flex items-center gap-2 flex-1 flex-wrap">
             {isAuthenticated ? (
               <>
-                <Link to="/dashboard" className="nav-link text-sm hidden md:inline">{t('nav.dashboard')}</Link>
+                <Link to="/dashboard" className="nav-link text-sm">{t('nav.dashboard')}</Link>
                 {(roles.includes('admin') || roles.includes('moderator')) && (
-                  <Link to="/admin" className="nav-link text-sm text-accent-400 hidden md:inline">{t('nav.admin')}</Link>
+                  <Link to="/admin" className="nav-link text-sm text-accent-400">{t('nav.admin')}</Link>
                 )}
                 <div className="mx-2 w-px h-5 bg-gray-300 dark:bg-ink-200" />
                 <span className="text-sm text-gray-600 dark:text-ink-600 font-medium tabular-nums">
@@ -71,54 +71,58 @@ export default function Layout() {
                 <Link to="/register" className="btn-accent btn-sm">{t('nav.getStarted')}</Link>
               </>
             )}
-            <div className="ms-auto flex items-center gap-2">
-              <button
-                onClick={() => setSearchOpen(true)}
-                className="hidden sm:flex items-center gap-2 px-3 py-1.5 text-xs text-gray-500 dark:text-ink-500
-                           bg-gray-100 dark:bg-ink-100 hover:bg-gray-200 dark:hover:bg-ink-200
-                           border border-gray-200 dark:border-ink-200 rounded-lg transition-colors"
-                aria-label="Search (Cmd+K)"
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <circle cx="11" cy="11" r="8" />
-                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                </svg>
-                <span>Search</span>
-                <kbd className="ms-2 px-1.5 py-0.5 text-[10px] rounded bg-white dark:bg-ink-50 border border-gray-200 dark:border-ink-200">
-                  ⌘K
-                </kbd>
-              </button>
-              {isAuthenticated && (
-                <button
-                  onClick={() => setCartOpen(true)}
-                  className="relative p-1.5 rounded-lg text-gray-600 dark:text-ink-500 hover:text-gray-900 dark:hover:text-ink-900 hover:bg-gray-100 dark:hover:bg-ink-100 transition-all duration-200"
-                  aria-label="Open cart"
-                >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-                    <line x1="3" y1="6" x2="21" y2="6" />
-                    <path d="M16 10a4 4 0 0 1-8 0" />
-                  </svg>
-                  {cartItems.length > 0 && (
-                    <span className="absolute -top-1 -end-1 bg-accent-500 text-ink text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
-                      {cartItems.length}
-                    </span>
-                  )}
-                </button>
-              )}
-              <LanguageSwitcher />
-              <ThemeToggle />
-            </div>
           </nav>
 
-          {/* Mobile right side: toggles + hamburger */}
-          <div className="ms-auto flex items-center gap-1 md:hidden">
+          {/* Right-side icon group — visible on ALL screens */}
+          <div className="ms-auto flex items-center gap-1 sm:gap-2">
+            {/* Search — icon-only on mobile, with "Search" label on sm+ */}
+            <button
+              type="button"
+              onClick={() => setSearchOpen(true)}
+              className="p-2 rounded-lg text-gray-600 dark:text-ink-500
+                         hover:text-gray-900 dark:hover:text-ink-900
+                         hover:bg-gray-100 dark:hover:bg-ink-100
+                         transition-colors"
+              aria-label={t('common.search') ?? 'Search'}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+            </button>
+
+            {/* Cart — always visible for authenticated users */}
+            {isAuthenticated && (
+              <button
+                type="button"
+                onClick={() => setCartOpen(true)}
+                className="relative p-2 rounded-lg text-gray-600 dark:text-ink-500
+                           hover:text-gray-900 dark:hover:text-ink-900
+                           hover:bg-gray-100 dark:hover:bg-ink-100
+                           transition-colors"
+                aria-label={t('nav.cart')}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                  <line x1="3" y1="6" x2="21" y2="6" />
+                  <path d="M16 10a4 4 0 0 1-8 0" />
+                </svg>
+                {cartItems.length > 0 && (
+                  <span className="absolute -top-0.5 -end-0.5 bg-accent-500 text-ink text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                    {cartItems.length}
+                  </span>
+                )}
+              </button>
+            )}
+
             <LanguageSwitcher />
             <ThemeToggle />
+
+            {/* Hamburger — only mobile/tablet */}
             <button
               type="button"
               onClick={toggleMenu}
-              className="relative z-50 p-2 rounded-md text-gray-700 dark:text-ink-700 hover:bg-gray-100 dark:hover:bg-ink-100 transition-colors"
+              className="md:hidden p-2 rounded-lg text-gray-700 dark:text-ink-700 hover:bg-gray-100 dark:hover:bg-ink-100 transition-colors"
               aria-label={mobileOpen ? 'Close menu' : 'Toggle menu'}
               aria-expanded={mobileOpen}
             >
