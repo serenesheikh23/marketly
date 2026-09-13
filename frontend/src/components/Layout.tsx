@@ -50,7 +50,7 @@ export default function Layout() {
           </Link>
 
           {/* Desktop nav (auth-aware links) */}
-          <nav className="hidden md:flex items-center gap-2 flex-1 flex-wrap">
+          <nav className="hidden lg:flex items-center gap-2 flex-1 flex-wrap">
             {isAuthenticated ? (
               <>
                 <Link to="/dashboard" className="nav-link text-sm">{t('nav.dashboard')}</Link>
@@ -125,7 +125,7 @@ export default function Layout() {
             <button
               type="button"
               onClick={toggleMenu}
-              className="md:hidden p-2 rounded-lg text-gray-700 dark:text-ink-700 hover:bg-gray-100 dark:hover:bg-ink-100 transition-colors"
+              className="lg:hidden p-2 rounded-lg text-gray-700 dark:text-ink-700 hover:bg-gray-100 dark:hover:bg-ink-100 transition-colors"
               aria-label={mobileOpen ? 'Close menu' : 'Toggle menu'}
               aria-expanded={mobileOpen}
             >
@@ -151,7 +151,7 @@ export default function Layout() {
             onClick={closeMenu}
           />
           <div
-            className="md:hidden z-50 bg-white dark:bg-ink-50 border-b border-gray-200 dark:border-ink-200 shadow-lg"
+            className="lg:hidden z-50 bg-white dark:bg-ink-50 border-b border-gray-200 dark:border-ink-200 shadow-lg"
           >
             <nav className="px-4 py-3 space-y-1">
               {isAuthenticated ? (
