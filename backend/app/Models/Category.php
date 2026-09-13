@@ -67,4 +67,13 @@ class Category extends Model
     {
         return $this->type === CategoryType::Manual;
     }
+
+    public function getSubtreeIds(): array
+    {
+        $ids = [$this->id];
+        foreach ($this->children as $child) {
+            $ids = array_merge($ids, $child->getSubtreeIds());
+        }
+        return $ids;
+    }
 }
