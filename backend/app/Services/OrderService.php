@@ -42,6 +42,22 @@ class OrderService
                     throw new \DomainException("Manual product {$product->name} requires payload data.");
                 }
 
+                // ── Pre-flight check for automation products ──
+                // Never send an order to Oranos unless every required param is filled.
+                if ($product->is_automation) {
+                    $requiredParams = is_array($product->params) ? $product->params : [];
+                    $suppliedParams = is_array($item['payload'] ?? null) ? $item['payload'] : [];
+
+                    if (count($requiredParams) > 0) {
+                        $filled = array_filter($suppliedParams, fn ($v) => is_string($v) && trim($v) !== '');
+                        if (count($filled) < count($requiredParams)) {
+                            throw new \DomainException(
+                                "Product {$product->name} requires: " . implode(', ', $requiredParams)
+                            );
+                        }
+                    }
+                }
+
                 $qty = max(1, (int) $item['quantity']);
 
                 // Use the store's custom price when buying through a store.
