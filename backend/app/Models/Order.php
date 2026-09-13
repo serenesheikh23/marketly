@@ -21,6 +21,10 @@ class Order extends Model
         'payment_method',
         'payment_ref',
         'notes',
+        'oranos_order_id',
+        'oranos_status',
+        'commission',
+        'failure_reason',
     ];
 
     protected $casts = [
@@ -28,6 +32,7 @@ class Order extends Model
         'subtotal' => 'decimal:2',
         'fee' => 'decimal:2',
         'total' => 'decimal:2',
+        'commission' => 'decimal:2',
     ];
 
     public function user(): BelongsTo

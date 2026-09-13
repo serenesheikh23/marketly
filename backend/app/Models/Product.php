@@ -28,6 +28,11 @@ class Product extends Model
         'type',
         'is_active',
         'metadata',
+        'oranos_product_id',
+        'base_price',
+        'is_automation',
+        'qty_values',
+        'params',
     ];
 
     protected $casts = [
@@ -36,6 +41,11 @@ class Product extends Model
         'type' => CategoryType::class,
         'is_active' => 'boolean',
         'metadata' => 'array',
+        'params' => 'array',
+        'qty_values' => 'array',
+        'base_price' => 'decimal:2',
+        'is_automation' => 'boolean',
+        'oranos_product_id' => 'integer',
     ];
 
     protected static function booted(): void
