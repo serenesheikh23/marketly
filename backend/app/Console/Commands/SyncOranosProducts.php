@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Services\OranosMarketService;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -131,7 +132,33 @@ class SyncOranosProducts extends Command
             }
         }
 
-        $this->info("Synced {$synced}. Failed: {$failed}. Linked: {$linked}. Sellable: {$sellable}. Unsellable: {$unsellable}.");
+        // ── Refresh store prices to match current product prices ──
+        // Store owners set custom prices on top of our platform price. When
+        // our price changes (e.g. a new sync with a different markup), the
+        // store's custom_price becomes stale. Recompute from the current
+        // platform price × 1.10 default for every automation product.
+        $updatedStores = 0;
+        $storeMarkup = 1.10;
+
+        DB::table('stores')->orderBy('id')->chunk(50, function ($stores) use (&$updatedStores, $storeMarkup) {
+            foreach ($stores as $store) {
+                $rows = DB::table('store_product')
+                    ->join('products', 'store_product.product_id', '=', 'products.id')
+                    ->where('store_product.store_id', $store->id)
+                    ->where('products.is_automation', true)
+                    ->select('store_product.id as pivot_id', 'products.price as product_price')
+                    ->get();
+
+                foreach ($rows as $row) {
+                    DB::table('store_product')
+                        ->where('id', $row->pivot_id)
+                        ->update(['custom_price' => round((float) $row->product_price * $storeMarkup, 2)]);
+                }
+                $updatedStores++;
+            }
+        });
+
+        $this->info("Synced {$synced}. Failed: {$failed}. Linked: {$linked}. Sellable: {$sellable}. Unsellable: {$unsellable}. Stores refreshed: {$updatedStores}.");
 
         return 0;
     }
