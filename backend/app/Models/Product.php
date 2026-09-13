@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
-
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Product extends Model
 {
     use HasFactory;
@@ -70,6 +70,13 @@ class Product extends Model
     public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+        public function stores(): BelongsToMany
+    {
+        return $this->belongsToMany(Store::class, 'store_product')
+            ->withPivot('custom_price')
+            ->withTimestamps();
     }
 
     public function isManual(): bool

@@ -18,6 +18,7 @@ class StoreOrderRequest extends FormRequest
             'items.*.product_id' => ['required', 'integer', 'exists:products,id'],
             'items.*.quantity' => ['required', 'integer', 'min:1'],
             'items.*.payload' => ['nullable', 'array'],
+            'store_id' => ['nullable', 'integer', 'exists:stores,id'],
             'payment_method' => ['required', 'string', 'in:cash_wallet,binance_pay,usdt'],
             'meta' => ['nullable', 'array'],
             'meta.binance_id' => ['required_if:payment_method,binance_pay', 'nullable', 'string', 'max:255'],
