@@ -123,7 +123,9 @@ export default function Cart() {
                 <h3 className="text-sm font-semibold text-gray-900 dark:text-ink-900 truncate">{item.name}</h3>
                 {item.payload && (
                   <p className="text-micro text-gray-600 dark:text-ink-500 mt-0.5 truncate">
-                    {Object.entries(item.payload).map(([k, v]) => `${k}: ${v}`).join(' · ')}
+                    {Array.isArray(item.payload)
+                      ? (item.payload as string[]).filter(Boolean).join(' · ')
+                      : Object.values(item.payload).filter(Boolean).join(' · ')}
                   </p>
                 )}
               </div>

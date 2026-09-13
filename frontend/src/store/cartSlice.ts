@@ -5,7 +5,7 @@ export interface CartItem {
   name: string;
   price: number;
   quantity: number;
-  payload?: Record<string, unknown>;
+  payload?: string[] | Record<string, unknown>;
 }
 
 interface CartState {
