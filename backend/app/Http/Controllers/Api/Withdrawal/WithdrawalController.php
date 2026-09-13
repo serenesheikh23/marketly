@@ -11,6 +11,7 @@ use App\Models\Transaction;
 use App\Services\VipService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class WithdrawalController extends Controller
 {
@@ -30,7 +31,7 @@ class WithdrawalController extends Controller
 
     public function store(StoreWithdrawalRequest $request): JsonResponse
     {
-        $user = $request->user();
+        $user   = $request->user();
         $amount = (float) $request->float('amount');
 
         $quote = $this->vip->applyWithdrawal($amount, $user);
@@ -43,22 +44,27 @@ class WithdrawalController extends Controller
             return response()->json(['message' => 'Insufficient balance.'], 422);
         }
 
-        $user->decrement('balance', $quote['amount']);
+        $transaction = DB::transaction(function () use ($user, $quote, $request) {
+            $user->decrement('balance', $quote['amount']);
 
-        $transaction = Transaction::create([
-            'user_id' => $user->id,
-            'type' => TransactionType::Withdrawal,
-            'amount' => $quote['amount'],
-            'fee' => $quote['fee'],
-            'status' => TransactionStatus::Pending,
-            'method' => $request->string('method'),
-            'meta' => [
-                'wallet_address' => $request->string('wallet_address'),
-                'net' => $quote['net'],
-            ],
-        ]);
+            return Transaction::create([
+                'user_id' => $user->id,
+                'type'    => TransactionType::Withdrawal,
+                'amount'  => $quote['amount'],
+                'fee'     => $quote['fee'],
+                'status'  => TransactionStatus::Pending,
+                'method'  => $request->string('method'),
+                'meta'    => [
+                    'wallet_address' => $request->string('wallet_address'),
+                    'net'            => $quote['net'],
+                ],
+            ]);
+        });
 
-        return response()->json(['transaction' => $transaction->fresh()], 201);
+        return response()->json([
+            'transaction' => $transaction->fresh(),
+            'balance'     => (float) $user->fresh()->balance,
+        ], 201);
     }
 
     public function show(Request $request, Transaction $transaction): JsonResponse
@@ -66,6 +72,7 @@ class WithdrawalController extends Controller
         if ($transaction->user_id !== $request->user()->id) {
             return response()->json(['message' => 'Forbidden.'], 403);
         }
+
         return response()->json(['transaction' => $transaction]);
     }
 }

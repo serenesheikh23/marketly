@@ -11,6 +11,8 @@ use App\Models\Transaction;
 use App\Services\PaymentGatewayManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class DepositController extends Controller
 {
@@ -32,26 +34,37 @@ class DepositController extends Controller
     {
         $method = $request->string('method')->toString();
         $amount = (float) $request->float('amount');
+        $user   = $request->user();
 
         $gateway = $this->gateways->driver($method);
-        $depositData = $gateway->createDeposit($amount, 'USD', ['user_id' => $request->user()->id]);
+        $depositData = $gateway->createDeposit($amount, 'USD', ['user_id' => $user->id]);
 
-        $transaction = Transaction::create([
-            'user_id' => $request->user()->id,
-            'type' => TransactionType::Deposit,
-            'amount' => $amount,
-            'fee' => 0,
-            'status' => $method === 'cash_wallet'
-                ? TransactionStatus::Pending
-                : TransactionStatus::Pending,
-            'method' => $method,
-            'gateway_ref' => $depositData['reference'] ?? null,
-            'meta' => $depositData,
-        ]);
+        $transaction = DB::transaction(function () use ($user, $amount, $method, $depositData) {
+            $autoApprove = $method === 'cash_wallet';
+
+            $txn = Transaction::create([
+                'user_id'     => $user->id,
+                'type'        => TransactionType::Deposit,
+                'amount'      => $amount,
+                'fee'         => 0,
+                'status'      => $autoApprove ? TransactionStatus::Approved : TransactionStatus::Pending,
+                'method'      => $method,
+                'gateway_ref' => $depositData['reference'] ?? null,
+                'meta'        => $depositData,
+            ]);
+
+            if ($autoApprove) {
+                $user->increment('balance', $amount);
+                $this->safeBroadcast(new DepositStatusChanged($txn));
+            }
+
+            return $txn;
+        });
 
         return response()->json([
             'transaction' => $transaction,
-            'deposit' => $depositData,
+            'deposit'     => $depositData,
+            'balance'     => (float) $user->fresh()->balance,
         ], 201);
     }
 
@@ -60,6 +73,19 @@ class DepositController extends Controller
         if ($transaction->user_id !== $request->user()->id) {
             return response()->json(['message' => 'Forbidden.'], 403);
         }
+
         return response()->json(['transaction' => $transaction]);
+    }
+
+    private function safeBroadcast(object $event): void
+    {
+        try {
+            event($event);
+        } catch (\Throwable $e) {
+            Log::warning('Broadcast failed (non-fatal)', [
+                'event' => $event::class,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 }
