@@ -1,6 +1,10 @@
 <?php
 
 return [
+    'oranos' => [
+    'url' => env('ORANOS_API_URL', 'https://api.oranosmarket.com'),
+    'token' => env('ORANOS_API_TOKEN'),
+],
     'binance_pay' => [
         'key' => env('BINANCE_PAY_KEY'),
         'secret' => env('BINANCE_PAY_SECRET'),
