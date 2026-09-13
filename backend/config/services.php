@@ -2,9 +2,10 @@
 
 return [
     'oranos' => [
-    'url' => env('ORANOS_API_URL', 'https://api.oranosmarket.com'),
-    'token' => env('ORANOS_API_TOKEN'),
-],
+        'url' => env('ORANOS_API_URL', 'https://api.oranosmarket.com'),
+        'token' => env('ORANOS_API_TOKEN'),
+        'markup' => env('ORANOS_MARKUP', 1.20),
+    ],
     'binance_pay' => [
         'key' => env('BINANCE_PAY_KEY'),
         'secret' => env('BINANCE_PAY_SECRET'),
