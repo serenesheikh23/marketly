@@ -139,6 +139,7 @@ const ar: import('./en').Translations = {
     manualOrders: 'الطلبات اليدوية',
     deposits: 'الإيداعات',
     withdrawals: 'السحوبات',
+    oranosMonitor: 'مراقبة Oranos',
     settings: 'الإعدادات',
     allOrders: 'جميع الطلبات',
     operations: 'العمليات',
