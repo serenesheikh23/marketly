@@ -19,13 +19,17 @@ export default function ProductPage() {
   const [product, setProduct] = useState<any>(null);
   const [quantity, setQuantity] = useState(1);
   const [payload, setPayload] = useState<Record<string, string>>({});
+  const [paramValues, setParamValues] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (!slug) return;
     productApi.show(slug).then((res) => {
-      setProduct(res.data.product);
+      const p = res.data.product;
+      setProduct(p);
+      const params = Array.isArray(p?.params) ? p.params : [];
+      setParamValues(new Array(params.length).fill(''));
       setLoading(false);
     }).catch(() => setLoading(false));
   }, [slug]);
@@ -48,10 +52,35 @@ export default function ProductPage() {
   }
 
   const isManual = product.type === 'manual';
+  const isAutomation = product.is_automation === true;
+  const automationParams: string[] = Array.isArray(product.params) ? product.params : [];
 
   const handleAddToCart = () => {
     if (!quantity || quantity < 1) {
       setErrors({ quantity: t('product.errorQuantity') });
+      return;
+    }
+
+    if (isAutomation) {
+      const newErrors: Record<string, string> = {};
+      automationParams.forEach((label, i) => {
+        if (!(paramValues[i] ?? '').trim()) {
+          newErrors[`param-${i}`] = `Please enter ${label}`;
+        }
+      });
+      setErrors(newErrors);
+      if (Object.keys(newErrors).length > 0) return;
+
+      dispatch(
+        addToCart({
+          product_id: product.id,
+          name: product.name,
+          price: Number(product.price),
+          quantity,
+          payload: paramValues as any,
+        }),
+      );
+      navigate('/cart');
       return;
     }
 
@@ -180,6 +209,33 @@ export default function ProductPage() {
                     +
                   </button>
                 </div>
+              </div>
+            )}
+
+            {isAutomation && (
+              <div className="space-y-3">
+                <p className="text-micro text-gray-600 dark:text-ink-500 uppercase tracking-wide">
+                  Service Details
+                </p>
+                {automationParams.map((label, i) => (
+                  <div key={i}>
+                    <label className="label">{label}</label>
+                    <input
+                      className={`input ${errors[`param-${i}`] ? 'border-status-rejected' : ''}`}
+                      placeholder={label}
+                      value={paramValues[i] ?? ''}
+                      onChange={(e) => {
+                        const next = [...paramValues];
+                        next[i] = e.target.value;
+                        setParamValues(next);
+                        setErrors((prev) => ({ ...prev, [`param-${i}`]: '' }));
+                      }}
+                    />
+                    {errors[`param-${i}`] && (
+                      <p className="text-micro text-status-rejected mt-1">{errors[`param-${i}`]}</p>
+                    )}
+                  </div>
+                ))}
               </div>
             )}
 

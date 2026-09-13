@@ -79,6 +79,34 @@ export default function CategoryPage() {
     );
   }
 
+  // If this category has children, show them as chips instead of products.
+  if (category.children && category.children.length > 0) {
+    return (
+      <PageTransition className="space-y-8">
+        <Breadcrumbs
+          items={[
+            { label: t('nav.home'), link: '/' },
+            { label: localized(category, 'name', 'name_ar', locale) },
+          ]}
+        />
+        <h1 className="text-h1 text-gray-900 dark:text-ink-900">
+          {localized(category, 'name', 'name_ar', locale)}
+        </h1>
+        <div className="flex flex-wrap gap-3">
+          {category.children.map((child: any) => (
+            <Link
+              key={child.id}
+              to={`/category/${child.slug}`}
+              className="px-5 py-2.5 rounded-xl bg-white dark:bg-ink-50 border border-gray-200 dark:border-ink-200 hover:border-green-500 hover:text-green-500 transition-colors text-sm font-medium"
+            >
+              {localized(child, 'name', 'name_ar', locale)}
+            </Link>
+          ))}
+        </div>
+      </PageTransition>
+    );
+  }
+
   return (
     <PageTransition className="space-y-8">
       {/* Header */}

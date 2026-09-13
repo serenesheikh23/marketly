@@ -31,6 +31,11 @@ const AdminWithdrawals = lazy(() => import('@/pages/admin/Withdrawals'));
 const AdminSettings    = lazy(() => import('@/pages/admin/Settings'));
 const LegalPage        = lazy(() => import('@/pages/public/LegalPage'));
 const NotFound         = lazy(() => import('@/pages/NotFound'));
+const Categories       = lazy(() => import('@/pages/public/Categories'));
+const CreateStore      = lazy(() => import('@/pages/public/CreateStore'));
+const MyStores         = lazy(() => import('@/pages/public/MyStores'));
+const StorePage        = lazy(() => import('@/pages/public/StorePage'));
+const Wallet           = lazy(() => import('@/pages/public/Wallet'));
 
 function LoadingSpinner() {
   return (
@@ -66,11 +71,16 @@ export default function App() {
             <Route path="/products" element={<Products />} />
             <Route path="/category/:slug" element={<CategoryPage />} />
             <Route path="/product/:slug" element={<ProductPage />} />
+            <Route path="/categories" element={<Categories />} />
+            <Route path="/store/:slug" element={<StorePage />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/legal/:page" element={<LegalPage />} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/wallet" element={<ProtectedRoute><Wallet /></ProtectedRoute>} />
+            <Route path="/create-store" element={<ProtectedRoute><CreateStore /></ProtectedRoute>} />
+            <Route path="/my-stores" element={<ProtectedRoute><MyStores /></ProtectedRoute>} />
             <Route path="/dashboard/deposit" element={<ProtectedRoute><Deposit /></ProtectedRoute>} />
             <Route path="/dashboard/withdraw" element={<ProtectedRoute><Withdraw /></ProtectedRoute>} />
             <Route path="/dashboard/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
