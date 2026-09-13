@@ -32,15 +32,30 @@ class SyncOranosProducts extends Command
 
         $synced = 0;
         $failed = 0;
+        $sellable = 0;
+        $unsellable = 0;
 
         foreach ($products as $product) {
             try {
                 $oranosId = $product['id'];
                 $name = $product['name'];
-                $price = $product['price'];
-                $basePrice = $product['base_price'] ?? ($price / config('services.oranos.markup', 1.20));
+                $price = (float) ($product['price'] ?? 0);
+                $basePrice = isset($product['base_price']) ? (float) $product['base_price'] : null;
+                $hasQtyValues = !empty($product['qty_values']);
+
+                $isActive = !$hasQtyValues
+                    && $basePrice !== null
+                    && $basePrice > 0
+                    && $price > $basePrice;
+
+                if ($isActive) {
+                    $sellable++;
+                } else {
+                    $unsellable++;
+                }
+
                 $categoryName = $product['category_name'] ?? null;
-                $params = $product['params'] ?? [];
+                $params = $product['params'] ?? null;
                 $qtyValues = $product['qty_values'] ?? null;
 
                 if ($categoryName) {
@@ -56,26 +71,26 @@ class SyncOranosProducts extends Command
                     $category = $defaultCategory;
                 }
 
-                $productSlug = Str::slug($name) . '-' . $oranosId;
-                if (empty($productSlug)) {
-                    $productSlug = 'product-' . $oranosId;
+                $slug = Str::slug($name) . '-' . $oranosId;
+                if (empty($slug)) {
+                    $slug = 'product-' . $oranosId;
                 }
 
                 Product::updateOrCreate(
                     ['oranos_product_id' => $oranosId],
                     [
-                        'category_id' => $category->id,
-                        'name' => $name,
-                        'name_ar' => $name,
-                        'description' => $name,
+                        'category_id'    => $category->id,
+                        'name'           => $name,
+                        'name_ar'        => $name,
+                        'description'    => $name,
                         'description_ar' => $name,
-                        'base_price' => $basePrice,
-                        'price' => $price,
-                        'is_automation' => true,
-                        'qty_values' => $qtyValues,
-                        'params' => $params,
-                        'is_active' => true,
-                        'slug' => $productSlug,
+                        'base_price'     => $basePrice,
+                        'price'          => $price,
+                        'is_automation'  => true,
+                        'qty_values'     => $qtyValues,
+                        'params'         => $params,
+                        'is_active'      => $isActive,
+                        'slug'           => $slug,
                     ]
                 );
 
@@ -106,7 +121,7 @@ class SyncOranosProducts extends Command
             }
         }
 
-        $this->info("Synced {$synced}. Failed: {$failed}. Linked: {$linked}.");
+        $this->info("Synced {$synced}. Failed: {$failed}. Linked: {$linked}. Sellable: {$sellable}. Unsellable: {$unsellable}.");
 
         return 0;
     }
