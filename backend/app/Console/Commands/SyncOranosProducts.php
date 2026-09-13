@@ -25,6 +25,10 @@ class SyncOranosProducts extends Command
             return 1;
         }
 
+        // Oranos charges us its `price` field. `base_price` is Oranos' own
+        // wholesale cost and has nothing to do with what we pay.
+        $markup = (float) config('services.oranos.markup', 1.20);
+
         $defaultCategory = Category::firstOrCreate(
             ['slug' => 'oranos-other'],
             ['name' => 'Other', 'name_ar' => 'أخرى', 'type' => 'auto', 'icon' => 'package']
@@ -37,16 +41,22 @@ class SyncOranosProducts extends Command
 
         foreach ($products as $product) {
             try {
-                $oranosId = $product['id'];
-                $name = $product['name'];
-                $price = (float) ($product['price'] ?? 0);
-                $basePrice = isset($product['base_price']) ? (float) $product['base_price'] : null;
+                $oranosId    = $product['id'];
+                $name        = $product['name'];
+                $oranosPrice = (float) ($product['price'] ?? 0);
                 $hasQtyValues = !empty($product['qty_values']);
 
+                // What Oranos actually charges us.
+                $ourCost = $oranosPrice;
+
+                // What we charge the customer.
+                $ourRetail = round($ourCost * $markup, 2);
+
+                // Only packages with a positive cost and a real margin are sellable.
                 $isActive = !$hasQtyValues
-                    && $basePrice !== null
-                    && $basePrice > 0
-                    && $price > $basePrice;
+                    && $ourCost > 0
+                    && $ourRetail > $ourCost
+                    && $markup > 1.0;
 
                 if ($isActive) {
                     $sellable++;
@@ -55,8 +65,8 @@ class SyncOranosProducts extends Command
                 }
 
                 $categoryName = $product['category_name'] ?? null;
-                $params = $product['params'] ?? null;
-                $qtyValues = $product['qty_values'] ?? null;
+                $params       = $product['params'] ?? null;
+                $qtyValues    = $product['qty_values'] ?? null;
 
                 if ($categoryName) {
                     $slug = Str::slug($categoryName);
@@ -84,8 +94,8 @@ class SyncOranosProducts extends Command
                         'name_ar'        => $name,
                         'description'    => $name,
                         'description_ar' => $name,
-                        'base_price'     => $basePrice,
-                        'price'          => $price,
+                        'base_price'     => $ourCost,       // our real cost basis
+                        'price'          => $ourRetail,     // our retail (cost × markup)
                         'is_automation'  => true,
                         'qty_values'     => $qtyValues,
                         'params'         => $params,
