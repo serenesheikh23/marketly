@@ -80,6 +80,15 @@ export const withdrawalApi = {
     api.post('/withdrawals', data),
 };
 
+// Stores
+export const storeApi = {
+  create: (name: string, description: string) => api.post('/stores', { name, description }),
+  my: () => api.get('/stores/my'),
+  getBySlug: (slug: string) => api.get(`/stores/${slug}`),
+  updateProductPrice: (storeId: number, productId: number, custom_price: number) =>
+    api.post(`/stores/${storeId}/products/${productId}`, { custom_price }),
+};
+
 // VIP
 export const vipApi = {
   status: () => api.get('/vip/status'),

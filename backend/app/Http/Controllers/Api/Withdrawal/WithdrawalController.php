@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api\Withdrawal;
 
 use App\Enums\TransactionStatus;
 use App\Enums\TransactionType;
-use App\Events\WithdrawalStatusChanged;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreWithdrawalRequest;
 use App\Models\Transaction;

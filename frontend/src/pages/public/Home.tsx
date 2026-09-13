@@ -195,9 +195,13 @@ export default function Home() {
                 {t('home.categories')}
               </h2>
             </div>
+            <Link to="/categories" className="group inline-flex items-center gap-1 text-sm text-green-500 hover:text-green-400 transition-colors">
+              {t('home.viewAll')}
+              <ArrowUpRight size={14} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </Link>
           </motion.div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {(categories ?? []).map((cat, i) => (
+            {(categories ?? []).slice(0, 8).map((cat, i) => (
               <motion.div key={cat.id} {...reveal(i)}>
                 <Link
                   to={`/category/${cat.slug}`}
