@@ -54,6 +54,9 @@ export default function Layout() {
             {isAuthenticated ? (
               <>
                 <Link to="/dashboard" className="nav-link text-sm">{t('nav.dashboard')}</Link>
+                <Link to="/my-stores" className="nav-link text-sm">My Stores</Link>
+                <Link to="/create-store" className="nav-link text-sm">Create Store</Link>
+                <Link to="/wallet" className="nav-link text-sm">Wallet</Link>
                 {(roles.includes('admin') || roles.includes('moderator')) && (
                   <Link to="/admin" className="nav-link text-sm text-green-400">{t('nav.admin')}</Link>
                 )}
@@ -154,6 +157,9 @@ export default function Layout() {
               {isAuthenticated ? (
                 <>
                   <Link to="/dashboard" className="nav-link" onClick={closeMenu}>{t('nav.dashboard')}</Link>
+                  <Link to="/my-stores" className="nav-link" onClick={closeMenu}>My Stores</Link>
+                  <Link to="/create-store" className="nav-link" onClick={closeMenu}>Create Store</Link>
+                  <Link to="/wallet" className="nav-link" onClick={closeMenu}>Wallet</Link>
                   {(roles.includes('admin') || roles.includes('moderator')) && (
                     <Link to="/admin" className="nav-link text-green-400" onClick={closeMenu}>{t('nav.admin')}</Link>
                   )}
