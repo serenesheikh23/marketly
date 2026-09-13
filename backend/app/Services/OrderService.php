@@ -26,7 +26,7 @@ class OrderService
      */
     public function createOrder(User $user, array $items, string $paymentMethod = 'cash_wallet', array $meta = []): Order
     {
-        return DB::transaction(function () use ($user, $items, $paymentMethod, $meta) {
+        $order = DB::transaction(function () use ($user, $items, $paymentMethod, $meta) {
             $subtotal = 0.0;
             $productMap = [];
 
@@ -57,7 +57,11 @@ class OrderService
                 throw new \DomainException('Insufficient balance.');
             }
 
-            $status = $isManualOrder ? OrderStatus::Pending : OrderStatus::Completed;
+            $hasAutomation = collect($productMap)->contains(fn ($i) => $i['product']->is_automation);
+
+            $status = $isManualOrder
+                ? OrderStatus::Pending
+                : ($hasAutomation ? OrderStatus::Processing : OrderStatus::Completed);
 
             // Generate payment_ref — wallet gets wallet-xxx; Binance/USDT get a simulated TX id
             $paymentRef = match ($paymentMethod) {
@@ -130,7 +134,11 @@ class OrderService
                     }
                 }
 
-                $this->safeBroadcast(new OrderCompleted($order));
+                if ($hasAutomation) {
+                    $this->safeBroadcast(new OrderCreated($order));
+                } else {
+                    $this->safeBroadcast(new OrderCompleted($order));
+                }
             } else {
                 $this->safeBroadcast(new OrderCreated($order));
             }
@@ -157,6 +165,97 @@ class OrderService
 
             return $order->fresh(['items.product']);
         });
+
+        // After commit — call Oranos for any automation items (outside the transaction).
+        if ($order->items->contains(fn ($i) => $i->product?->is_automation)) {
+            $this->forwardAutomationItems($order);
+            $order = $order->fresh(['items.product']);
+        }
+
+        return $order;
+    }
+
+    private function forwardAutomationItems(Order $order): void
+    {
+        $svc = new OranosMarketService();
+
+        $oranosIds = [];
+        $oranosStatuses = [];
+        $totalCommission = 0.0;
+        $failed = [];
+
+        foreach ($order->items as $item) {
+            $product = $item->product;
+
+            if (! $product
+                || ! $product->is_automation
+                || empty($product->oranos_product_id)
+            ) {
+                continue;
+            }
+
+            $params = is_array($item->payload) ? array_values($item->payload) : [];
+            $playerId = (string) ($params[0] ?? '');
+            $extra = array_slice($params, 1);
+
+            try {
+                $result = $svc->createOrder(
+                    (int) $product->oranos_product_id,
+                    (int) $item->quantity,
+                    $playerId,
+                    $extra,
+                );
+
+                $oranosIds[] = $result['data']['order_id']
+                    ?? $result['order_id']
+                    ?? null;
+
+                $oranosStatuses[] = $result['data']['status']
+                    ?? $result['status']
+                    ?? 'pending';
+
+                $totalCommission += ((float) $product->price - (float) $product->base_price)
+                    * (int) $item->quantity;
+            } catch (\Throwable $e) {
+                Log::error('Oranos order failed', [
+                    'order_id' => $order->id,
+                    'product_id' => $product->id,
+                    'error' => $e->getMessage(),
+                ]);
+
+                $failed[] = $product->name . ': ' . $e->getMessage();
+            }
+        }
+
+        if (empty($failed)) {
+            $order->update([
+                'oranos_order_id' => implode(',', array_filter($oranosIds)),
+                'oranos_status' => implode(',', $oranosStatuses),
+                'commission' => $totalCommission,
+            ]);
+
+            return;
+        }
+
+        // At least one Oranos call failed — refund the order locally and reject.
+        DB::transaction(function () use ($order, $failed) {
+            if ($order->payment_method === 'cash_wallet') {
+                $order->user->increment('balance', (float) $order->total);
+            }
+
+            $order->update([
+                'status' => OrderStatus::Rejected,
+                'failure_reason' => implode(' | ', $failed),
+            ]);
+        });
+
+        // Log any Oranos orders that did succeed — they must be reconciled manually.
+        if (! empty($oranosIds)) {
+            Log::warning('Partial Oranos success on rejected order — reconcile manually', [
+                'order_id' => $order->id,
+                'oranos_order_ids' => $oranosIds,
+            ]);
+        }
     }
 
     public function markCompleted(Order $order): void
