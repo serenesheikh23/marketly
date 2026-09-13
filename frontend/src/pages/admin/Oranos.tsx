@@ -88,9 +88,7 @@ export default function Oranos() {
   return (
     <PageTransition className="space-y-6 max-w-3xl">
       <div>
-        <h1 className="text-h2 font-heading font-bold text-gray-900 dark:text-ink-900 mb-1">
-          Oranos Monitor
-        </h1>
+        <h1 className="text-h2 font-heading font-bold text-gray-900 dark:text-ink-900 mb-1">{s.title}</h1>
         <p className="text-body text-gray-600 dark:text-ink-600">{s.subtitle}</p>
       </div>
 
