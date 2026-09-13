@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Transaction;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class AdminTransactionController extends Controller
@@ -48,11 +49,21 @@ class AdminTransactionController extends Controller
             return response()->json(['message' => 'Not a deposit.'], 422);
         }
 
-        $user = $transaction->user;
-        $user->increment('balance', $transaction->amount);
-        $transaction->update(['status' => TransactionStatus::Approved]);
+        if ($transaction->status === TransactionStatus::Approved) {
+            return response()->json(['message' => 'Already approved.'], 422);
+        }
 
-        $this->safeBroadcast(new DepositStatusChanged($transaction));
+        if ($transaction->status === TransactionStatus::Rejected) {
+            return response()->json(['message' => 'Cannot approve a rejected deposit.'], 422);
+        }
+
+        DB::transaction(function () use ($transaction) {
+            $user = $transaction->user;
+            $user->increment('balance', (float) $transaction->amount);
+            $transaction->update(['status' => TransactionStatus::Approved]);
+        });
+
+        $this->safeBroadcast(new DepositStatusChanged($transaction->fresh()));
 
         return response()->json(['transaction' => $transaction->fresh()]);
     }
@@ -63,12 +74,16 @@ class AdminTransactionController extends Controller
             return response()->json(['message' => 'Not a deposit.'], 422);
         }
 
+        if ($transaction->status !== TransactionStatus::Pending) {
+            return response()->json(['message' => 'Only pending deposits can be rejected.'], 422);
+        }
+
         $transaction->update([
-            'status' => TransactionStatus::Rejected,
-            'rejection_reason' => $request->string('reason')->toString(),
+            'status'           => TransactionStatus::Rejected,
+            'rejection_reason' => $request->string('reason')->toString() ?: null,
         ]);
 
-        $this->safeBroadcast(new DepositStatusChanged($transaction));
+        $this->safeBroadcast(new DepositStatusChanged($transaction->fresh()));
 
         return response()->json(['transaction' => $transaction->fresh()]);
     }
@@ -79,8 +94,17 @@ class AdminTransactionController extends Controller
             return response()->json(['message' => 'Not a withdrawal.'], 422);
         }
 
+        if ($transaction->status === TransactionStatus::Approved) {
+            return response()->json(['message' => 'Already approved.'], 422);
+        }
+
+        if ($transaction->status === TransactionStatus::Rejected) {
+            return response()->json(['message' => 'Cannot approve a rejected withdrawal.'], 422);
+        }
+
         $transaction->update(['status' => TransactionStatus::Approved]);
-        $this->safeBroadcast(new WithdrawalStatusChanged($transaction));
+
+        $this->safeBroadcast(new WithdrawalStatusChanged($transaction->fresh()));
 
         return response()->json(['transaction' => $transaction->fresh()]);
     }
@@ -91,15 +115,21 @@ class AdminTransactionController extends Controller
             return response()->json(['message' => 'Not a withdrawal.'], 422);
         }
 
-        $user = $transaction->user;
-        $user->increment('balance', $transaction->amount);
+        if ($transaction->status !== TransactionStatus::Pending) {
+            return response()->json(['message' => 'Only pending withdrawals can be rejected.'], 422);
+        }
 
-        $transaction->update([
-            'status' => TransactionStatus::Rejected,
-            'rejection_reason' => $request->string('reason')->toString(),
-        ]);
+        DB::transaction(function () use ($transaction, $request) {
+            $user = $transaction->user;
+            $user->increment('balance', (float) $transaction->amount);
 
-        $this->safeBroadcast(new WithdrawalStatusChanged($transaction));
+            $transaction->update([
+                'status'           => TransactionStatus::Rejected,
+                'rejection_reason' => $request->string('reason')->toString() ?: null,
+            ]);
+        });
+
+        $this->safeBroadcast(new WithdrawalStatusChanged($transaction->fresh()));
 
         return response()->json(['transaction' => $transaction->fresh()]);
     }
