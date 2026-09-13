@@ -29,6 +29,7 @@ const AdminManualOrders= lazy(() => import('@/pages/admin/ManualOrders'));
 const AdminDeposits    = lazy(() => import('@/pages/admin/Deposits'));
 const AdminWithdrawals = lazy(() => import('@/pages/admin/Withdrawals'));
 const AdminSettings    = lazy(() => import('@/pages/admin/Settings'));
+const AdminOranos      = lazy(() => import('@/pages/admin/Oranos'));
 const LegalPage        = lazy(() => import('@/pages/public/LegalPage'));
 const NotFound         = lazy(() => import('@/pages/NotFound'));
 const Categories       = lazy(() => import('@/pages/public/Categories'));
@@ -97,6 +98,7 @@ export default function App() {
             <Route path="/admin/orders/manual" element={<AdminManualOrders />} />
             <Route path="/admin/deposits" element={<AdminDeposits />} />
             <Route path="/admin/withdrawals" element={<AdminWithdrawals />} />
+            <Route path="/admin/oranos" element={<AdminOranos />} />
             <Route path="/admin/settings" element={<AdminSettings />} />
           </Route>
 
