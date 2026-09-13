@@ -10,10 +10,31 @@ class CategoryController extends Controller
 {
     public function index(): JsonResponse
     {
-        $categories = Category::with('children')
-            ->whereNull('parent_id')
+        // Load root categories with:
+        //  - count of active products directly under them
+        //  - their children, each with its own active product count
+        $categories = Category::whereNull('parent_id')
+            ->with(['children' => function ($q) {
+                $q->withCount(['products' => fn ($pq) => $pq->where('is_active', true)])
+                  ->orderBy('sort_order');
+            }])
+            ->withCount(['products' => fn ($q) => $q->where('is_active', true)])
             ->orderBy('sort_order')
-            ->get();
+            ->get()
+            ->map(function (Category $cat) {
+                // Hide children that have no active products
+                $cat->children = $cat->children
+                    ->filter(fn ($c) => $c->products_count > 0)
+                    ->values();
+                return $cat;
+            })
+            ->filter(function (Category $cat) {
+                // Keep a root category only if:
+                //  - it has active products directly, OR
+                //  - it has children with active products
+                return $cat->products_count > 0 || $cat->children->count() > 0;
+            })
+            ->values();
 
         return response()->json(['categories' => $categories]);
     }
@@ -21,14 +42,26 @@ class CategoryController extends Controller
     public function show(string $slug): JsonResponse
     {
         $category = Category::where('slug', $slug)
-            ->with(['children', 'manualOrderFields'])
+            ->with(['children' => function ($q) {
+                $q->withCount(['products' => fn ($pq) => $pq->where('is_active', true)])
+                  ->orderBy('sort_order');
+            }, 'manualOrderFields'])
             ->firstOrFail();
 
-        // Include active products on the category payload so the frontend
-        // can render the page with a single round trip.
+        // Only show children that have active products
+        $category->children = $category->children
+            ->filter(fn ($c) => $c->products_count > 0)
+            ->values();
+
+        // Load active products directly on this category
         $category->load(['products' => function ($q) {
             $q->where('is_active', true)->latest();
         }]);
+
+        // 404 if the category is empty on both levels
+        if ($category->children->isEmpty() && $category->products->isEmpty()) {
+            return response()->json(['message' => 'Category is empty.'], 404);
+        }
 
         return response()->json(['category' => $category]);
     }
@@ -53,7 +86,7 @@ class CategoryController extends Controller
                         return [
                             'key' => $f->key,
                             'label' => $f->label,
-                            'label_ar' => $f->label_ar ?? $f->label, // <-- Added this line
+                            'label_ar' => $f->label_ar ?? $f->label,
                             'type' => $f->type,
                             'required' => $f->required,
                             'options' => is_array($f->options) ? $f->options : json_decode($f->options ?? '[]', true),
