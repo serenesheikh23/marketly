@@ -55,6 +55,11 @@ class User extends Authenticatable
         return $this->hasMany(Transaction::class)->where('type', 'withdrawal');
     }
 
+        public function stores()
+    {
+        return $this->hasMany(\App\Models\Store::class);
+    }
+
     public function isBanned(): bool
     {
         return $this->banned_at !== null;

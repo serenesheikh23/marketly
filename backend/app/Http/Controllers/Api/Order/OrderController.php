@@ -31,6 +31,7 @@ class OrderController extends Controller
                 $request->input('items'),
                 $request->string('payment_method')->toString(),
                 (array) $request->input('meta', []),
+                $request->filled('store_id') ? (int) $request->input('store_id') : null,
             );
 
             return response()->json(['order' => $order->load('items.product')], 201);

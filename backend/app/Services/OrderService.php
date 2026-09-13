@@ -11,6 +11,7 @@ use App\Mail\OrderConfirmation;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
+use App\Models\Store;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Notifications\OrderStatusChanged;
@@ -24,9 +25,9 @@ class OrderService
      * @param  array<int, array{product_id: int, quantity: int, payload?: array<string, mixed>}>  $items
      * @param  array<string, mixed>  $meta  user-supplied payment metadata (Binance ID, USDT address, etc.)
      */
-    public function createOrder(User $user, array $items, string $paymentMethod = 'cash_wallet', array $meta = []): Order
+    public function createOrder(User $user, array $items, string $paymentMethod = 'cash_wallet', array $meta = [], ?int $storeId = null): Order
     {
-        $order = DB::transaction(function () use ($user, $items, $paymentMethod, $meta) {
+        $order = DB::transaction(function () use ($user, $items, $paymentMethod, $meta, $storeId) {
             $subtotal = 0.0;
             $productMap = [];
 
@@ -42,8 +43,26 @@ class OrderService
                 }
 
                 $qty = max(1, (int) $item['quantity']);
-                $subtotal += (float) $product->price * $qty;
-                $productMap[$product->id] = ['product' => $product, 'quantity' => $qty, 'payload' => $item['payload'] ?? null];
+
+                // Use the store's custom price when buying through a store.
+                $unitPrice = (float) $product->price;
+                if ($storeId) {
+                    $pivot = DB::table('store_product')
+                        ->where('store_id', $storeId)
+                        ->where('product_id', $product->id)
+                        ->value('custom_price');
+                    if ($pivot !== null) {
+                        $unitPrice = (float) $pivot;
+                    }
+                }
+
+                $subtotal += $unitPrice * $qty;
+                $productMap[$product->id] = [
+                    'product'    => $product,
+                    'quantity'   => $qty,
+                    'payload'    => $item['payload'] ?? null,
+                    'unit_price' => $unitPrice,
+                ];
             }
 
             $fee = 0.0;
@@ -92,7 +111,7 @@ class OrderService
                     'order_id' => $order->id,
                     'product_id' => $product->id,
                     'quantity' => $data['quantity'],
-                    'unit_price' => $product->price,
+                    'unit_price' => $data['unit_price'],
                     'payload' => $data['payload'],
                 ]);
 
@@ -167,8 +186,16 @@ class OrderService
         });
 
         // After commit — call Oranos for any automation items (outside the transaction).
+        $anyFailed = false;
         if ($order->items->contains(fn ($i) => $i->product?->is_automation)) {
             $this->forwardAutomationItems($order);
+            $order = $order->fresh(['items.product']);
+            $anyFailed = $order->status === OrderStatus::Rejected;
+        }
+
+        // Credit the store owner if the sale came from a store and didn't fail.
+        if ($storeId && ! $anyFailed) {
+            $this->creditStoreOwner($order, $storeId);
             $order = $order->fresh(['items.product']);
         }
 
@@ -256,6 +283,45 @@ class OrderService
                 'oranos_order_ids' => $oranosIds,
             ]);
         }
+    }
+
+    private function creditStoreOwner(Order $order, int $storeId): void
+    {
+        $store = Store::with('user')->find($storeId);
+        if (! $store || ! $store->user) {
+            return;
+        }
+
+        $profit = 0.0;
+        foreach ($order->items as $item) {
+            $product = $item->product;
+            if (! $product) {
+                continue;
+            }
+            // Store owner earns: (their price - our platform price) * qty
+            $profit += ((float) $item->unit_price - (float) $product->price) * (int) $item->quantity;
+        }
+
+        if ($profit <= 0) {
+            return;
+        }
+
+        DB::transaction(function () use ($store, $order, $profit) {
+            $store->user->increment('balance', $profit);
+
+            Transaction::create([
+                'user_id' => $store->user->id,
+                'type'    => TransactionType::StoreEarning,
+                'amount'  => $profit,
+                'fee'     => 0,
+                'status'  => TransactionStatus::Approved,
+                'method'  => 'store_sale',
+                'meta'    => [
+                    'order_id' => $order->id,
+                    'store_id' => $store->id,
+                ],
+            ]);
+        });
     }
 
     public function markCompleted(Order $order): void
