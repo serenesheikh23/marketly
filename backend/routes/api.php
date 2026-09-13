@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Admin\AdminCategoryController;
 use App\Http\Controllers\Api\Admin\AdminDashboardController;
 use App\Http\Controllers\Api\Admin\AdminOrderController;
+use App\Http\Controllers\Api\Admin\AdminOranosController;
 use App\Http\Controllers\Api\Admin\AdminProductController;
 use App\Http\Controllers\Api\Admin\AdminSettingsController;
 use App\Http\Controllers\Api\Admin\AdminTransactionController;
@@ -122,6 +123,10 @@ Route::middleware(['auth:sanctum', 'role:admin|moderator'])->prefix('admin')->gr
     Route::get('/withdrawals/{transaction}', [AdminTransactionController::class, 'withdrawals']);
     Route::post('/withdrawals/{transaction}/approve', [AdminTransactionController::class, 'approveWithdrawal']);
     Route::post('/withdrawals/{transaction}/reject', [AdminTransactionController::class, 'rejectWithdrawal']);
+
+    // Oranos monitor
+    Route::get('/oranos/balance', [AdminOranosController::class, 'balance']);
+    Route::post('/oranos/refresh', [AdminOranosController::class, 'refresh']);
 
     // Settings — admin only
     Route::middleware('role:admin')->group(function () {

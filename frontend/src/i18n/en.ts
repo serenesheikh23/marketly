@@ -139,6 +139,7 @@ const en = {
     manualOrders: 'Manual Orders',
     deposits: 'Deposits',
     withdrawals: 'Withdrawals',
+    oranosMonitor: 'Oranos Monitor',
     settings: 'Settings',
     allOrders: 'All orders',
     operations: 'Operations',
