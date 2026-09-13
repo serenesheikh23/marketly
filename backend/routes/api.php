@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\Deposit\DepositController;
 use App\Http\Controllers\Api\Order\OrderController;
 use App\Http\Controllers\Api\Product\ProductController;
 use App\Http\Controllers\Api\SettingsController;
+use App\Http\Controllers\Api\Store\StoreController;
 use App\Http\Controllers\Api\Vip\VipController;
 use App\Http\Controllers\Api\Webhook\BinanceWebhookController;
 use App\Http\Controllers\Api\Webhook\UsdtWebhookController;
@@ -35,6 +36,11 @@ Route::get('/categories/{slug}/form-schema', [CategoryController::class, 'formSc
 
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{slug}', [ProductController::class, 'show']);
+
+// Stores — /stores/my must be registered BEFORE /stores/{slug}
+// or Laravel treats "my" as a slug and returns 404.
+Route::middleware('auth:sanctum')->get('/stores/my', [StoreController::class, 'my']);
+Route::get('/stores/{slug}', [StoreController::class, 'show']);
 
 // Public settings (company info, legal pages)
 Route::get('/settings/company', [SettingsController::class, 'company']);
@@ -74,6 +80,10 @@ Route::middleware('auth:sanctum')->group(function () {
             ->latest()
             ->paginate(20);
     });
+
+    // Stores — create + edit prices
+    Route::post('/stores', [StoreController::class, 'store']);
+    Route::post('/stores/{store}/products/{product}', [StoreController::class, 'updateProductPrice']);
 });
 
 // Admin routes

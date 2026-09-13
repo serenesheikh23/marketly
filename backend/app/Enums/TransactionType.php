@@ -9,6 +9,7 @@ enum TransactionType: string
     case Purchase = 'purchase';
     case Refund = 'refund';
     case VipUpgrade = 'vip_upgrade';
+    case StoreEarning = 'store_earning';
 
     public function label(): string
     {
@@ -18,6 +19,7 @@ enum TransactionType: string
             self::Purchase => 'Purchase',
             self::Refund => 'Refund',
             self::VipUpgrade => 'VIP Upgrade',
+            self::StoreEarning => 'Store Earning',
         };
     }
 }
