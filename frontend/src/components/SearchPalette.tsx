@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Search, X, ArrowRight } from 'lucide-react';
 import { productApi } from '@/api/client';
@@ -14,11 +14,13 @@ interface SearchPaletteProps {
 
 export default function SearchPalette({ isOpen, onClose }: SearchPaletteProps) {
   const { t, locale } = useI18n();
+  const location = useLocation();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const prevPathRef = useRef(location.pathname);
 
   // Focus input on open
   useEffect(() => {
@@ -28,6 +30,24 @@ export default function SearchPalette({ isOpen, onClose }: SearchPaletteProps) {
       setResults([]);
     }
   }, [isOpen]);
+
+  // Close on route change — prevents the palette lingering after clicking a result
+  useEffect(() => {
+    if (isOpen && location.pathname !== prevPathRef.current) {
+      onClose();
+    }
+    prevPathRef.current = location.pathname;
+  }, [location.pathname, isOpen, onClose]);
+
+  // Close on global Escape
+  useEffect(() => {
+    if (!isOpen) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [isOpen, onClose]);
 
   // Debounced search
   useEffect(() => {
@@ -52,8 +72,6 @@ export default function SearchPalette({ isOpen, onClose }: SearchPaletteProps) {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
         if (!isOpen) {
-          // This component doesn't own its own open state here
-          // Instead, we dispatch a custom event
           window.dispatchEvent(new CustomEvent('open-search-palette'));
         }
       }
@@ -68,7 +86,6 @@ export default function SearchPalette({ isOpen, onClose }: SearchPaletteProps) {
     setResults([]);
   }, [onClose]);
 
-  // Keyboard nav
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Escape') { onClose(); }
   };
@@ -162,7 +179,6 @@ export default function SearchPalette({ isOpen, onClose }: SearchPaletteProps) {
                   ))}
                 </ul>
               )}
-
             </div>
           </motion.div>
         </>
