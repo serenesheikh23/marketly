@@ -26,8 +26,6 @@ class SyncOranosProducts extends Command
             return 1;
         }
 
-        // Oranos charges us its `price` field. `base_price` is Oranos' own
-        // wholesale cost and has nothing to do with what we pay.
         $markup = (float) config('services.oranos.markup', 1.20);
 
         $defaultCategory = Category::firstOrCreate(
@@ -39,6 +37,7 @@ class SyncOranosProducts extends Command
         $failed = 0;
         $sellable = 0;
         $unsellable = 0;
+        $categoriesUpdated = 0;
 
         foreach ($products as $product) {
             try {
@@ -47,13 +46,9 @@ class SyncOranosProducts extends Command
                 $oranosPrice = (float) ($product['price'] ?? 0);
                 $hasQtyValues = !empty($product['qty_values']);
 
-                // What Oranos actually charges us.
                 $ourCost = $oranosPrice;
-
-                // What we charge the customer.
                 $ourRetail = round($ourCost * $markup, 2);
 
-                // Only packages with a positive cost and a real margin are sellable.
                 $isActive = !$hasQtyValues
                     && $ourCost > 0
                     && $ourRetail > $ourCost
@@ -69,6 +64,13 @@ class SyncOranosProducts extends Command
                 $params       = $product['params'] ?? null;
                 $qtyValues    = $product['qty_values'] ?? null;
 
+                // Extract Oranos category image, skip the placeholder
+                $rawImg = $product['category_img'] ?? null;
+                $categoryImg = null;
+                if (is_string($rawImg) && $rawImg !== '' && !str_contains($rawImg, 'empty.png')) {
+                    $categoryImg = $rawImg;
+                }
+
                 if ($categoryName) {
                     $slug = Str::slug($categoryName);
                     if (empty($slug)) {
@@ -78,6 +80,12 @@ class SyncOranosProducts extends Command
                         ['slug' => $slug],
                         ['name' => $categoryName, 'name_ar' => $categoryName, 'type' => 'auto', 'icon' => 'package']
                     );
+
+                    // Save the Oranos category image if we have one and it's not set yet
+                    if ($categoryImg && !$category->image_url) {
+                        $category->update(['image_url' => $categoryImg]);
+                        $categoriesUpdated++;
+                    }
                 } else {
                     $category = $defaultCategory;
                 }
@@ -95,8 +103,8 @@ class SyncOranosProducts extends Command
                         'name_ar'        => $name,
                         'description'    => $name,
                         'description_ar' => $name,
-                        'base_price'     => $ourCost,       // our real cost basis
-                        'price'          => $ourRetail,     // our retail (cost × markup)
+                        'base_price'     => $ourCost,
+                        'price'          => $ourRetail,
                         'is_automation'  => true,
                         'qty_values'     => $qtyValues,
                         'params'         => $params,
@@ -132,11 +140,7 @@ class SyncOranosProducts extends Command
             }
         }
 
-        // ── Refresh store prices to match current product prices ──
-        // Store owners set custom prices on top of our platform price. When
-        // our price changes (e.g. a new sync with a different markup), the
-        // store's custom_price becomes stale. Recompute from the current
-        // platform price × 1.10 default for every automation product.
+        // Refresh store prices to match current product prices
         $updatedStores = 0;
         $storeMarkup = 1.10;
 
@@ -158,7 +162,7 @@ class SyncOranosProducts extends Command
             }
         });
 
-        $this->info("Synced {$synced}. Failed: {$failed}. Linked: {$linked}. Sellable: {$sellable}. Unsellable: {$unsellable}. Stores refreshed: {$updatedStores}.");
+        $this->info("Synced {$synced}. Failed: {$failed}. Linked: {$linked}. Sellable: {$sellable}. Unsellable: {$unsellable}. Stores refreshed: {$updatedStores}. Categories updated: {$categoriesUpdated}.");
 
         return 0;
     }
