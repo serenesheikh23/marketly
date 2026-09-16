@@ -3,8 +3,11 @@ import { Link } from 'react-router-dom';
 import { storeApi } from '@/api/client';
 import PageTransition from '@/components/PageTransition';
 import Breadcrumbs from '@/components/Breadcrumbs';
+import { useI18n } from '@/i18n';
+import { localized } from '@/utils/localize';
 
 export default function MyStores() {
+  const { locale } = useI18n();
   const [stores, setStores] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
