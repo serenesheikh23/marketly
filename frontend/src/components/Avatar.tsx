@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react';
 
-interface ProductImageProps {
+interface AvatarProps {
   name: string;
-  category?: string;
-  categoryImageUrl?: string;
-  imageBase64?: string;
-  imageUrl?: string;
+  imageUrl?: string | null;
+  imageBase64?: string | null;
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  shape?: 'rounded' | 'square' | 'circle';
   className?: string;
 }
 
@@ -36,19 +36,33 @@ function pickColor(name: string) {
   return COLORS[Math.abs(hash) % COLORS.length];
 }
 
-export default function ProductImage({
+const SIZE_CLASS: Record<string, string> = {
+  xs: 'w-6 h-6 text-xs',
+  sm: 'w-8 h-8 text-sm',
+  md: 'w-10 h-10 text-base',
+  lg: 'w-12 h-12 text-xl',
+  xl: 'w-16 h-16 text-3xl',
+};
+
+const SHAPE_CLASS: Record<string, string> = {
+  rounded: 'rounded-lg',
+  square: 'rounded-none',
+  circle: 'rounded-full',
+};
+
+export default function Avatar({
   name,
-  categoryImageUrl,
-  imageBase64,
   imageUrl,
+  imageBase64,
+  size = 'md',
+  shape = 'rounded',
   className = '',
-}: ProductImageProps): ReactNode {
+}: AvatarProps): ReactNode {
   const src = imageUrl ?? imageBase64;
 
-  // 1. Real product image — show it clean
   if (src) {
     return (
-      <div className={`relative w-full overflow-hidden rounded-lg bg-gray-100 dark:bg-ink-100 ${className}`}>
+      <div className={`relative overflow-hidden bg-gray-100 dark:bg-ink-100 ${SIZE_CLASS[size]} ${SHAPE_CLASS[shape]} ${className}`}>
         <img
           src={src}
           alt={name}
@@ -60,42 +74,17 @@ export default function ProductImage({
     );
   }
 
-  // 2. No product image, but category has one — use it as background + name overlay
-  if (categoryImageUrl) {
-    return (
-      <div className={`relative w-full overflow-hidden rounded-lg bg-gray-100 dark:bg-ink-100 ${className}`}>
-        <img
-          src={categoryImageUrl}
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover"
-          loading="lazy"
-          decoding="async"
-        />
-        {/* Dark gradient from bottom so the name is readable */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/5" />
-        {/* Product name overlay */}
-        <div className="absolute inset-x-0 bottom-0 p-3">
-          <p className="text-white text-xs font-semibold leading-tight line-clamp-2 drop-shadow-md">
-            {name}
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  // 3. Neither product nor category has an image — colored letter fallback
   const trimmed = (name || '').trim();
   const letter = trimmed ? trimmed.charAt(0).toUpperCase() : '?';
   const color = pickColor(trimmed || 'default');
 
   return (
     <div
-      className={`relative w-full overflow-hidden rounded-lg flex items-center justify-center ${color.bg} ${className}`}
+      className={`flex items-center justify-center font-bold ${color.bg} ${color.text} ${SIZE_CLASS[size]} ${SHAPE_CLASS[shape]} ${className}`}
       role="img"
       aria-label={name}
     >
-      <span className={`font-bold text-5xl ${color.text}`} aria-hidden="true">{letter}</span>
+      <span aria-hidden="true">{letter}</span>
     </div>
   );
 }

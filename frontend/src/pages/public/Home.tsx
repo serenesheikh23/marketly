@@ -9,6 +9,7 @@ import { formatPrice } from '@/utils/format';
 import PageTransition from '@/components/PageTransition';
 import { useI18n } from '@/i18n';
 import { localized } from '@/utils/localize';
+import Avatar from '@/components/Avatar';
 
 const CATEGORY_ICON: Record<string, string> = {
   gamepad:      '🎮',
@@ -257,7 +258,7 @@ export default function Home() {
                   <div className="relative h-44 overflow-hidden">
                     <ProductImage
                       name={localized(p, 'name', 'name_ar', locale)}
-                      category={localized(p.category, 'name', 'name_ar', locale)}
+                      category={localized(p.category, 'name', 'name_ar', locale)} categoryImageUrl={p.category?.image_url}
                       imageBase64={p.image_base64}
                       imageUrl={p.image_url}
                       className="w-full h-full transition-transform duration-700 group-hover:scale-110"
