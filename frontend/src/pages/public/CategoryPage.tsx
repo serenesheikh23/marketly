@@ -168,6 +168,7 @@ export default function CategoryPage() {
                 <ProductImage
                   name={localized(p, 'name', 'name_ar', locale)}
                   category={localized(category, 'name', 'name_ar', locale)}
+                  categoryImageUrl={category.image_url}
                   imageBase64={p.image_base64}
                   imageUrl={p.image_url}
                   className="h-36 mb-4"
