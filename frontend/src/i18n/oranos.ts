@@ -2,6 +2,7 @@ import type { Language } from './index';
 
 export const ORANOS_STRINGS: Record<Language, Record<string, string>> = {
   en: {
+    title: 'Oranos Monitor',
     subtitle: 'Monitor your Oranos Market balance — the real money paid to the supplier.',
     balanceLabel: 'Oranos Balance',
     account: 'Account',
@@ -25,6 +26,7 @@ export const ORANOS_STRINGS: Record<Language, Record<string, string>> = {
     tip: 'Tip: open this page every morning. If the balance drops below $20, sign in to oranosmarket.com and top up before the service stops for customers.',
   },
   ar: {
+    title: 'مراقبة Oranos',
     subtitle: 'راقب رصيد حسابك في Oranos Market — الفلوس الحقيقية اللي تُدفع للمورد.',
     balanceLabel: 'رصيد Oranos',
     account: 'الحساب',
