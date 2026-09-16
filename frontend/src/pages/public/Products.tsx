@@ -74,7 +74,7 @@ export default function Products() {
               transition={{ delay: i * 0.03, duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
             >
               <Link to={`/product/${p.slug}`} className="card-hover group block overflow-hidden">
-                <ProductImage name={localized(p, 'name', 'name_ar', locale)} category={localized(p.category, 'name', 'name_ar', locale)} imageBase64={p.image_base64} imageUrl={p.image_url} className="h-40 mb-4" />
+                <ProductImage name={localized(p, 'name', 'name_ar', locale)} category={localized(p.category, 'name', 'name_ar', locale)} categoryImageUrl={p.category?.image_url} imageBase64={p.image_base64} imageUrl={p.image_url} className="h-40 mb-4" />
                 <div className="px-4 pb-4">
                   <h3 className="text-sm font-semibold text-gray-900 dark:text-ink-900 group-hover:text-green-400 transition-colors line-clamp-2 mb-1">
                     {localized(p, 'name', 'name_ar', locale)}
