@@ -50,7 +50,7 @@ class OranosMarketService
     {
         try {
             $response = Http::withHeader('api-token', $this->token)
-                ->timeout(120)
+                ->timeout(600)
                 ->connectTimeout(30)
                 ->{$method}("{$this->baseUrl}{$path}");
         } catch (\Exception $e) {
