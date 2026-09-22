@@ -25,13 +25,15 @@ class Category extends Model
         'image_base64',
         'image_url',
         'sort_order',
-        'form_schema', // <-- Added this
+        'form_schema',
+        'oranos_category_id',
     ];
 
     protected $casts = [
         'type' => CategoryType::class,
         'sort_order' => 'integer',
-        'form_schema' => 'array', // <-- Added this (decodes JSON string to array)
+        'form_schema' => 'array',
+        'oranos_category_id' => 'integer',
     ];
 
     protected static function booted(): void
@@ -74,6 +76,7 @@ class Category extends Model
         foreach ($this->children as $child) {
             $ids = array_merge($ids, $child->getSubtreeIds());
         }
+
         return $ids;
     }
 }
