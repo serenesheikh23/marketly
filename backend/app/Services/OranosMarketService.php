@@ -10,6 +10,7 @@ use RuntimeException;
 class OranosMarketService
 {
     private string $baseUrl;
+
     private string $token;
 
     public function __construct()
@@ -21,6 +22,11 @@ class OranosMarketService
     public function getProducts(): array
     {
         return $this->request('GET', '/client/api/products');
+    }
+
+    public function getCategories(): array
+    {
+        return $this->request('GET', '/client/api/categories');
     }
 
     public function getProfile(): array
