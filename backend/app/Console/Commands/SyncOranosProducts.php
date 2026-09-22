@@ -67,7 +67,7 @@ class SyncOranosProducts extends Command
                 // Extract Oranos category image, skip the placeholder
                 $rawImg = $product['category_img'] ?? null;
                 $categoryImg = null;
-                if (is_string($rawImg) && $rawImg !== '' && !str_contains($rawImg, 'empty.png')) {
+                if (is_string($rawImg) && $rawImg !== '' && !str_contains($rawImg, 'empty.png') && str_contains($rawImg, '/images/')) {
                     $categoryImg = $rawImg;
                 }
 
