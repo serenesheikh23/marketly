@@ -18,11 +18,16 @@ class SyncOranosProducts extends Command
 
     public function handle(OranosMarketService $service): int
     {
+        // First, try to fetch categories from Oranos API (if endpoint exists)
+        $this->info('Fetching categories from Oranos...');
+        $this->syncCategories($service);
+
         try {
             $products = $service->getProducts();
         } catch (\Throwable $e) {
             Log::error('Failed to fetch Oranos products', ['error' => $e->getMessage()]);
             $this->error('Failed to fetch products: '.$e->getMessage());
+
             return 1;
         }
 
@@ -41,15 +46,15 @@ class SyncOranosProducts extends Command
 
         foreach ($products as $product) {
             try {
-                $oranosId    = $product['id'];
-                $name        = $product['name'];
+                $oranosId = $product['id'];
+                $name = $product['name'];
                 $oranosPrice = (float) ($product['price'] ?? 0);
-                $hasQtyValues = !empty($product['qty_values']);
+                $hasQtyValues = ! empty($product['qty_values']);
 
                 $ourCost = $oranosPrice;
                 $ourRetail = round($ourCost * $markup, 2);
 
-                $isActive = !$hasQtyValues
+                $isActive = ! $hasQtyValues
                     && $ourCost > 0
                     && $ourRetail > $ourCost
                     && $markup > 1.0;
@@ -61,14 +66,34 @@ class SyncOranosProducts extends Command
                 }
 
                 $categoryName = $product['category_name'] ?? null;
-                $params       = $product['params'] ?? null;
-                $qtyValues    = $product['qty_values'] ?? null;
+                $params = $product['params'] ?? null;
+                $qtyValues = $product['qty_values'] ?? null;
 
                 // Extract Oranos category image, skip the placeholder
-                $rawImg = $product['category_img'] ?? null;
+                $rawImg = $product['category_img'] ?? $product['category_image'] ?? $product['category_image_url'] ?? $product['category_image_base64'] ?? null;
                 $categoryImg = null;
-                if (is_string($rawImg) && $rawImg !== '' && !str_contains($rawImg, 'empty.png') && str_contains($rawImg, '/images/')) {
-                    $categoryImg = $rawImg;
+                $categoryImgBase64 = null;
+                if (is_string($rawImg) && $rawImg !== '' && ! str_contains($rawImg, 'empty.png')) {
+                    if (str_starts_with($rawImg, 'data:image/') || str_starts_with($rawImg, 'data:application/')) {
+                        $categoryImgBase64 = $rawImg;
+                    } else {
+                        $categoryImg = $rawImg;
+                    }
+                }
+
+                // Extract Oranos product image
+                $productImg = null;
+                $productImgBase64 = null;
+                foreach (['image', 'image_url', 'img', 'picture', 'thumbnail', 'photo', 'image_base64'] as $imgField) {
+                    $rawProductImg = $product[$imgField] ?? null;
+                    if (is_string($rawProductImg) && $rawProductImg !== '' && ! str_contains($rawProductImg, 'empty.png')) {
+                        if (str_starts_with($rawProductImg, 'data:image/') || str_starts_with($rawProductImg, 'data:application/')) {
+                            $productImgBase64 = $rawProductImg;
+                        } else {
+                            $productImg = $rawProductImg;
+                        }
+                        break;
+                    }
                 }
 
                 if ($categoryName) {
@@ -81,35 +106,46 @@ class SyncOranosProducts extends Command
                         ['name' => $categoryName, 'name_ar' => $categoryName, 'type' => 'auto', 'icon' => 'package']
                     );
 
-                    // Save the Oranos category image if we have one and it's not set yet
-                    if ($categoryImg && !$category->image_url) {
-                        $category->update(['image_url' => $categoryImg]);
+                    // Always set the image_url to match what Oranos currently reports.
+                    // If Oranos sends empty.png (their placeholder), we store null so
+                    // the frontend falls back to a letter avatar.
+                    $updateData = [];
+                    if ($category->image_url !== $categoryImg) {
+                        $updateData['image_url'] = $categoryImg;
+                    }
+                    if ($categoryImgBase64 && $category->image_base64 !== $categoryImgBase64) {
+                        $updateData['image_base64'] = $categoryImgBase64;
+                    }
+                    if (! empty($updateData)) {
+                        $category->update($updateData);
                         $categoriesUpdated++;
                     }
                 } else {
                     $category = $defaultCategory;
                 }
 
-                $slug = Str::slug($name) . '-' . $oranosId;
+                $slug = Str::slug($name).'-'.$oranosId;
                 if (empty($slug)) {
-                    $slug = 'product-' . $oranosId;
+                    $slug = 'product-'.$oranosId;
                 }
 
                 Product::updateOrCreate(
                     ['oranos_product_id' => $oranosId],
                     [
-                        'category_id'    => $category->id,
-                        'name'           => $name,
-                        'name_ar'        => $name,
-                        'description'    => $name,
+                        'category_id' => $category->id,
+                        'name' => $name,
+                        'name_ar' => $name,
+                        'description' => $name,
                         'description_ar' => $name,
-                        'base_price'     => $ourCost,
-                        'price'          => $ourRetail,
-                        'is_automation'  => true,
-                        'qty_values'     => $qtyValues,
-                        'params'         => $params,
-                        'is_active'      => $isActive,
-                        'slug'           => $slug,
+                        'base_price' => $ourCost,
+                        'price' => $ourRetail,
+                        'is_automation' => true,
+                        'qty_values' => $qtyValues,
+                        'params' => $params,
+                        'is_active' => $isActive,
+                        'slug' => $slug,
+                        'image_url' => $productImg,
+                        'image_base64' => $productImgBase64,
                     ]
                 );
 
@@ -165,5 +201,85 @@ class SyncOranosProducts extends Command
         $this->info("Synced {$synced}. Failed: {$failed}. Linked: {$linked}. Sellable: {$sellable}. Unsellable: {$unsellable}. Stores refreshed: {$updatedStores}. Categories updated: {$categoriesUpdated}.");
 
         return 0;
+    }
+
+    private function syncCategories(OranosMarketService $service): void
+    {
+        try {
+            $categories = $service->getCategories();
+        } catch (\Throwable $e) {
+            $this->warn('Categories endpoint not available, falling back to product-based category creation: '.$e->getMessage());
+
+            return;
+        }
+
+        $synced = 0;
+        $categoriesUpdated = 0;
+
+        foreach ($categories as $categoryData) {
+            try {
+                $oranosId = $categoryData['id'] ?? null;
+                $name = $categoryData['name'] ?? null;
+                $parentId = $categoryData['parent_id'] ?? null;
+
+                if (! $name) {
+                    continue;
+                }
+
+                $slug = Str::slug($name);
+                if (empty($slug)) {
+                    $slug = 'cat-'.md5($name);
+                }
+
+                // Extract Oranos category image
+                $rawImg = $categoryData['image'] ?? $categoryData['image_url'] ?? $categoryData['img'] ?? $categoryData['image_base64'] ?? null;
+                $categoryImg = null;
+                $categoryImgBase64 = null;
+                if (is_string($rawImg) && $rawImg !== '' && ! str_contains($rawImg, 'empty.png')) {
+                    if (str_starts_with($rawImg, 'data:image/') || str_starts_with($rawImg, 'data:application/')) {
+                        $categoryImgBase64 = $rawImg;
+                    } else {
+                        $categoryImg = $rawImg;
+                    }
+                }
+
+                $category = Category::firstOrCreate(
+                    ['slug' => $slug],
+                    ['name' => $name, 'name_ar' => $name, 'type' => 'auto', 'icon' => 'package']
+                );
+
+                // Store Oranos category ID for parent linking
+                if ($oranosId && ! $category->oranos_category_id) {
+                    $category->update(['oranos_category_id' => $oranosId]);
+                }
+
+                // Update category image if changed
+                $updateData = [];
+                if ($category->image_url !== $categoryImg) {
+                    $updateData['image_url'] = $categoryImg;
+                }
+                if ($categoryImgBase64 && $category->image_base64 !== $categoryImgBase64) {
+                    $updateData['image_base64'] = $categoryImgBase64;
+                }
+                if (! empty($updateData)) {
+                    $category->update($updateData);
+                    $categoriesUpdated++;
+                }
+
+                // Handle parent category linking
+                if ($parentId) {
+                    $parent = Category::where('oranos_category_id', $parentId)->first();
+                    if ($parent && $category->parent_id !== $parent->id) {
+                        $category->update(['parent_id' => $parent->id]);
+                    }
+                }
+
+                $synced++;
+            } catch (\Throwable $e) {
+                Log::warning('Failed to sync Oranos category', ['oranos_id' => $categoryData['id'] ?? null, 'error' => $e->getMessage()]);
+            }
+        }
+
+        $this->info("Pre-synced {$synced} categories from Oranos API. Categories updated: {$categoriesUpdated}.");
     }
 }
