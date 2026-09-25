@@ -7,6 +7,13 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import { useI18n } from '@/i18n';
 import { localized } from '@/utils/localize';
 import { categoryEmoji } from '@/utils/categoryEmoji';
+import { ORANOS_TOP_CATEGORIES, GENERIC_ICONS } from '@/utils/oranosCategories';
+
+const CATEGORY_ICON: Record<string, string> = {
+  gamepad: '🎮', message: '💬', 'credit-card': '💳', wallet: '💰',
+  design: '🎨', monitor: '📺', server: '🛡️', 'check-circle': '✅',
+  cpu: '🤖', handshake: '🤝', share: '🔗',
+};
 
 export default function Categories() {
   const { t, locale } = useI18n();
@@ -17,7 +24,15 @@ export default function Categories() {
     categoryApi.list()
       .then((res) => {
         const all = res.data.categories ?? [];
-        setCategories(all.filter((c: any) => !c.parent_id));
+        const rank = (c: any) => {
+          const i1 = ORANOS_TOP_CATEGORIES.indexOf(c.name ?? '');
+          const i2 = ORANOS_TOP_CATEGORIES.indexOf(c.name_ar ?? '');
+          return Math.min(i1 === -1 ? 999 : i1, i2 === -1 ? 999 : i2);
+        };
+        const filtered = all
+          .filter((c: any) => rank(c) < 999 && !!c.oranos_category_id)
+          .sort((a: any, b: any) => rank(a) - rank(b));
+        setCategories(filtered);
       })
       .catch(console.error)
       .finally(() => setLoading(false));
@@ -34,11 +49,17 @@ export default function Categories() {
   return (
     <PageTransition className="space-y-8">
       <Breadcrumbs items={[{ label: t('nav.home') ?? 'Home', link: '/' }, { label: 'Categories' }]} />
-      <h1 className="text-h1 text-gray-900 dark:text-ink-900">Categories</h1>
+      <div className="flex items-end justify-between">
+        <h1 className="text-h1 text-gray-900 dark:text-ink-900">{t('home.categories')}</h1>
+        <p className="text-small text-gray-500 dark:text-ink-500">{categories.length}</p>
+      </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
         {categories.map((cat, i) => {
           const name = localized(cat, 'name', 'name_ar', locale);
+          const emoji = GENERIC_ICONS.includes(cat.icon ?? '')
+            ? categoryEmoji(name)
+            : (CATEGORY_ICON[cat.icon] ?? categoryEmoji(name));
           return (
             <motion.div
               key={cat.id}
@@ -48,25 +69,27 @@ export default function Categories() {
             >
               <Link
                 to={`/category/${cat.slug}`}
-                className="card-hover group block overflow-hidden h-full bg-white dark:bg-ink-50 rounded-2xl border border-gray-200 dark:border-ink-200 shadow-sm p-5"
+                className="card-hover group block overflow-hidden h-full bg-white dark:bg-ink-50 rounded-2xl border border-gray-200 dark:border-ink-200 shadow-sm"
               >
-                {cat.image_url ? (
-                  <img
-                    src={cat.image_url}
-                    alt={name}
-                    loading="lazy"
-                    className="w-12 h-12 rounded-xl object-cover mb-4 transition-transform duration-700 group-hover:scale-110"
-                  />
-                ) : (
-                  <div className="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center text-2xl mb-4 transition-transform duration-700 group-hover:scale-110">
-                    <span className="select-none" aria-hidden="true">
-                      {categoryEmoji(name)}
-                    </span>
+                <div className="relative p-4 min-h-[140px] flex flex-col">
+                  {cat.image_url ? (
+                    <img
+                      src={cat.image_url}
+                      alt={name}
+                      loading="lazy"
+                      className="w-12 h-12 rounded-xl object-cover mb-auto transition-transform duration-700 group-hover:scale-110"
+                    />
+                  ) : (
+                    <div className="w-12 h-12 text-2xl rounded-xl bg-gray-100 dark:bg-ink-100 flex items-center justify-center mb-auto">
+                      <span aria-hidden="true">{emoji}</span>
+                    </div>
+                  )}
+                  <div className="mt-4">
+                    <h3 className="font-heading text-sm font-semibold text-gray-900 dark:text-ink-900 group-hover:text-green-500 transition-colors line-clamp-2">
+                      {name}
+                    </h3>
                   </div>
-                )}
-                <h3 className="font-heading text-sm font-semibold text-gray-900 dark:text-ink-900 group-hover:text-green-500 transition-colors">
-                  {name}
-                </h3>
+                </div>
               </Link>
             </motion.div>
           );
