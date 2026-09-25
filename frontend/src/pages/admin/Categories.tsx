@@ -28,6 +28,8 @@ const CATEGORY_ICON: Record<string, string> = {
   'rocket':'🚀','target':'🎯',
 };
 
+const GENERIC_ICONS = ['package', 'box', 'layers', 'grid', 'layout'];
+
 export default function AdminCategories() {
   const { locale, t } = useI18n();
   const [categories, setCategories] = useState<any[]>([]);
@@ -35,6 +37,7 @@ export default function AdminCategories() {
   const [error, setError] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [editCategory, setEditCategory] = useState<any | undefined>(undefined);
+  const [search, setSearch] = useState('');
 
   const fetch = () => {
     setLoading(true);
@@ -63,16 +66,43 @@ export default function AdminCategories() {
   const openNew = () => { setEditCategory(undefined); setShowModal(true); };
   const onSaved = () => { toast.success(editCategory ? t('admin.categoryUpdated') : t('admin.newCategoryCreated')); fetch(); };
 
+  const term = search.trim().toLowerCase();
+  const filtered = term
+    ? categories.filter((c) =>
+        (c.name ?? '').toLowerCase().includes(term) ||
+        (c.name_ar ?? '').toLowerCase().includes(term) ||
+        (c.slug ?? '').toLowerCase().includes(term)
+      )
+    : categories;
+
+  const iconFor = (c: any) =>
+    GENERIC_ICONS.includes(c.icon ?? '')
+      ? categoryEmoji(c.name ?? '')
+      : (CATEGORY_ICON[c.icon] ?? categoryEmoji(c.name ?? ''));
+
   return (
     <PageTransition className="space-y-8">
       <div className="flex items-end justify-between">
         <div>
           <p className="eyebrow mb-1">{t('admin.system')}</p>
           <h1 className="text-h1 text-gray-900 dark:text-ink-900">{t('admin.categories')}</h1>
+          <p className="text-small text-gray-500 dark:text-ink-500 mt-1">
+            {filtered.length} / {categories.length}
+          </p>
         </div>
         <button onClick={openNew} className="btn-accent">
           + {t('admin.newCategory')}
         </button>
+      </div>
+
+      <div>
+        <input
+          type="search"
+          className="input max-w-md"
+          placeholder={t('admin.searchCategories') ?? t('admin.searchProducts')}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
       </div>
 
       {error && (
@@ -83,12 +113,12 @@ export default function AdminCategories() {
       )}
 
       <div className="space-y-2">
-        {categories.map((c, i) => (
+        {filtered.map((c, i) => (
           <motion.div
             key={c.id}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.04, duration: 0.3 }}
+            transition={{ delay: Math.min(i, 12) * 0.03, duration: 0.3 }}
             className="card-pad flex items-center justify-between"
           >
             <div className="flex items-center gap-3">
@@ -100,11 +130,13 @@ export default function AdminCategories() {
                 />
               ) : (
                 <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-ink-100 border border-gray-200 dark:border-ink-200 flex items-center justify-center text-xl flex-shrink-0">
-                  {['package','box','layers','grid','layout'].includes(c.icon ?? '') ? categoryEmoji(c.name ?? '') : (CATEGORY_ICON[c.icon] ?? categoryEmoji(c.name ?? ''))}
+                  {iconFor(c)}
                 </div>
               )}
               <div>
-                <p className="text-sm font-semibold text-gray-900 dark:text-ink-900">{locale === 'ar' && c.name_ar ? c.name_ar : c.name}</p>
+                <p className="text-sm font-semibold text-gray-900 dark:text-ink-900">
+                  {locale === 'ar' && c.name_ar ? c.name_ar : c.name}
+                </p>
                 <p className="text-micro text-gray-500 dark:text-ink-500">
                   {c.slug} · <span className="text-gray-500 dark:text-ink-600">{c.type}</span>
                 </p>
@@ -120,8 +152,10 @@ export default function AdminCategories() {
             </div>
           </motion.div>
         ))}
-        {categories.length === 0 && !loading && (
-          <p className="text-center text-gray-500 dark:text-ink-500 py-8">{t('admin.noCategoriesYet')}</p>
+        {filtered.length === 0 && !loading && (
+          <p className="text-center text-gray-500 dark:text-ink-500 py-8">
+            {term ? (t('common.noResults') ?? 'No matches') : t('admin.noCategoriesYet')}
+          </p>
         )}
       </div>
 

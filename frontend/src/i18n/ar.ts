@@ -131,6 +131,8 @@ const ar: import('./en').Translations = {
 
   // Admin
   admin: {
+    searchProducts: 'ابحث عن منتج…',
+    allCategories: 'كل الفئات',
     dashboard: 'لوحة التحكم',
     users: 'المستخدمون',
     products: 'المنتجات',
@@ -333,7 +335,29 @@ const ar: import('./en').Translations = {
     walletAddress: 'عنوان المحفظة',
     memoTag: 'الملاحظة / الوسم',
   },
-  vip: {
+  favorites: {
+    title: 'المفضلة',
+    empty: 'لا توجد مفضلات بعد.',
+    addToFavorites: 'إضافة إلى المفضلة',
+    removeFromFavorites: 'إزالة من المفضلة',
+    productAdded: 'تمت الإضافة إلى المفضلة',
+    productRemoved: 'تمت الإزالة من المفضلة',
+    myFavorites: 'مفضلاتي',
+  },
+  depositHistory: {
+    title: 'سجل الإيداعات',
+    empty: 'لا توجد طلبات إيداع بعد.',
+    date: 'التاريخ',
+    amount: 'المبلغ',
+    method: 'الطريقة',
+    reference: 'المرجع',
+    status: 'الحالة',
+    approved: 'موافق عليه',
+    rejected: 'مرفوض',
+    pending: 'معلق',
+    newDeposit: 'إيداع جديد',
+    receipt: 'الإيصال',
+  },  vip: {
     title: 'حالة VIP',
     upgrade: 'ترقية',
     current: 'المستوى الحالي',
