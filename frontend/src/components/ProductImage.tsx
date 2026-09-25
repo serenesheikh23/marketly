@@ -78,8 +78,11 @@ export default function ProductImage({
     );
   }
 
-  // 3. Neither product nor category has an image — category emoji fallback
-  const emoji = categoryEmoji(category || name);
+  // 3. Neither product nor category has an image — pick the best emoji.
+  // Try the product name first (more specific), then the category name.
+  const fromName = categoryEmoji(name);
+  const fromCategory = categoryEmoji(category);
+  const emoji = fromName !== '🛍️' ? fromName : fromCategory;
   const bg = tint(category || name || 'default');
 
   return (

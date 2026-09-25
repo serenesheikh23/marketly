@@ -6,6 +6,7 @@ import PageTransition from '@/components/PageTransition';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { useI18n } from '@/i18n';
 import { localized } from '@/utils/localize';
+import { categoryEmoji } from '@/utils/categoryEmoji';
 
 export default function Categories() {
   const { t, locale } = useI18n();
@@ -57,8 +58,10 @@ export default function Categories() {
                     className="w-12 h-12 rounded-xl object-cover mb-4 transition-transform duration-700 group-hover:scale-110"
                   />
                 ) : (
-                  <div className="w-12 h-12 rounded-xl bg-green-500/10 text-green-600 flex items-center justify-center text-2xl font-bold mb-4">
-                    {name.trim().charAt(0).toUpperCase()}
+                  <div className="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center text-2xl mb-4 transition-transform duration-700 group-hover:scale-110">
+                    <span className="select-none" aria-hidden="true">
+                      {categoryEmoji(name)}
+                    </span>
                   </div>
                 )}
                 <h3 className="font-heading text-sm font-semibold text-gray-900 dark:text-ink-900 group-hover:text-green-500 transition-colors">
