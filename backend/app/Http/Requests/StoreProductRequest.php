@@ -24,6 +24,7 @@ class StoreProductRequest extends FormRequest
             'type' => ['required', 'string', 'in:auto,manual'],
             'is_active' => ['required', 'boolean'],
             'image_base64' => ['nullable', 'string'],
+            'icon' => ['nullable', 'string', 'max:20'],
         ];
     }
 }
