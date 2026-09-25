@@ -166,7 +166,7 @@ export default function CategoryPage() {
                 className="card-hover group block overflow-hidden"
               >
                 <ProductImage
-                  name={localized(p, 'name', 'name_ar', locale)}
+                  name={localized(p, 'name', 'name_ar', locale)} icon={p.icon}
                   category={localized(category, 'name', 'name_ar', locale)}
                   categoryImageUrl={category.image_url}
                   imageBase64={p.image_base64}

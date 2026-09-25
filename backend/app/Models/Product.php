@@ -23,6 +23,7 @@ class Product extends Model
         'description_ar',
         'image_base64',
         'image_url',
+        'icon',
         'price',
         'stock',
         'type',

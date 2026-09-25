@@ -258,7 +258,7 @@ export default function Home() {
                 >
                   <div className="relative h-44 overflow-hidden">
                     <ProductImage
-                      name={localized(p, 'name', 'name_ar', locale)}
+                      name={localized(p, 'name', 'name_ar', locale)} icon={p.icon}
                       category={localized(p.category, 'name', 'name_ar', locale)} categoryImageUrl={p.category?.image_url}
                       imageBase64={p.image_base64}
                       imageUrl={p.image_url}
