@@ -73,7 +73,7 @@ class SyncOranosProducts extends Command
                 $rawImg = $product['category_img'] ?? $product['category_image'] ?? $product['category_image_url'] ?? $product['category_image_base64'] ?? null;
                 $categoryImg = null;
                 $categoryImgBase64 = null;
-                if (is_string($rawImg) && $rawImg !== '' && ! str_contains($rawImg, 'empty.png')) {
+                if (is_string($rawImg) && $rawImg !== '' && ! str_contains($rawImg, 'empty.png') && str_contains($rawImg, '/images/')) {
                     if (str_starts_with($rawImg, 'data:image/') || str_starts_with($rawImg, 'data:application/')) {
                         $categoryImgBase64 = $rawImg;
                     } else {
@@ -86,7 +86,7 @@ class SyncOranosProducts extends Command
                 $productImgBase64 = null;
                 foreach (['image', 'image_url', 'img', 'picture', 'thumbnail', 'photo', 'image_base64'] as $imgField) {
                     $rawProductImg = $product[$imgField] ?? null;
-                    if (is_string($rawProductImg) && $rawProductImg !== '' && ! str_contains($rawProductImg, 'empty.png')) {
+                    if (is_string($rawProductImg) && $rawProductImg !== '' && ! str_contains($rawProductImg, 'empty.png') && str_contains($rawProductImg, '/images/')) {
                         if (str_starts_with($rawProductImg, 'data:image/') || str_starts_with($rawProductImg, 'data:application/')) {
                             $productImgBase64 = $rawProductImg;
                         } else {
@@ -235,7 +235,7 @@ class SyncOranosProducts extends Command
                 $rawImg = $categoryData['image'] ?? $categoryData['image_url'] ?? $categoryData['img'] ?? $categoryData['image_base64'] ?? null;
                 $categoryImg = null;
                 $categoryImgBase64 = null;
-                if (is_string($rawImg) && $rawImg !== '' && ! str_contains($rawImg, 'empty.png')) {
+                if (is_string($rawImg) && $rawImg !== '' && ! str_contains($rawImg, 'empty.png') && str_contains($rawImg, '/images/')) {
                     if (str_starts_with($rawImg, 'data:image/') || str_starts_with($rawImg, 'data:application/')) {
                         $categoryImgBase64 = $rawImg;
                     } else {
