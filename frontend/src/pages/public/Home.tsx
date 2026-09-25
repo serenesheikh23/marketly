@@ -9,6 +9,7 @@ import { formatPrice } from '@/utils/format';
 import PageTransition from '@/components/PageTransition';
 import { useI18n } from '@/i18n';
 import { localized } from '@/utils/localize';
+import { categoryEmoji } from '@/utils/categoryEmoji';
 import Avatar from '@/components/Avatar';
 
 const CATEGORY_ICON: Record<string, string> = {
@@ -218,7 +219,7 @@ export default function Home() {
                       />
                     ) : (
                       <div className="w-12 h-12 text-2xl rounded-xl bg-gray-100 dark:bg-ink-100 flex items-center justify-center mb-auto">
-                        <span aria-hidden="true">{CATEGORY_ICON[cat.icon] ?? '📦'}</span>
+                        <span aria-hidden="true">{CATEGORY_ICON[cat.icon] ?? categoryEmoji(localized(cat, 'name', 'name_ar', locale))}</span>
                       </div>
                     )}
                     <div className="mt-4">
