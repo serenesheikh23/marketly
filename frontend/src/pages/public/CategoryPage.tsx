@@ -1,66 +1,60 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { categoryApi, productApi } from '@/api/client';
 import ProductImage from '@/components/ProductImage';
-import { formatPrice } from '@/utils/format';
 import PageTransition from '@/components/PageTransition';
+import Breadcrumbs from '@/components/Breadcrumbs';
 import { useI18n } from '@/i18n';
 import { localized } from '@/utils/localize';
-import Breadcrumbs from '@/components/Breadcrumbs';
+import { categoryEmoji } from '@/utils/categoryEmoji';
+import { getChildren } from '@/utils/categoryTree';
+import { GENERIC_ICONS } from '@/utils/oranosCategories';
+
+const CATEGORY_ICON: Record<string, string> = {
+  gamepad: '🎮', message: '💬', 'credit-card': '💳', wallet: '💰',
+  design: '🎨', monitor: '📺', server: '🛡️', 'check-circle': '✅',
+  cpu: '🤖', handshake: '🤝', share: '🔗',
+};
+
+const reveal = (i: number) => ({
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  transition: { delay: i * 0.04, duration: 0.4, ease: [0.16, 1, 0.3, 1] as const },
+});
 
 export default function CategoryPage() {
-  const { slug } = useParams();
+  const { slug } = useParams<{ slug: string }>();
   const { t, locale } = useI18n();
-  const [category, setCategory] = useState<any>(null);
+  const [all, setAll] = useState<any[]>([]);
+  const [category, setCategory] = useState<any | null>(null);
+  const [children, setChildren] = useState<any[]>([]);
   const [products, setProducts] = useState<any[]>([]);
-  const [search, setSearch] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [loading, setLoading] = useState(true);
 
-  // ── Debounce search ────────────────────────────────────────
-  const searchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const handleSearchChange = (value: string) => {
-    setSearch(value);
-    if (searchTimeout.current) clearTimeout(searchTimeout.current);
-    searchTimeout.current = setTimeout(() => {
-      setDebouncedSearch(value);
-    }, 350);
-  };
-
-  // ── Load category + initial products ──────────────────────
   useEffect(() => {
     if (!slug) return;
     setLoading(true);
 
-    categoryApi.show(slug)
+    categoryApi.list()
       .then((res) => {
-        const cat = res.data.category;
-        setCategory(cat);
-        // Use products from the enriched category response when there's no search
-        setProducts(cat.products ?? []);
-        setLoading(false);
+        const list = res.data.categories ?? [];
+        setAll(list);
+        const found = list.find((c: any) => c.slug === slug);
+        setCategory(found ?? null);
+        if (found) {
+          const kids = getChildren(list, found);
+          setChildren(kids);
+          return productApi.list({ category: String(found.id), per_page: '60' });
+        }
+        return null;
       })
-      .catch(() => {
-        setCategory(null);
-        setProducts([]);
-        setLoading(false);
-      });
+      .then((prodRes) => {
+        if (prodRes?.data?.data) setProducts(prodRes.data.data);
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false));
   }, [slug]);
-
-  // ── Refetch products when debounced search changes ─────────
-  useEffect(() => {
-    if (!slug) return;
-    // Skip if we haven't loaded the category yet
-    if (category === null) return;
-
-    // If no search term, use the category's products (already loaded)
-    if (!debouncedSearch) return;
-
-    productApi.list({ category: slug, q: debouncedSearch })
-      .then((res) => setProducts(res.data.data ?? []))
-      .catch(console.error);
-  }, [debouncedSearch, slug]);
 
   if (loading) {
     return (
@@ -72,143 +66,119 @@ export default function CategoryPage() {
 
   if (!category) {
     return (
-      <PageTransition className="text-center py-24 card-pad">
-        <p className="text-h3 text-gray-600 dark:text-ink-600 mb-4">Category not found.</p>
-        <Link to="/" className="btn-accent">Back to home</Link>
+      <PageTransition className="space-y-6">
+        <h1 className="text-h1">Category not found</h1>
+        <Link to="/categories" className="text-green-500">← Back to categories</Link>
       </PageTransition>
     );
   }
 
-  // If this category has children, show them as chips instead of products.
-  if (category.children && category.children.length > 0) {
-    return (
-      <PageTransition className="space-y-8">
-        <Breadcrumbs
-          items={[
-            { label: t('nav.home'), link: '/' },
-            { label: localized(category, 'name', 'name_ar', locale) },
-          ]}
-        />
-        <h1 className="text-h1 text-gray-900 dark:text-ink-900">
-          {localized(category, 'name', 'name_ar', locale)}
-        </h1>
-        <div className="flex flex-wrap gap-3">
-          {category.children.map((child: any) => (
-            <Link
-              key={child.id}
-              to={`/category/${child.slug}`}
-              className="px-5 py-2.5 rounded-xl bg-white dark:bg-ink-50 border border-gray-200 dark:border-ink-200 hover:border-green-500 hover:text-green-500 transition-colors text-sm font-medium"
-            >
-              {localized(child, 'name', 'name_ar', locale)}
-            </Link>
-          ))}
-        </div>
-      </PageTransition>
-    );
-  }
+  const catName = localized(category, 'name', 'name_ar', locale);
+  const showChildren = children.length > 0;
 
   return (
-    <PageTransition className="space-y-8">
-      {/* Header */}
-      <div>
-        <Breadcrumbs
-          items={[
-            { label: t('nav.home'), link: '/' },
-            { label: localized(category, 'name', 'name_ar', locale) },
-          ]}
-        />
-        <div className="flex items-start justify-between gap-4 mt-4">
-          <div>
-            <h1 className="text-h1 text-gray-900 dark:text-ink-900 mb-2">{localized(category, 'name', 'name_ar', locale)}</h1>
-            {category.description && (
-              <p className="text-body text-gray-600 dark:text-ink-600">{localized(category, 'description', 'description_ar', locale)}</p>
-            )}
+    <PageTransition className="space-y-10">
+      <Breadcrumbs items={[
+        { label: t('nav.home') ?? 'Home', link: '/' },
+        { label: t('home.categories') ?? 'Categories', link: '/categories' },
+        { label: catName },
+      ]} />
+
+      {/* Subcategories section */}
+      {showChildren && (
+        <section>
+          <div className="mb-6">
+            <p className="eyebrow mb-2">{t('home.browse') ?? 'Browse'}</p>
+            <h2 className="font-heading text-[clamp(1.5rem,3vw,2.25rem)] text-gray-900 dark:text-ink-900">
+              {catName}
+            </h2>
           </div>
-          <span className="badge-neutral mt-1 shrink-0">{category.type}</span>
-        </div>
-      </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {children.map((child, i) => {
+              const childName = localized(child, 'name', 'name_ar', locale);
+              const emoji = GENERIC_ICONS.includes(child.icon ?? '')
+                ? categoryEmoji(childName)
+                : (CATEGORY_ICON[child.icon] ?? categoryEmoji(childName));
+              return (
+                <motion.div key={child.id} {...reveal(i)}>
+                  <Link
+                    to={`/category/${child.slug}`}
+                    className="card-hover group block overflow-hidden h-full bg-white dark:bg-ink-50 rounded-2xl border border-gray-200 dark:border-ink-200 shadow-sm"
+                  >
+                    <div className="relative p-4 min-h-[130px] flex flex-col">
+                      {child.image_url ? (
+                        <img
+                          src={child.image_url}
+                          alt={childName}
+                          loading="lazy"
+                          className="w-11 h-11 rounded-xl object-cover mb-auto transition-transform duration-700 group-hover:scale-110"
+                        />
+                      ) : (
+                        <div className="w-11 h-11 text-xl rounded-xl bg-gray-100 dark:bg-ink-100 flex items-center justify-center mb-auto">
+                          <span aria-hidden="true">{emoji}</span>
+                        </div>
+                      )}
+                      <div className="mt-3">
+                        <h3 className="font-heading text-sm font-semibold text-gray-900 dark:text-ink-900 group-hover:text-green-500 transition-colors line-clamp-2">
+                          {childName}
+                        </h3>
+                      </div>
+                    </div>
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
-      {/* Search */}
-      <div className="relative max-w-sm">
-        <svg
-          className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600 dark:text-ink-500"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <circle cx="11" cy="11" r="8" />
-          <path d="m21 21-4.35-4.35" />
-        </svg>
-        <input
-          type="search"
-          placeholder="Search products…"
-          className="input pl-10"
-          value={search}
-          onChange={(e) => handleSearchChange(e.target.value)}
-        />
-      </div>
-
-      {/* Product grid */}
-      {products.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {products.map((p, i) => (
-            <motion.div
-              key={p.id}
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.04, duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            >
-              <Link
-                to={`/product/${p.slug}`}
-                className="card-hover group block overflow-hidden"
-              >
-                <ProductImage
-                  name={localized(p, 'name', 'name_ar', locale)} icon={p.icon}
-                  category={localized(category, 'name', 'name_ar', locale)}
-                  categoryImageUrl={category.image_url}
-                  imageBase64={p.image_base64}
-                  imageUrl={p.image_url}
-                  className="h-36 mb-4"
-                />
-                <div className="px-4 pb-4">
-                  <h3 className="text-sm font-semibold text-gray-900 dark:text-ink-900 group-hover:text-green-400 transition-colors line-clamp-2 mb-1">
-                    {localized(p, 'name', 'name_ar', locale)}
-                  </h3>
-                  <p className="text-micro text-gray-600 dark:text-ink-500 line-clamp-2 mb-3">
-                    {localized(p, 'description', 'description_ar', locale)}
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-h3 text-green-400">
-                      {formatPrice(p.price)}
-                    </span>
-                    {p.external_store_id && (
-                      <span className="badge-neutral text-micro">External</span>
-                    )}
+      {/* Products section */}
+      {products.length > 0 && (
+        <section>
+          <div className="mb-6">
+            <p className="eyebrow mb-2">{t('home.hotRightNow') ?? 'Products'}</p>
+            <h2 className="font-heading text-[clamp(1.5rem,3vw,2.25rem)] text-gray-900 dark:text-ink-900">
+              {showChildren ? `${t('home.browse') ?? 'Browse'} ${catName}` : catName}
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {products.map((p, i) => (
+              <motion.div key={p.id} {...reveal(i)} className="h-full">
+                <Link
+                  to={`/product/${p.slug}`}
+                  className="card-hover group block overflow-hidden h-full bg-white dark:bg-ink-50 rounded-2xl border border-gray-200 dark:border-ink-200 shadow-sm"
+                >
+                  <div className="relative h-44 overflow-hidden">
+                    <ProductImage
+                      name={localized(p, 'name', 'name_ar', locale)}
+                      icon={p.icon}
+                      category={localized(p.category, 'name', 'name_ar', locale)}
+                      categoryImageUrl={p.category?.image_url}
+                      imageBase64={p.image_base64}
+                      imageUrl={p.image_url}
+                      className="w-full h-full transition-transform duration-700 group-hover:scale-110"
+                    />
                   </div>
-                </div>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
-      ) : (
-        <div className="text-center py-20 card-pad">
-          <svg className="w-12 h-12 mx-auto mb-4 text-gray-300 dark:text-ink-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <path d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" strokeLinecap="round" />
-          </svg>
-          <p className="text-body text-gray-600 dark:text-ink-600">
-            {search ? 'No products match your search.' : 'No products in this category yet.'}
+                  <div className="p-5">
+                    <h3 className="font-heading text-sm font-semibold text-gray-900 dark:text-ink-900 group-hover:text-green-500 transition-colors line-clamp-2 mb-2">
+                      {localized(p, 'name', 'name_ar', locale)}
+                    </h3>
+                    <p className="text-micro text-gray-500 dark:text-ink-500 line-clamp-2 mb-3">
+                      {localized(p, 'description', 'description_ar', locale)}
+                    </p>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {!showChildren && products.length === 0 && (
+        <div className="card-pad text-center py-16">
+          <p className="text-body text-gray-500 dark:text-ink-500">
+            {t('common.noResults') ?? 'No products here yet.'}
           </p>
-          {search && (
-            <button
-              onClick={() => handleSearchChange('')}
-              className="text-sm text-green-400 hover:text-green-300 mt-2 transition-colors"
-            >
-              Clear search
-            </button>
-          )}
         </div>
       )}
     </PageTransition>
