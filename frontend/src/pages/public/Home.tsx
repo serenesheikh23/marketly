@@ -72,7 +72,7 @@ export default function Home() {
           return Math.min(i1 === -1 ? 999 : i1, i2 === -1 ? 999 : i2);
         };
         const filtered = all
-          .filter((c: any) => rank(c) < 999)
+          .filter((c: any) => rank(c) < 999 && !!c.oranos_category_id)
           .sort((a: any, b: any) => rank(a) - rank(b));
         setCategories(filtered);
       })
