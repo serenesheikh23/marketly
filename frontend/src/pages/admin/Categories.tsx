@@ -100,7 +100,7 @@ export default function AdminCategories() {
                 />
               ) : (
                 <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-ink-100 border border-gray-200 dark:border-ink-200 flex items-center justify-center text-xl flex-shrink-0">
-                  {CATEGORY_ICON[c.icon] ?? categoryEmoji(c.name ?? '')}
+                  {['package','box','layers','grid','layout'].includes(c.icon ?? '') ? categoryEmoji(c.name ?? '') : (CATEGORY_ICON[c.icon] ?? categoryEmoji(c.name ?? ''))}
                 </div>
               )}
               <div>
