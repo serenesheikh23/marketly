@@ -3,6 +3,7 @@ import { adminProductApi, categoryApi } from '@/api/client';
 import toast from 'react-hot-toast';
 import Modal from './Modal';
 import ImageUploader from './ImageUploader';
+import IconPicker from './IconPicker';
 import Button from './Button';
 
 interface ProductModalProps {
@@ -25,6 +26,7 @@ export default function ProductModal({ product, onClose, onSaved }: ProductModal
     type: product?.type ?? 'auto',
     is_active: product?.is_active ?? true,
     image_base64: product?.image_base64 ?? '',
+    icon: product?.icon ?? '',
   });
   const [saving, setSaving] = useState(false);
   const isEdit = !!product;
@@ -183,6 +185,18 @@ export default function ProductModal({ product, onClose, onSaved }: ProductModal
               value={form.image_base64}
               onChange={(v) => set('image_base64')(v)}
             />
+          </div>
+          <div>
+            <label className="label">Fallback Icon</label>
+            <p className="text-micro text-gray-600 dark:text-ink-500 mb-2">
+              Shown when the product has no image. Leave empty to auto-pick from the name.
+            </p>
+            <IconPicker value={form.icon} onChange={(v) => set('icon')(v)} />
+            {form.icon && (
+              <p className="text-micro text-gray-600 dark:text-ink-500 mt-2">
+                Selected: <span className="font-mono">{form.icon}</span>
+              </p>
+            )}
           </div>
           <div className="flex gap-3 pt-2">
             <Button type="submit" variant="accent" className="flex-1" loading={saving}>
