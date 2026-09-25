@@ -25,3 +25,7 @@ _ide_helper.php
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+!storage/app/public/
+!storage/app/public/placeholders/
+!storage/app/public/placeholders/*.png
