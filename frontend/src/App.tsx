@@ -18,6 +18,8 @@ const Dashboard      = lazy(() => import('@/pages/account/Dashboard'));
 const Deposit        = lazy(() => import('@/pages/account/Deposit'));
 const Withdraw       = lazy(() => import('@/pages/account/Withdraw'));
 const Orders         = lazy(() => import('@/pages/account/Orders'));
+const Deposits       = lazy(() => import('@/pages/account/Deposits'));
+const Favorites      = lazy(() => import('@/pages/account/Favorites'));
 const VipPage        = lazy(() => import('@/pages/account/VipPage'));
 const ManualServices = lazy(() => import('@/pages/account/ManualServices'));
 const AdminDashboard   = lazy(() => import('@/pages/admin/Dashboard'));
@@ -87,6 +89,8 @@ export default function App() {
             <Route path="/dashboard/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
             <Route path="/dashboard/vip" element={<ProtectedRoute><VipPage /></ProtectedRoute>} />
             <Route path="/dashboard/manual-services" element={<ProtectedRoute><ManualServices /></ProtectedRoute>} />
+            <Route path="/dashboard/favorites" element={<ProtectedRoute><Favorites /></ProtectedRoute>} />
+            <Route path="/dashboard/deposits" element={<ProtectedRoute><Deposits /></ProtectedRoute>} />
           </Route>
 
           <Route element={<AdminRoute><AdminLayout /></AdminRoute>}>

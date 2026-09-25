@@ -1,6 +1,7 @@
 const en = {
   // Common
   common: {
+    noResults: 'No results',
     yes: 'Yes',
     no: 'No',
     save: 'Save',
@@ -22,6 +23,7 @@ const en = {
     products: 'Products',
     cart: 'Cart',
     dashboard: 'My Dashboard',
+    favorites: 'Favorites',
     admin: 'Admin Panel',
     signIn: 'Sign in',
     signOut: 'Logout',
@@ -134,6 +136,7 @@ const en = {
     searchProducts: 'Search products…',
     allCategories: 'All categories',
     dashboard: 'Dashboard',
+    favorites: 'Favorites',
     users: 'Users',
     products: 'Products',
     categories: 'Categories',
@@ -215,6 +218,7 @@ const en = {
     thisMonth: 'This month',
     quickActions: 'Quick actions',
     depositFunds: 'Deposit Funds',
+    depositHistory: 'Deposit History',
     withdraw: 'Withdraw',
     vipStatus: 'VIP Status',
     manualServices: 'Manual Services',

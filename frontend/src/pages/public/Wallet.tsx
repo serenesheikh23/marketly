@@ -32,6 +32,7 @@ export default function Wallet() {
 
       <div className="grid grid-cols-2 gap-4">
         <Link to="/dashboard/deposit" className="btn-accent text-center">Deposit</Link>
+        <Link to="/dashboard/deposits" className="btn-ghost text-center">Deposit History</Link>
         <Link to="/dashboard/withdraw" className="btn-secondary text-center">Withdraw</Link>
       </div>
 
