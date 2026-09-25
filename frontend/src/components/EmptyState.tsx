@@ -7,6 +7,7 @@ interface EmptyStateProps {
   description: string;
   action?: { label: string; to?: string; onClick?: () => void };
   secondaryAction?: { label: string; to?: string; onClick?: () => void };
+  className?: string;
 }
 
 /**
@@ -20,9 +21,10 @@ export default function EmptyState({
   description,
   action,
   secondaryAction,
+  className = '',
 }: EmptyStateProps): ReactNode {
   return (
-    <div className="text-center py-16 px-6 max-w-lg mx-auto" role="status">
+    <div className={`text-center py-16 px-6 max-w-lg mx-auto ${className}`} role="status">
       <div className="relative w-24 h-24 mx-auto mb-6">
         <div className="absolute inset-0 rounded-2xl bg-green-500/10 border border-green-500/20" aria-hidden="true" />
         <div className="relative w-full h-full flex items-center justify-center text-green-400">

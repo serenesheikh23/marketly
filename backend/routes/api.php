@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\Product\ProductController;
 use App\Http\Controllers\Api\SettingsController;
 use App\Http\Controllers\Api\Store\StoreController;
 use App\Http\Controllers\Api\Vip\VipController;
+use App\Http\Controllers\Api\Favorite\FavoriteController;
 use App\Http\Controllers\Api\Webhook\BinanceWebhookController;
 use App\Http\Controllers\Api\Webhook\UsdtWebhookController;
 use App\Http\Controllers\Api\WebhookController;
@@ -84,6 +85,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Stores — create + edit prices
     Route::post('/stores', [StoreController::class, 'store']);
+
+    // Favorites
+    Route::get('/favorites', [FavoriteController::class, 'index']);
+    Route::post('/favorites', [FavoriteController::class, 'store']);
+    Route::delete('/favorites/{productId}', [FavoriteController::class, 'destroy']);
+    Route::get('/favorites/{productId}', [FavoriteController::class, 'check']);
     Route::post('/stores/{store}/products/{product}', [StoreController::class, 'updateProductPrice']);
 });
 

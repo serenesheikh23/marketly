@@ -1,6 +1,7 @@
 const ar: import('./en').Translations = {
   // Common
   common: {
+    noResults: 'لا توجد نتائج',
     yes: 'نعم',
     no: 'لا',
     save: 'حفظ',
@@ -22,6 +23,7 @@ const ar: import('./en').Translations = {
     products: 'المنتجات',
     cart: 'السلة',
     dashboard: 'لوحتي',
+    favorites: 'المفضلة',
     admin: 'لوحة الإدارة',
     signIn: 'تسجيل الدخول',
     signOut: 'تسجيل الخروج',
@@ -134,6 +136,7 @@ const ar: import('./en').Translations = {
     searchProducts: 'ابحث عن منتج…',
     allCategories: 'كل الفئات',
     dashboard: 'لوحة التحكم',
+    favorites: 'المفضلة',
     users: 'المستخدمون',
     products: 'المنتجات',
     categories: 'الفئات',
@@ -215,6 +218,7 @@ const ar: import('./en').Translations = {
     thisMonth: 'هذا الشهر',
     quickActions: 'إجراءات سريعة',
     depositFunds: 'إيداع الأموال',
+    depositHistory: 'سجل الإيداعات',
     withdraw: 'سحب',
     vipStatus: 'حالة VIP',
     manualServices: 'الخدمات اليدوية',
@@ -357,7 +361,8 @@ const ar: import('./en').Translations = {
     pending: 'معلق',
     newDeposit: 'إيداع جديد',
     receipt: 'الإيصال',
-  },  vip: {
+  },
+  vip: {
     title: 'حالة VIP',
     upgrade: 'ترقية',
     current: 'المستوى الحالي',

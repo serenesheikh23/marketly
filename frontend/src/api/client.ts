@@ -82,6 +82,16 @@ export const depositApi = {
 };
 
 // Withdrawals
+
+// Favorites
+export const favoriteApi = {
+  list: () => api.get('/favorites'),
+  add: (productId: number) => api.post('/favorites', { product_id: productId }),
+  remove: (productId: number) => api.delete(`/favorites/${productId}`),
+  check: (productId: number) => api.get(`/favorites/${productId}`),
+};
+
+// Withdrawals
 export const withdrawalApi = {
   list: () => api.get('/withdrawals'),
   create: (data: { amount: number; wallet_address: string; method: string }) =>
