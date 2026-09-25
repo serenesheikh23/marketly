@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { adminProductApi } from '@/api/client';
+import { useEffect, useState, useCallback } from 'react';
+import { adminProductApi, categoryApi } from '@/api/client';
 import toast from 'react-hot-toast';
 import ProductModal from '@/components/ProductModal';
 import ProductImage from '@/components/ProductImage';
@@ -11,24 +11,43 @@ import { useI18n } from '@/i18n';
 export default function AdminProducts() {
   const { locale, t } = useI18n();
   const [products, setProducts] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [editProduct, setEditProduct] = useState<any | undefined>(undefined);
 
-  const fetch = () => {
+  const [page, setPage] = useState(1);
+  const [lastPage, setLastPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [q, setQ] = useState('');
+  const [catFilter, setCatFilter] = useState('');
+
+  const fetch = useCallback(() => {
     setLoading(true);
     setError(null);
-    adminProductApi.list()
-      .then((r) => setProducts(r.data.data ?? []))
+    const params: Record<string, string> = { page: String(page) };
+    if (q) params.q = q;
+    if (catFilter) params.category = catFilter;
+
+    adminProductApi.list(params)
+      .then((r) => {
+        const d = r.data;
+        setProducts(d.data ?? []);
+        setLastPage(d.last_page ?? 1);
+        setTotal(d.total ?? 0);
+      })
       .catch((err: any) => {
         console.error(err);
         setError(err.response?.data?.message ?? t('common.failed'));
       })
       .finally(() => setLoading(false));
-  };
+  }, [page, q, catFilter, t]);
 
-  useEffect(() => { fetch(); }, []);
+  useEffect(() => { fetch(); }, [fetch]);
+  useEffect(() => {
+    categoryApi.list().then((r) => setCategories(r.data.categories ?? [])).catch(() => {});
+  }, []);
 
   const handleDelete = async (p: any) => {
     if (!confirm(t('admin.deleteConfirm', { name: p.name }))) return;
@@ -56,10 +75,33 @@ export default function AdminProducts() {
         <div>
           <p className="eyebrow mb-1">{t('admin.system')}</p>
           <h1 className="text-h1 text-gray-900 dark:text-ink-900">{t('admin.products')}</h1>
+          <p className="text-small text-gray-500 dark:text-ink-500 mt-1">{total} total</p>
         </div>
         <button onClick={openNew} className="btn-accent">
           + {t('admin.newProduct')}
         </button>
+      </div>
+
+      <div className="flex flex-wrap gap-3">
+        <input
+          type="search"
+          className="input max-w-xs"
+          placeholder={t('admin.searchProducts') ?? 'Search products…'}
+          value={q}
+          onChange={(e) => { setQ(e.target.value); setPage(1); }}
+        />
+        <select
+          className="input max-w-xs"
+          value={catFilter}
+          onChange={(e) => { setCatFilter(e.target.value); setPage(1); }}
+        >
+          <option value="">{t('admin.allCategories') ?? 'All categories'}</option>
+          {categories.map((c) => (
+            <option key={c.id} value={c.id}>
+              {locale === 'ar' && c.name_ar ? c.name_ar : c.name}
+            </option>
+          ))}
+        </select>
       </div>
 
       {error && (
@@ -157,6 +199,28 @@ export default function AdminProducts() {
             </tbody>
           </table>
         </div>
+
+        {lastPage > 1 && (
+          <div className="flex items-center justify-between gap-3 p-4 border-t border-gray-200 dark:border-ink-200">
+            <button
+              className="btn-secondary btn-sm"
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page <= 1}
+            >
+              ← Prev
+            </button>
+            <span className="text-small text-gray-600 dark:text-ink-500">
+              Page {page} / {lastPage}
+            </span>
+            <button
+              className="btn-secondary btn-sm"
+              onClick={() => setPage((p) => Math.min(lastPage, p + 1))}
+              disabled={page >= lastPage}
+            >
+              Next →
+            </button>
+          </div>
+        )}
       </div>
 
       {showModal && (
