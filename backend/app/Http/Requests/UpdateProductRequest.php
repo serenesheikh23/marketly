@@ -24,6 +24,7 @@ class UpdateProductRequest extends FormRequest
             'type' => ['sometimes', 'string', 'in:auto,manual'],
             'is_active' => ['sometimes', 'boolean'],
             'image_base64' => ['nullable', 'string'],
+            'icon' => ['nullable', 'string', 'max:20'],
         ];
     }
 }
