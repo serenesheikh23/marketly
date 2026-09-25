@@ -2,15 +2,34 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Gamepad2, MessageCircle, CreditCard, Wallet, Palette, Bot, ArrowUpRight } from 'lucide-react';
-import { categoryApi, productApi } from '@/api/client';
+import { categoryApi } from '@/api/client';
 import { useAppSelector } from '@/store';
-import ProductImage from '@/components/ProductImage';
-import { formatPrice } from '@/utils/format';
 import PageTransition from '@/components/PageTransition';
 import { useI18n } from '@/i18n';
 import { localized } from '@/utils/localize';
 import { categoryEmoji } from '@/utils/categoryEmoji';
-import Avatar from '@/components/Avatar';
+
+// Exact top-level categories from Oranos, in Oranos order.
+const HOME_CATEGORY_NAMES = [
+  'التطبيقات',
+  'الالعاب عبر ال ID',
+  'بطاقات الالعاب',
+  'الرصيد والعملات',
+  'البطاقات الرقمية',
+  'السوشيال ميديا',
+  'خدمات مايكروسوفت',
+  'برامج الكمبيوتر',
+  'حسابات جاهزة',
+  'تفعيلات بريميوم',
+  'اشتراكات شاشة',
+  'برامج التصميم',
+  'بروكسيVPN',
+  'ادوات السوفتوير',
+  'خدمات سيرفر',
+  'مزودات انترنت',
+  'خدمات الدفع السورية',
+  'الذكاء الاصطناعي',
+];
 
 const CATEGORY_ICON: Record<string, string> = {
   gamepad:      '🎮',
@@ -26,6 +45,8 @@ const CATEGORY_ICON: Record<string, string> = {
   share:        '🔗',
 };
 
+const GENERIC_ICONS = ['package', 'box', 'layers', 'grid', 'layout'];
+
 const reveal = (i: number) => ({
   initial: { opacity: 0, y: 28 },
   whileInView: { opacity: 1, y: 0 },
@@ -35,7 +56,6 @@ const reveal = (i: number) => ({
 
 export default function Home() {
   const [categories, setCategories] = useState<any[]>([]);
-  const [featured, setFeatured] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const isAuthenticated = useAppSelector((s) => s.auth.isAuthenticated);
   const { t, locale } = useI18n();
@@ -52,13 +72,19 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    Promise.all([
-      categoryApi.list(),
-      productApi.list({ per_page: '8' }),
-    ])
-      .then(([catRes, prodRes]) => {
-        setCategories(catRes.data.categories ?? []);
-        setFeatured(prodRes.data.data ?? []);
+    categoryApi.list()
+      .then((res) => {
+        const all = res.data.categories ?? [];
+        const rank = (c: any) => {
+          const i1 = HOME_CATEGORY_NAMES.indexOf(c.name ?? '');
+          const i2 = HOME_CATEGORY_NAMES.indexOf(c.name_ar ?? '');
+          const i = Math.min(i1 === -1 ? 999 : i1, i2 === -1 ? 999 : i2);
+          return i;
+        };
+        const filtered = all
+          .filter((c: any) => rank(c) < 999)
+          .sort((a: any, b: any) => rank(a) - rank(b));
+        setCategories(filtered);
       })
       .catch(console.error)
       .finally(() => setLoading(false));
@@ -74,10 +100,9 @@ export default function Home() {
 
   return (
     <PageTransition className="relative overflow-hidden">
-      {/* ── MAIN CONTENT ── */}
       <div className="relative z-10 space-y-10">
 
-        {/* Hero section */}
+        {/* Hero */}
         <motion.section
           className="relative w-full overflow-hidden"
           style={{ y: heroY, opacity: heroOpacity }}
@@ -140,7 +165,7 @@ export default function Home() {
           </div>
         </motion.section>
 
-        {/* ── FLOATING ICONS GAP ── between hero buttons and "BROWSE Categories" */}
+        {/* Floating icons */}
         <div className="relative overflow-hidden w-full h-32 lg:h-44 flex-shrink-0">
           <div className="relative w-full h-full">
             <motion.div
@@ -188,7 +213,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Categories */}
+        {/* Categories — 18 top-level, exactly like Oranos */}
         <section>
           <motion.div {...reveal(0)} className="flex items-end justify-between mb-10">
             <div className="max-w-xl">
@@ -202,89 +227,41 @@ export default function Home() {
               <ArrowUpRight size={14} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </Link>
           </motion.div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {(categories ?? []).slice(0, 8).map((cat, i) => (
-              <motion.div key={cat.id} {...reveal(i)}>
-                <Link
-                  to={`/category/${cat.slug}`}
-                  className="card-hover group block overflow-hidden h-full bg-white dark:bg-ink-50 rounded-2xl border border-gray-200 dark:border-ink-200 shadow-sm"
-                >
-                  <div className="relative p-5 min-h-[160px] flex flex-col">
-                    {cat.image_url ? (
-                      <img
-                        src={cat.image_url}
-                        alt={localized(cat, 'name', 'name_ar', locale)}
-                        loading="lazy"
-                        className="w-12 h-12 rounded-xl object-cover mb-auto transition-transform duration-700 group-hover:scale-110"
-                      />
-                    ) : (
-                      <div className="w-12 h-12 text-2xl rounded-xl bg-gray-100 dark:bg-ink-100 flex items-center justify-center mb-auto">
-                        <span aria-hidden="true">{CATEGORY_ICON[cat.icon] ?? categoryEmoji(localized(cat, 'name', 'name_ar', locale))}</span>
-                      </div>
-                    )}
-                    <div className="mt-4">
-                      <h3 className="font-heading text-sm font-semibold text-gray-900 dark:text-ink-900 group-hover:text-green-500 transition-colors">
-                        {localized(cat, 'name', 'name_ar', locale)}
-                      </h3>
-                      <p className="text-micro text-gray-600 dark:text-ink-500 uppercase mt-1 tracking-wider">{cat.type}</p>
-                    </div>
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
-          </div>
-        </section>
-
-        {/* Featured Products */}
-        <section>
-          <motion.div {...reveal(0)} className="flex items-end justify-between mb-10">
-            <div className="max-w-xl">
-              <p className="eyebrow mb-2">{t('home.hotRightNow')}</p>
-              <h2 className="font-heading text-[clamp(1.875rem,3.5vw,2.75rem)] text-gray-900 dark:text-ink-900 leading-[1.05] text-balance">
-                {t('home.featuredProducts')}
-              </h2>
-            </div>
-            <Link to="/products" className="group inline-flex items-center gap-1 text-sm text-green-500 hover:text-green-400 transition-colors">
-              {t('home.viewAll')}
-              <ArrowUpRight size={14} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </Link>
-          </motion.div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {(featured ?? []).slice(0, 8).map((p, i) => (
-              <motion.div key={p.id} {...reveal(i)} className="h-full">
-                <Link
-                  to={`/product/${p.slug}`}
-                  className="card-hover group block overflow-hidden h-full bg-white dark:bg-ink-50 rounded-2xl border border-gray-200 dark:border-ink-200 shadow-sm"
-                >
-                  <div className="relative h-44 overflow-hidden">
-                    <ProductImage
-                      name={localized(p, 'name', 'name_ar', locale)} icon={p.icon}
-                      category={localized(p.category, 'name', 'name_ar', locale)} categoryImageUrl={p.category?.image_url}
-                      imageBase64={p.image_base64}
-                      imageUrl={p.image_url}
-                      className="w-full h-full transition-transform duration-700 group-hover:scale-110"
-                    />
-                  </div>
-                  <div className="p-5">
-                    <h3 className="font-heading text-sm font-semibold text-gray-900 dark:text-ink-900 group-hover:text-green-500 transition-colors line-clamp-2 mb-2">
-                      {localized(p, 'name', 'name_ar', locale)}
-                    </h3>
-                    <p className="text-micro text-gray-500 dark:text-ink-500 line-clamp-1 mb-4">
-                      {localized(p, 'description', 'description_ar', locale)}
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <span className="font-heading text-h3 text-green-500 font-bold tabular-nums">
-                        {formatPrice(p.price)}
-                      </span>
-                      <div className="inline-flex items-center gap-1.5 text-xs text-gray-500 dark:text-ink-500 group-hover:text-green-500 transition-colors">
-                        View
-                        <ArrowUpRight size={14} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {categories.map((cat, i) => {
+              const name = localized(cat, 'name', 'name_ar', locale);
+              const emoji = GENERIC_ICONS.includes(cat.icon ?? '')
+                ? categoryEmoji(name)
+                : (CATEGORY_ICON[cat.icon] ?? categoryEmoji(name));
+              return (
+                <motion.div key={cat.id} {...reveal(i)}>
+                  <Link
+                    to={`/category/${cat.slug}`}
+                    className="card-hover group block overflow-hidden h-full bg-white dark:bg-ink-50 rounded-2xl border border-gray-200 dark:border-ink-200 shadow-sm"
+                  >
+                    <div className="relative p-4 min-h-[140px] flex flex-col">
+                      {cat.image_url ? (
+                        <img
+                          src={cat.image_url}
+                          alt={name}
+                          loading="lazy"
+                          className="w-12 h-12 rounded-xl object-cover mb-auto transition-transform duration-700 group-hover:scale-110"
+                        />
+                      ) : (
+                        <div className="w-12 h-12 text-2xl rounded-xl bg-gray-100 dark:bg-ink-100 flex items-center justify-center mb-auto">
+                          <span aria-hidden="true">{emoji}</span>
+                        </div>
+                      )}
+                      <div className="mt-4">
+                        <h3 className="font-heading text-sm font-semibold text-gray-900 dark:text-ink-900 group-hover:text-green-500 transition-colors line-clamp-2">
+                          {name}
+                        </h3>
                       </div>
                     </div>
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
+                  </Link>
+                </motion.div>
+              );
+            })}
           </div>
         </section>
 

@@ -131,6 +131,8 @@ const en = {
 
   // Admin
   admin: {
+    searchProducts: 'Search products…',
+    allCategories: 'All categories',
     dashboard: 'Dashboard',
     users: 'Users',
     products: 'Products',
@@ -333,7 +335,29 @@ const en = {
     walletAddress: 'Wallet Address',
     memoTag: 'Memo / Tag',
   },
-  vip: {
+  favorites: {
+    title: 'Favorites',
+    empty: 'No favorites yet.',
+    addToFavorites: 'Add to favorites',
+    removeFromFavorites: 'Remove from favorites',
+    productAdded: 'Added to favorites',
+    productRemoved: 'Removed from favorites',
+    myFavorites: 'My Favorites',
+  },
+  depositHistory: {
+    title: 'Deposit History',
+    empty: 'No deposit requests yet.',
+    date: 'Date',
+    amount: 'Amount',
+    method: 'Method',
+    reference: 'Reference',
+    status: 'Status',
+    approved: 'Approved',
+    rejected: 'Rejected',
+    pending: 'Pending',
+    newDeposit: 'New Deposit',
+    receipt: 'Receipt',
+  },  vip: {
     title: 'VIP Status',
     upgrade: 'Upgrade',
     current: 'Current Level',
