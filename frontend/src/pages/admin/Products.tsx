@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { adminProductApi } from '@/api/client';
 import toast from 'react-hot-toast';
 import ProductModal from '@/components/ProductModal';
+import ProductImage from '@/components/ProductImage';
 import { TableSkeleton } from '@/components/Skeleton';
 import { formatPrice } from '@/utils/format';
 import PageTransition from '@/components/PageTransition';
@@ -68,13 +69,14 @@ export default function AdminProducts() {
         </div>
       )}
 
-      {loading && !error && <TableSkeleton rows={6} columns={7} />}
+      {loading && !error && <TableSkeleton rows={6} columns={8} />}
 
       <div className={`card overflow-hidden p-0 ${loading ? 'hidden' : ''}`}>
         <div className="overflow-x-auto">
           <table className="table">
             <thead>
               <tr>
+                <th className="w-16">{t('admin.image') ?? 'Image'}</th>
                 <th>{t('admin.name')}</th>
                 <th>{t('admin.category')}</th>
                 <th>{t('admin.price')}</th>
@@ -87,6 +89,19 @@ export default function AdminProducts() {
             <tbody>
               {products.map((p) => (
                 <tr key={p.id}>
+                  <td>
+                    <div className="w-12 h-12">
+                      <ProductImage
+                        name={locale === 'ar' && p.name_ar ? p.name_ar : p.name}
+                        category={p.category ? (locale === 'ar' && p.category.name_ar ? p.category.name_ar : p.category.name) : undefined}
+                        icon={p.icon}
+                        categoryImageUrl={p.category?.image_url}
+                        imageBase64={p.image_base64}
+                        imageUrl={p.image_url}
+                        className="w-12 h-12 rounded-lg"
+                      />
+                    </div>
+                  </td>
                   <td className="font-medium text-gray-900 dark:text-ink-900">{locale === 'ar' && p.name_ar ? p.name_ar : p.name}</td>
                   <td className="text-gray-500 dark:text-ink-500">
                     {p.category
@@ -131,7 +146,7 @@ export default function AdminProducts() {
               ))}
               {products.length === 0 && !loading && (
                 <tr>
-                  <td colSpan={7} className="text-center text-gray-500 dark:text-ink-500 py-8">
+                  <td colSpan={8} className="text-center text-gray-500 dark:text-ink-500 py-8">
                     {t('admin.noProductsYet')}
                   </td>
                 </tr>
