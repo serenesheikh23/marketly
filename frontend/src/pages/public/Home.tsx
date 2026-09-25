@@ -9,7 +9,6 @@ import { useI18n } from '@/i18n';
 import { localized } from '@/utils/localize';
 import { categoryEmoji } from '@/utils/categoryEmoji';
 
-// Exact top-level categories from Oranos, in Oranos order.
 const HOME_CATEGORY_NAMES = [
   'التطبيقات',
   'الالعاب عبر ال ID',
@@ -32,17 +31,9 @@ const HOME_CATEGORY_NAMES = [
 ];
 
 const CATEGORY_ICON: Record<string, string> = {
-  gamepad:      '🎮',
-  message:      '💬',
-  'credit-card':'💳',
-  wallet:       '💰',
-  design:       '🎨',
-  monitor:      '📺',
-  server:       '🛡️',
-  'check-circle':'✅',
-  cpu:          '🤖',
-  handshake:    '🤝',
-  share:        '🔗',
+  gamepad: '🎮', message: '💬', 'credit-card': '💳', wallet: '💰',
+  design: '🎨', monitor: '📺', server: '🛡️', 'check-circle': '✅',
+  cpu: '🤖', handshake: '🤝', share: '🔗',
 };
 
 const GENERIC_ICONS = ['package', 'box', 'layers', 'grid', 'layout'];
@@ -78,8 +69,7 @@ export default function Home() {
         const rank = (c: any) => {
           const i1 = HOME_CATEGORY_NAMES.indexOf(c.name ?? '');
           const i2 = HOME_CATEGORY_NAMES.indexOf(c.name_ar ?? '');
-          const i = Math.min(i1 === -1 ? 999 : i1, i2 === -1 ? 999 : i2);
-          return i;
+          return Math.min(i1 === -1 ? 999 : i1, i2 === -1 ? 999 : i2);
         };
         const filtered = all
           .filter((c: any) => rank(c) < 999)
@@ -102,7 +92,6 @@ export default function Home() {
     <PageTransition className="relative overflow-hidden">
       <div className="relative z-10 space-y-10">
 
-        {/* Hero */}
         <motion.section
           className="relative w-full overflow-hidden"
           style={{ y: heroY, opacity: heroOpacity }}
@@ -123,8 +112,7 @@ export default function Home() {
               </motion.div>
               <motion.h1
                 {...reveal(1)}
-                className="font-heading font-bold leading-[0.95] text-gray-900 dark:text-ink-900 mb-8
-                           text-[clamp(2.75rem,7vw,5.5rem)] tracking-tightest text-balance"
+                className="font-heading font-bold leading-[0.95] text-gray-900 dark:text-ink-900 mb-8 text-[clamp(2.75rem,7vw,5.5rem)] tracking-tightest text-balance"
               >
                 {t('home.heroTitle1')}
                 <br />
@@ -165,55 +153,29 @@ export default function Home() {
           </div>
         </motion.section>
 
-        {/* Floating icons */}
         <div className="relative overflow-hidden w-full h-32 lg:h-44 flex-shrink-0">
           <div className="relative w-full h-full">
-            <motion.div
-              animate={{ y: [0, -15, 0], x: [0, 5, 0], rotate: [0, 8, 0] }}
-              transition={{ duration: 5, delay: 0, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute top-[5%] left-[8%]"
-            >
+            <motion.div animate={{ y: [0, -15, 0], x: [0, 5, 0], rotate: [0, 8, 0] }} transition={{ duration: 5, delay: 0, repeat: Infinity, ease: 'easeInOut' }} className="absolute top-[5%] left-[8%]">
               <Gamepad2 size={34} className="text-green-400 drop-shadow-lg" />
             </motion.div>
-            <motion.div
-              animate={{ y: [0, 18, 0], x: [0, -8, 0], rotate: [0, -6, 0] }}
-              transition={{ duration: 6, delay: 0.4, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute top-[35%] right-[5%]"
-            >
+            <motion.div animate={{ y: [0, 18, 0], x: [0, -8, 0], rotate: [0, -6, 0] }} transition={{ duration: 6, delay: 0.4, repeat: Infinity, ease: 'easeInOut' }} className="absolute top-[35%] right-[5%]">
               <MessageCircle size={28} className="text-green-300 drop-shadow-lg" />
             </motion.div>
-            <motion.div
-              animate={{ y: [0, -20, 0], x: [0, 10, 0], rotate: [0, 12, 0] }}
-              transition={{ duration: 4.8, delay: 0.8, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute bottom-[20%] left-[15%]"
-            >
+            <motion.div animate={{ y: [0, -20, 0], x: [0, 10, 0], rotate: [0, 12, 0] }} transition={{ duration: 4.8, delay: 0.8, repeat: Infinity, ease: 'easeInOut' }} className="absolute bottom-[20%] left-[15%]">
               <CreditCard size={30} className="text-green-500 drop-shadow-lg" />
             </motion.div>
-            <motion.div
-              animate={{ y: [0, 12, 0], x: [0, -5, 0], rotate: [0, -4, 0] }}
-              transition={{ duration: 5.5, delay: 0.2, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute top-[15%] left-[45%]"
-            >
+            <motion.div animate={{ y: [0, 12, 0], x: [0, -5, 0], rotate: [0, -4, 0] }} transition={{ duration: 5.5, delay: 0.2, repeat: Infinity, ease: 'easeInOut' }} className="absolute top-[15%] left-[45%]">
               <Wallet size={24} className="text-green-400 drop-shadow-lg" />
             </motion.div>
-            <motion.div
-              animate={{ y: [0, -10, 0], x: [0, 6, 0], rotate: [0, 7, 0] }}
-              transition={{ duration: 6.5, delay: 1.1, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute bottom-[10%] right-[25%]"
-            >
+            <motion.div animate={{ y: [0, -10, 0], x: [0, 6, 0], rotate: [0, 7, 0] }} transition={{ duration: 6.5, delay: 1.1, repeat: Infinity, ease: 'easeInOut' }} className="absolute bottom-[10%] right-[25%]">
               <Palette size={26} className="text-green-300 drop-shadow-lg" />
             </motion.div>
-            <motion.div
-              animate={{ y: [0, 15, 0], x: [0, -8, 0], rotate: [0, -8, 0] }}
-              transition={{ duration: 5.2, delay: 0.6, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute bottom-[35%] left-[70%]"
-            >
+            <motion.div animate={{ y: [0, 15, 0], x: [0, -8, 0], rotate: [0, -8, 0] }} transition={{ duration: 5.2, delay: 0.6, repeat: Infinity, ease: 'easeInOut' }} className="absolute bottom-[35%] left-[70%]">
               <Bot size={32} className="text-green-500 drop-shadow-lg" />
             </motion.div>
           </div>
         </div>
 
-        {/* Categories — 18 top-level, exactly like Oranos */}
         <section>
           <motion.div {...reveal(0)} className="flex items-end justify-between mb-10">
             <div className="max-w-xl">
