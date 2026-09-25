@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import CategoryModal from '@/components/CategoryModal';
 import PageTransition from '@/components/PageTransition';
 import { useI18n } from '@/i18n';
+import { categoryEmoji } from '@/utils/categoryEmoji';
 
 const CATEGORY_ICON: Record<string, string> = {
   'gamepad-2':'🎮','zap':'⚡','shield':'🛡️','globe':'🌐','server':'🖥️',
@@ -99,7 +100,7 @@ export default function AdminCategories() {
                 />
               ) : (
                 <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-ink-100 border border-gray-200 dark:border-ink-200 flex items-center justify-center text-xl flex-shrink-0">
-                  {CATEGORY_ICON[c.icon] ?? c.icon?.charAt(0).toUpperCase() ?? '📦'}
+                  {CATEGORY_ICON[c.icon] ?? categoryEmoji(c.name ?? '')}
                 </div>
               )}
               <div>
