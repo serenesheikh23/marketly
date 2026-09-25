@@ -140,6 +140,7 @@ export default function ProductPage() {
         >
           <ProductImage
             name={localized(product, 'name', 'name_ar', locale)}
+            icon={product.icon}
             category={localized(product.category, 'name', 'name_ar', locale)}
             imageBase64={product.image_base64}
             imageUrl={product.image_url}

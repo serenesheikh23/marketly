@@ -65,7 +65,7 @@ export default function StorePage() {
               >
                 <Link to={`/product/${p.slug}`} className="card-hover group block overflow-hidden">
                   <ProductImage
-                    name={localized(p, 'name', 'name_ar', locale)}
+                    name={localized(p, 'name', 'name_ar', locale)} icon={p.icon}
                     category={store.name}
                     imageBase64={p.image_base64}
                     imageUrl={p.image_url}

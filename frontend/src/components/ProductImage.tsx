@@ -1,9 +1,11 @@
 import type { ReactNode } from 'react';
 import { categoryEmoji } from '@/utils/categoryEmoji';
+import { iconToEmoji } from '@/utils/iconToEmoji';
 
 interface ProductImageProps {
   name: string;
   category?: string;
+  icon?: string;
   categoryImageUrl?: string;
   imageBase64?: string;
   imageUrl?: string;
@@ -34,6 +36,7 @@ function tint(seed: string): string {
 export default function ProductImage({
   name,
   category,
+  icon,
   categoryImageUrl,
   imageBase64,
   imageUrl,
@@ -56,7 +59,21 @@ export default function ProductImage({
     );
   }
 
-  // 2. No product image, but category has one
+  // 2. Admin-set icon (product-level) wins over everything else
+  const adminEmoji = iconToEmoji(icon);
+  if (adminEmoji) {
+    return (
+      <div
+        className={`relative w-full overflow-hidden rounded-lg flex items-center justify-center ${tint(name || 'default')} ${className}`}
+        role="img"
+        aria-label={name}
+      >
+        <span className="text-5xl select-none" aria-hidden="true">{adminEmoji}</span>
+      </div>
+    );
+  }
+
+  // 3. No product image, but category has one
   if (categoryImageUrl) {
     return (
       <div className={`relative w-full overflow-hidden rounded-lg bg-gray-100 dark:bg-ink-100 ${className}`}>
@@ -78,8 +95,7 @@ export default function ProductImage({
     );
   }
 
-  // 3. Neither product nor category has an image — pick the best emoji.
-  // Try the product name first (more specific), then the category name.
+  // 4. Product name → category name → default 🛍️
   const fromName = categoryEmoji(name);
   const fromCategory = categoryEmoji(category);
   const emoji = fromName !== '🛍️' ? fromName : fromCategory;
@@ -91,9 +107,7 @@ export default function ProductImage({
       role="img"
       aria-label={name}
     >
-      <span className="text-5xl select-none" aria-hidden="true">
-        {emoji}
-      </span>
+      <span className="text-5xl select-none" aria-hidden="true">{emoji}</span>
     </div>
   );
 }
