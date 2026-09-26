@@ -190,7 +190,7 @@ export default function Home() {
               <ArrowUpRight size={14} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </Link>
           </motion.div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
             {categories.map((cat, i) => {
               const name = localized(cat, 'name', 'name_ar', locale);
               const emoji = GENERIC_ICONS.includes(cat.icon ?? '')
@@ -202,21 +202,21 @@ export default function Home() {
                     to={`/category/${cat.slug}`}
                     className="card-hover group block overflow-hidden h-full bg-white dark:bg-ink-50 rounded-2xl border border-gray-200 dark:border-ink-200 shadow-sm"
                   >
-                    <div className="relative p-4 min-h-[140px] flex flex-col">
+                    <div className="relative p-4 min-h-[220px] flex flex-col">
                       {cat.image_url ? (
                         <img
                           src={cat.image_url}
                           alt={name}
                           loading="lazy"
-                          className="w-12 h-12 rounded-xl object-cover mb-auto transition-transform duration-700 group-hover:scale-110"
+                          className="w-20 h-20 rounded-xl object-cover mb-auto transition-transform duration-700 group-hover:scale-110"
                         />
                       ) : (
-                        <div className="w-12 h-12 text-2xl rounded-xl bg-gray-100 dark:bg-ink-100 flex items-center justify-center mb-auto">
+                        <div className="w-20 h-20 text-4xl rounded-xl bg-gray-100 dark:bg-ink-100 flex items-center justify-center mb-auto">
                           <span aria-hidden="true">{emoji}</span>
                         </div>
                       )}
                       <div className="mt-4">
-                        <h3 className="font-heading text-sm font-semibold text-gray-900 dark:text-ink-900 group-hover:text-green-500 transition-colors line-clamp-2">
+                        <h3 className="font-heading text-lg font-bold text-gray-900 dark:text-ink-900 group-hover:text-green-500 transition-colors line-clamp-2">
                           {name}
                         </h3>
                       </div>

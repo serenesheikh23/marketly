@@ -154,7 +154,7 @@ export default function AdminCategories() {
         ))}
         {filtered.length === 0 && !loading && (
           <p className="text-center text-gray-500 dark:text-ink-500 py-8">
-            {term ? (t('common.noResults') ?? 'No matches') : t('admin.noCategoriesYet')}
+            {term ? t('common.noResults') : t('admin.noCategoriesYet')}
           </p>
         )}
       </div>
