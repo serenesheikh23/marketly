@@ -65,7 +65,7 @@ export default function ProductPage() {
       const newErrors: Record<string, string> = {};
       automationParams.forEach((label, i) => {
         if (!(paramValues[i] ?? '').trim()) {
-          newErrors[`param-${i}`] = `Please enter ${label}`;
+          newErrors[`param-${i}`] = t('product.errorEnter', { label });
         }
       });
       setErrors(newErrors);
@@ -138,14 +138,16 @@ export default function ProductPage() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
         >
-          <ProductImage
-            name={localized(product, 'name', 'name_ar', locale)}
-            icon={product.icon}
-            category={localized(product.category, 'name', 'name_ar', locale)}
-            imageBase64={product.image_base64}
-            imageUrl={product.image_url}
-            className="w-full h-80 rounded-2xl"
-          />
+<ProductImage
+             name={localized(product, 'name', 'name_ar', locale)}
+             icon={product.icon}
+             category={localized(product.category, 'name', 'name_ar', locale)}
+             imageBase64={product.image_base64}
+             imageUrl={product.image_url}
+             className="w-full h-80 rounded-2xl"
+             productId={product.id}
+             showFavorite
+           />
         </motion.div>
 
         <motion.div
@@ -216,7 +218,7 @@ export default function ProductPage() {
             {isAutomation && (
               <div className="space-y-3">
                 <p className="text-micro text-gray-600 dark:text-ink-500 uppercase tracking-wide">
-                  Service Details
+                  {t('product.serviceDetails')}
                 </p>
                 {automationParams.map((label, i) => (
                   <div key={i}>
@@ -272,13 +274,17 @@ export default function ProductPage() {
                   {formatPrice(Number(product.price) * quantity)}
                 </strong>
               </span>
-              <Button
-                variant="accent"
-                size="lg"
-                onClick={handleAddToCart}
-              >
-                {t('product.addToCart')}
-              </Button>
+              {product.stock === 0 ? (
+                <span className="badge-rejected text-base px-4 py-2">{t('common.unavailable')}</span>
+              ) : (
+                <Button
+                  variant="accent"
+                  size="lg"
+                  onClick={handleAddToCart}
+                >
+                  {t('product.addToCart')}
+                </Button>
+              )}
             </div>
           </div>
         </motion.div>

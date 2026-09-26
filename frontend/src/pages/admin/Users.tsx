@@ -69,7 +69,7 @@ export default function AdminUsers() {
               <tr>
                 <th>{t('admin.name')}</th>
                 <th>{t('admin.email')}</th>
-                <th>VIP</th>
+                <th>{t('admin.vip')}</th>
                 <th>{t('account.balance')}</th>
                 <th>{t('admin.status')}</th>
                 <th>{t('admin.actions')}</th>

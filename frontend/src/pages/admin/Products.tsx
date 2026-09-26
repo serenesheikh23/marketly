@@ -12,6 +12,7 @@ export default function AdminProducts() {
   const { locale, t } = useI18n();
   const [products, setProducts] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
+  const [stats, setStats] = useState<{ oranos: number; manual: number; total: number } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
@@ -30,12 +31,16 @@ export default function AdminProducts() {
     if (q) params.q = q;
     if (catFilter) params.category = catFilter;
 
-    adminProductApi.list(params)
-      .then((r) => {
-        const d = r.data;
+    Promise.all([
+      adminProductApi.list(params),
+      adminProductApi.stats()
+    ])
+      .then(([listRes, statsRes]) => {
+        const d = listRes.data;
         setProducts(d.data ?? []);
         setLastPage(d.last_page ?? 1);
         setTotal(d.total ?? 0);
+        setStats(statsRes.data);
       })
       .catch((err: any) => {
         console.error(err);
@@ -75,7 +80,11 @@ export default function AdminProducts() {
         <div>
           <p className="eyebrow mb-1">{t('admin.system')}</p>
           <h1 className="text-h1 text-gray-900 dark:text-ink-900">{t('admin.products')}</h1>
-          <p className="text-small text-gray-500 dark:text-ink-500 mt-1">{total} total</p>
+          {stats && (
+            <p className="text-small text-gray-500 dark:text-ink-500 mt-1">
+              {t('admin.statsOranos')}: {stats.oranos} · {t('admin.statsManual')}: {stats.manual} · {t('admin.statsTotal')}: {stats.total}
+            </p>
+          )}
         </div>
         <button onClick={openNew} className="btn-accent">
           + {t('admin.newProduct')}

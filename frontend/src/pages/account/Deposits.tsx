@@ -167,7 +167,7 @@ export default function Deposits() {
                             to={`/dashboard/deposit/${deposit.id}`}
                             className="btn-ghost btn-sm"
                           >
-                            {t('common.view') || 'View'}
+                            {t('common.view')}
                           </Link>
                         </td>
                       </tr>
@@ -184,17 +184,17 @@ export default function Deposits() {
                   disabled={page <= 1}
                   className="btn-ghost btn-sm"
                 >
-                  ← {t('common.prev') || 'Previous'}
+                  ← {t('common.prev')}
                 </button>
                 <span className="text-sm text-gray-600 dark:text-ink-500">
-                  {t('common.page') || 'Page'} {page} {t('common.of') || 'of'} {lastPage}
+                  {t('common.page')} {page} {t('common.of')} {lastPage}
                 </span>
                 <button
                   onClick={() => page < lastPage && fetchDeposits(page + 1)}
                   disabled={page >= lastPage}
                   className="btn-ghost btn-sm"
                 >
-                  {t('common.next') || 'Next'} →
+                  {t('common.next')} →
                 </button>
               </div>
             )}

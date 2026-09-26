@@ -57,6 +57,7 @@ export default function Layout() {
             {isAuthenticated ? (
               <>
                 <Link to="/dashboard/favorites" className="nav-link text-xs whitespace-nowrap">{t('nav.favorites')}</Link>
+                <Link to="/my-stores" className="nav-link text-xs whitespace-nowrap">{t('nav.myStores')}</Link>
                 
                 {/* Separator before account links */}
                 <div className="mx-1.5 w-px h-4 bg-gray-300 dark:bg-ink-200" />
@@ -93,7 +94,7 @@ export default function Layout() {
                          hover:text-gray-900 dark:hover:text-ink-900
                          hover:bg-gray-100 dark:hover:bg-ink-100
                          transition-colors"
-              aria-label={t('common.search') ?? 'Search'}
+              aria-label={t('common.search')}
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <circle cx="11" cy="11" r="8" />
@@ -133,7 +134,7 @@ export default function Layout() {
               type="button"
               onClick={toggleMenu}
               className="lg:hidden p-2 rounded-lg text-gray-700 dark:text-ink-700 hover:bg-gray-100 dark:hover:bg-ink-100 transition-colors"
-              aria-label={mobileOpen ? 'Close menu' : 'Toggle menu'}
+              aria-label={mobileOpen ? t('common.closeMenu') : t('common.toggleMenu')}
               aria-expanded={mobileOpen}
             >
               {mobileOpen ? (
@@ -164,6 +165,7 @@ export default function Layout() {
               {isAuthenticated ? (
                 <>
                   <Link to="/dashboard/favorites" className="nav-link" onClick={closeMenu}>{t('nav.favorites')}</Link>
+                  <Link to="/my-stores" className="nav-link" onClick={closeMenu}>{t('nav.myStores')}</Link>
                   
                   <div className="my-2 border-t border-gray-200 dark:border-ink-200" />
                   
@@ -176,7 +178,7 @@ export default function Layout() {
                   <div className="my-2 border-t border-gray-200 dark:border-ink-200" />
                   
                   <button onClick={() => { closeMenu(); setCartOpen(true); }} className="nav-link w-full text-left">{t('nav.cart')}</button>
-                  <div className="pt-2 pb-1 text-xs text-gray-500 dark:text-ink-500 font-semibold uppercase tracking-wider">Balance: {formatPrice(user?.balance)}</div>
+                  <div className="pt-2 pb-1 text-xs text-gray-500 dark:text-ink-500 font-semibold uppercase tracking-wider">{t('account.walletBalance')}: {formatPrice(user?.balance)}</div>
                   <button onClick={handleLogout} className="nav-link text-status-rejected/80 hover:text-status-rejected hover:bg-status-rejected/10 w-full text-left">
                     {t('nav.signOut')}
                   </button>
