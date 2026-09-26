@@ -23,6 +23,31 @@ const reveal = (i: number) => ({
   transition: { delay: i * 0.04, duration: 0.4, ease: [0.16, 1, 0.3, 1] as const },
 });
 
+function buildBreadcrumbs(category: any, allCategories: any[]): Array<{label: string, link?: string}> {
+  const chain = [];
+  let current = category;
+  
+  // Walk up the parent chain
+  while (current) {
+    chain.unshift({
+      label: current.name ?? current.name_ar ?? 'Unknown',
+      link: current.parent_id ? `/category/${current.slug}` : undefined
+    });
+    if (current.parent_id) {
+      current = allCategories.find((c: any) => c.id === current.parent_id);
+    } else {
+      current = null;
+    }
+  }
+  
+  // Add home and categories as root
+  return [
+    { label: 'الرئيسية', link: '/' },
+    { label: 'الفئات', link: '/categories' },
+    ...chain
+  ];
+}
+
 export default function CategoryPage() {
   const { slug } = useParams<{ slug: string }>();
   const { t, locale } = useI18n();
@@ -75,14 +100,11 @@ export default function CategoryPage() {
 
   const catName = localized(category, 'name', 'name_ar', locale);
   const showChildren = children.length > 0;
+  const breadcrumbItems = buildBreadcrumbs(category, all);
 
   return (
     <PageTransition className="space-y-10">
-      <Breadcrumbs items={[
-        { label: t('nav.home') ?? 'Home', link: '/' },
-        { label: t('home.categories') ?? 'Categories', link: '/categories' },
-        { label: catName },
-      ]} />
+      <Breadcrumbs items={breadcrumbItems} />
 
       {/* Subcategories section */}
       {showChildren && (

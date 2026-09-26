@@ -4,7 +4,6 @@ import { useAppSelector, useAppDispatch, logout } from '@/store';
 import { authApi } from '@/api/client';
 import Logo from './Logo';
 import PageTransition from './PageTransition';
-import LanguageSwitcher from './LanguageSwitcher';
 import ThemeToggle from './ThemeToggle';
 import Footer from './Footer';
 import CartDrawer from './CartDrawer';
@@ -24,7 +23,6 @@ export default function Layout() {
   const [cartOpen, setCartOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 
-  // Listen for global search open event
   useEffect(() => {
     const handler = () => setSearchOpen(true);
     window.addEventListener('open-search-palette', handler);
@@ -44,42 +42,42 @@ export default function Layout() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-ink flex flex-col overflow-x-hidden">
       <header className="sticky top-0 z-50 border-b border-gray-200 dark:border-ink-200 bg-white/90 dark:bg-ink/90 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-2 flex-wrap">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
           <Link to="/" className="flex items-center gap-2 flex-shrink-0">
             <Logo size="sm" showText />
           </Link>
 
-          {/* Desktop nav (auth-aware links) */}
-          <nav className="hidden lg:flex items-center gap-2 flex-1 flex-wrap">
+          {/* Desktop nav — use gap-1.5, text-xs, no flex-wrap to prevent overflow at 1280px+ */}
+          <nav className="hidden lg:flex items-center gap-1.5 flex-1 min-w-0 overflow-hidden">
             {isAuthenticated ? (
               <>
-                <Link to="/dashboard" className="nav-link text-sm">{t('nav.dashboard')}</Link>
-                <Link to="/my-stores" className="nav-link text-sm">My Stores</Link>
-                <Link to="/create-store" className="nav-link text-sm">Create Store</Link>
-                <Link to="/wallet" className="nav-link text-sm">Wallet</Link>
-                <Link to="/favorites" className="nav-link text-sm">Favorites</Link>
+                <Link to="/dashboard" className="nav-link text-xs whitespace-nowrap">{t('nav.dashboard')}</Link>
+                <Link to="/my-stores" className="nav-link text-xs whitespace-nowrap">{t('nav.myStores')}</Link>
+                <Link to="/create-store" className="nav-link text-xs whitespace-nowrap">{t('nav.createStore')}</Link>
+                <Link to="/wallet" className="nav-link text-xs whitespace-nowrap">{t('nav.wallet')}</Link>
+                <Link to="/dashboard/favorites" className="nav-link text-xs whitespace-nowrap">{t('nav.favorites')}</Link>
                 {(roles.includes('admin') || roles.includes('moderator')) && (
-                  <Link to="/admin" className="nav-link text-sm text-green-400">{t('nav.admin')}</Link>
+                  <Link to="/admin" className="nav-link text-xs whitespace-nowrap text-green-400">{t('nav.admin')}</Link>
                 )}
-                <div className="mx-2 w-px h-5 bg-gray-300 dark:bg-ink-200" />
-                <span className="text-sm text-gray-600 dark:text-ink-600 font-medium tabular-nums">
+                <div className="mx-1.5 w-px h-4 bg-gray-300 dark:bg-ink-200" />
+                <span className="text-xs text-gray-600 dark:text-ink-600 font-medium tabular-nums whitespace-nowrap flex-shrink-0">
                   {formatPrice(user?.balance)}
                 </span>
-                <button onClick={handleLogout} className="nav-link text-sm text-status-rejected/80 hover:text-status-rejected hover:bg-status-rejected/10">
+                <button onClick={handleLogout} className="nav-link text-xs whitespace-nowrap text-status-rejected/80 hover:text-status-rejected hover:bg-status-rejected/10 flex-shrink-0">
                   {t('nav.signOut')}
                 </button>
               </>
             ) : (
               <>
-                <Link to="/login" className="nav-link text-sm">{t('nav.signIn')}</Link>
-                <Link to="/register" className="btn-accent btn-sm">{t('nav.getStarted')}</Link>
+                <Link to="/login" className="nav-link text-xs whitespace-nowrap">{t('nav.signIn')}</Link>
+                <Link to="/register" className="btn-accent btn-sm whitespace-nowrap">{t('nav.getStarted')}</Link>
               </>
             )}
           </nav>
 
-          {/* Right-side icon group — visible on ALL screens */}
-          <div className="ms-auto flex items-center gap-1 sm:gap-2">
-            {/* Search — icon-only on mobile, with "Search" label on sm+ */}
+          {/* Right-side icon group — search, cart, theme toggle */}
+          <div className="flex items-center gap-1.5 flex-shrink-0">
+            {/* Search — always visible */}
             <button
               type="button"
               onClick={() => setSearchOpen(true)}
@@ -95,7 +93,7 @@ export default function Layout() {
               </svg>
             </button>
 
-            {/* Cart — always visible for authenticated users */}
+            {/* Cart — authenticated only */}
             {isAuthenticated && (
               <button
                 type="button"
@@ -119,10 +117,10 @@ export default function Layout() {
               </button>
             )}
 
-            <LanguageSwitcher />
+            {/* Theme toggle — keep, remove LanguageSwitcher */}
             <ThemeToggle />
 
-            {/* Hamburger — only mobile/tablet */}
+            {/* Hamburger — mobile only */}
             <button
               type="button"
               onClick={toggleMenu}
@@ -144,24 +142,19 @@ export default function Layout() {
         </div>
       </header>
 
-      {/* Mobile menu overlay (mimics sidebar) */}
+      {/* Mobile menu overlay */}
       {mobileOpen && (
         <>
-          <div
-            className="fixed inset-0 bg-black/50 z-40 lg:hidden"
-            onClick={closeMenu}
-          />
-          <div
-            className="lg:hidden z-50 bg-white dark:bg-ink-50 border-b border-gray-200 dark:border-ink-200 shadow-lg"
-          >
+          <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={closeMenu} />
+          <div className="lg:hidden z-50 bg-white dark:bg-ink-50 border-b border-gray-200 dark:border-ink-200 shadow-lg">
             <nav className="px-4 py-3 space-y-1">
               {isAuthenticated ? (
                 <>
                   <Link to="/dashboard" className="nav-link" onClick={closeMenu}>{t('nav.dashboard')}</Link>
-                  <Link to="/my-stores" className="nav-link" onClick={closeMenu}>My Stores</Link>
-                  <Link to="/create-store" className="nav-link" onClick={closeMenu}>Create Store</Link>
-                  <Link to="/wallet" className="nav-link" onClick={closeMenu}>Wallet</Link>
-                  <Link to="/favorites" className="nav-link" onClick={closeMenu}>Favorites</Link>
+                  <Link to="/my-stores" className="nav-link" onClick={closeMenu}>{t('nav.myStores')}</Link>
+                  <Link to="/create-store" className="nav-link" onClick={closeMenu}>{t('nav.createStore')}</Link>
+                  <Link to="/wallet" className="nav-link" onClick={closeMenu}>{t('nav.wallet')}</Link>
+                  <Link to="/dashboard/favorites" className="nav-link" onClick={closeMenu}>{t('nav.favorites')}</Link>
                   {(roles.includes('admin') || roles.includes('moderator')) && (
                     <Link to="/admin" className="nav-link text-green-400" onClick={closeMenu}>{t('nav.admin')}</Link>
                   )}
