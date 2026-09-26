@@ -113,6 +113,7 @@ const ar: import('./en').Translations = {
     errorQuantity: 'يجب أن تكون الكمية 1 على الأقل',
     errorNotes: 'الملاحظات مطلوبة',
     errorEnter: 'الرجاء إدخال {label}',
+    idLabel: 'معرّف الحساب',
   },
 
   // Account dashboard
@@ -415,6 +416,12 @@ const ar: import('./en').Translations = {
     status: 'الحالة',
     date: 'التاريخ',
     total: 'الإجمالي',
+    statuses: {
+      pending: 'قيد الانتظار',
+      processing: 'قيد المعالجة',
+      completed: 'مكتمل',
+      rejected: 'مرفوض',
+    },
   },
   manualServices: {
     title: 'الخدمات اليدوية',

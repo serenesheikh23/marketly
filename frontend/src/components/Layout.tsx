@@ -69,7 +69,7 @@ export default function Layout() {
                 )}
                 <div className="mx-1.5 w-px h-4 bg-gray-300 dark:bg-ink-200" />
                 <span className="text-xs text-gray-600 dark:text-ink-600 font-medium tabular-nums whitespace-nowrap flex-shrink-0">
-                  {formatPrice(user?.balance)}
+                  {t('account.walletBalance')}: {formatPrice(user?.balance)}
                 </span>
                 <button onClick={handleLogout} className="nav-link text-xs whitespace-nowrap text-status-rejected/80 hover:text-status-rejected hover:bg-status-rejected/10 flex-shrink-0">
                   {t('nav.signOut')}

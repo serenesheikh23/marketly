@@ -70,7 +70,7 @@ export default function Orders() {
                   </p>
                 </div>
                 <div className="text-right">
-                  <span className={`badge-${order.status}`}>{order.status}</span>
+                  <span className={`badge-${order.status}`}>{t(`orders.statuses.${order.status.toLowerCase()}`)}</span>
                   <p className="text-h3 text-green-400 mt-1 tabular-nums">
                     {formatPrice(order.total)}
                   </p>

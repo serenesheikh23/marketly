@@ -38,7 +38,11 @@ export default function Cart() {
     if (method !== 'usdt') { setUsdtAddress(''); setUsdtTxHash(''); }
   };
 
-  const total = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+  const total = items.reduce((sum, i) => {
+      const price = typeof i.price === 'number' ? i.price : parseFloat(String(i.price ?? '0'));
+      const qty = typeof i.quantity === 'number' ? i.quantity : parseInt(String(i.quantity ?? '0'), 10);
+      return sum + (isNaN(price) ? 0 : price) * (isNaN(qty) ? 0 : qty);
+    }, 0);
 
   const handleConfirm = () => {
     if (items.length === 0) return;

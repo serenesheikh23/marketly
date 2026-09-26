@@ -55,6 +55,9 @@ export default function ProductPage() {
   const isAutomation = product.is_automation === true;
   const automationParams: string[] = Array.isArray(product.params) ? product.params : [];
 
+  const getDisplayLabel = (label: string) =>
+    ['الايدي', 'id', 'الايدي'].includes(label?.toLowerCase()) ? t('product.idLabel') : label;
+
   const handleAddToCart = () => {
     if (!quantity || quantity < 1) {
       setErrors({ quantity: t('product.errorQuantity') });
@@ -65,7 +68,7 @@ export default function ProductPage() {
       const newErrors: Record<string, string> = {};
       automationParams.forEach((label, i) => {
         if (!(paramValues[i] ?? '').trim()) {
-          newErrors[`param-${i}`] = t('product.errorEnter', { label });
+          newErrors[`param-${i}`] = t('product.errorEnter', { label: getDisplayLabel(label) });
         }
       });
       setErrors(newErrors);
@@ -127,6 +130,7 @@ export default function ProductPage() {
       <Breadcrumbs
         items={[
           { label: t('nav.home'), link: '/' },
+          { label: t('nav.categories'), link: '/categories' },
           { label: localized(product.category, 'name', 'name_ar', locale), link: `/category/${product.category?.slug}` },
           { label: localized(product, 'name', 'name_ar', locale) },
         ]}
@@ -168,8 +172,6 @@ export default function ProductPage() {
             <h1 className="text-h1 text-gray-900 dark:text-ink-900 mb-2">{localized(product, 'name', 'name_ar', locale)}</h1>
             <div className="text-small text-gray-600 dark:text-ink-500">
               <span>{t('product.category')}: <Link to={`/category/${product.category?.slug}`} className="text-green-400 hover:underline">{localized(product.category, 'name', 'name_ar', locale)}</Link></span>
-              <span className="mx-2">·</span>
-              <span>{t('product.inStock')}: <strong className="text-gray-700 dark:text-ink-700">{product.stock}</strong></span>
             </div>
           </div>
 
@@ -220,25 +222,28 @@ export default function ProductPage() {
                 <p className="text-micro text-gray-600 dark:text-ink-500 uppercase tracking-wide">
                   {t('product.serviceDetails')}
                 </p>
-                {automationParams.map((label, i) => (
-                  <div key={i}>
-                    <label className="label">{label}</label>
-                    <input
-                      className={`input ${errors[`param-${i}`] ? 'border-status-rejected' : ''}`}
-                      placeholder={label}
-                      value={paramValues[i] ?? ''}
-                      onChange={(e) => {
-                        const next = [...paramValues];
-                        next[i] = e.target.value;
-                        setParamValues(next);
-                        setErrors((prev) => ({ ...prev, [`param-${i}`]: '' }));
-                      }}
-                    />
-                    {errors[`param-${i}`] && (
-                      <p className="text-micro text-status-rejected mt-1">{errors[`param-${i}`]}</p>
-                    )}
-                  </div>
-                ))}
+                {automationParams.map((label, i) => {
+                  const displayLabel = ['الايدي', 'id', 'الايدي'].includes(label?.toLowerCase()) ? t('product.idLabel') : label;
+                  return (
+                    <div key={i}>
+                      <label className="label">{displayLabel}</label>
+                      <input
+                        className={`input ${errors[`param-${i}`] ? 'border-status-rejected' : ''}`}
+                        placeholder={displayLabel}
+                        value={paramValues[i] ?? ''}
+                        onChange={(e) => {
+                          const next = [...paramValues];
+                          next[i] = e.target.value;
+                          setParamValues(next);
+                          setErrors((prev) => ({ ...prev, [`param-${i}`]: '' }));
+                        }}
+                      />
+                      {errors[`param-${i}`] && (
+                        <p className="text-micro text-status-rejected mt-1">{errors[`param-${i}`]}</p>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             )}
 
@@ -247,23 +252,26 @@ export default function ProductPage() {
                 <p className="text-micro text-gray-600 dark:text-ink-500 uppercase tracking-wide">
                   {t('product.serviceDetails')}
                 </p>
-                {manualFields.map((label) => (
-                  <div key={label}>
-                    <label className="label">{label}</label>
-                    <input
-                      className={`input ${errors[label] ? 'border-status-rejected' : ''}`}
-                      placeholder={label}
-                      value={payload[label] ?? ''}
-                      onChange={(e) => {
-                        setPayload((p) => ({ ...p, [label]: e.target.value }));
-                        setErrors((prev) => ({ ...prev, [label]: '' }));
-                      }}
-                    />
-                    {errors[label] && (
-                      <p className="text-micro text-status-rejected mt-1">{errors[label]}</p>
-                    )}
-                  </div>
-                ))}
+                {manualFields.map((label) => {
+                  const displayLabel = ['الايدي', 'id', 'الايدي'].includes(label?.toLowerCase()) ? t('product.idLabel') : label;
+                  return (
+                    <div key={label}>
+                      <label className="label">{displayLabel}</label>
+                      <input
+                        className={`input ${errors[label] ? 'border-status-rejected' : ''}`}
+                        placeholder={displayLabel}
+                        value={payload[label] ?? ''}
+                        onChange={(e) => {
+                          setPayload((p) => ({ ...p, [label]: e.target.value }));
+                          setErrors((prev) => ({ ...prev, [label]: '' }));
+                        }}
+                      />
+                      {errors[label] && (
+                        <p className="text-micro text-status-rejected mt-1">{errors[label]}</p>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             )}
 
