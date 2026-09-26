@@ -371,6 +371,9 @@ const en = {
     another: 'Make Another Deposit',
     walletAddress: 'Wallet Address',
     memoTag: 'Memo / Tag',
+    qrTitle: 'Payment QR Code',
+    qrInstructions: 'Scan the QR code with Binance Pay to complete the payment.',
+    qrAlt: 'Payment QR code',
   },
   favorites: {
     title: 'Favorites',
@@ -438,6 +441,20 @@ const en = {
     success: 'Manual service order submitted!',
     failed: 'Failed to submit order.',
     noProducts: 'No products in this category.',
+  },
+  transactions: {
+    deposit: 'Deposit',
+    purchase: 'Purchase',
+    withdrawal: 'Withdrawal',
+    refund: 'Refund',
+    vipUpgrade: 'VIP Upgrade',
+    status: {
+      pending: 'Pending',
+      approved: 'Approved',
+      rejected: 'Rejected',
+      completed: 'Completed',
+      processing: 'Processing',
+    },
   },
 
   // Toasts / Errors (fallback)

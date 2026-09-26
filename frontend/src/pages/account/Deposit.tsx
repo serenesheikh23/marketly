@@ -110,12 +110,14 @@ export default function Deposit() {
 
             <div className="bg-gray-100 dark:bg-ink-100 rounded-xl p-6 space-y-4">
               {deposit.deposit.qr_code && (
-                <div className="text-center">
+                <div className="text-center space-y-3">
+                  <p className="font-semibold text-gray-900 dark:text-ink-900">{t('deposit.qrTitle')}</p>
                   <img
                     src={deposit.deposit.qr_code}
-                    alt="Payment QR code"
+                    alt={t('deposit.qrAlt')}
                     className="w-48 h-48 mx-auto rounded-xl border border-ink-200"
                   />
+                  <p className="text-small text-gray-600 dark:text-ink-500">{t('deposit.qrInstructions')}</p>
                 </div>
               )}
               {deposit.deposit.wallet_address && (
