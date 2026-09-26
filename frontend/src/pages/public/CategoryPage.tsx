@@ -167,20 +167,27 @@ export default function CategoryPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {products.map((p, i) => (
               <motion.div key={p.id} {...reveal(i)} className="h-full">
-                <Link
+<Link
                   to={`/product/${p.slug}`}
                   className="card-hover group block overflow-hidden h-full bg-white dark:bg-ink-50 rounded-2xl border border-gray-200 dark:border-ink-200 shadow-sm"
                 >
-                  <div className="relative h-44 overflow-hidden">
+                  <div className="aspect-square overflow-hidden relative">
                     <ProductImage
-                      name={localized(p, 'name', 'name_ar', locale)}
-                      icon={p.icon}
-                      category={localized(p.category, 'name', 'name_ar', locale)}
-                      categoryImageUrl={p.category?.image_url}
-                      imageBase64={p.image_base64}
-                      imageUrl={p.image_url}
-                      className="w-full h-full transition-transform duration-700 group-hover:scale-110"
-                    />
+                       name={localized(p, 'name', 'name_ar', locale)}
+                       icon={p.icon}
+                       category={localized(p.category, 'name', 'name_ar', locale)}
+                       categoryImageUrl={p.category?.image_url}
+                       imageBase64={p.image_base64}
+                       imageUrl={p.image_url}
+                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                       productId={p.id}
+                       showFavorite
+                     />
+                    {p.stock === 0 && (
+                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-10">
+                        <span className="badge-rejected text-base px-4 py-2">{t('common.unavailable')}</span>
+                      </div>
+                    )}
                   </div>
                   <div className="p-5">
                     <h3 className="font-heading text-sm font-semibold text-gray-900 dark:text-ink-900 group-hover:text-green-500 transition-colors line-clamp-2 mb-2">

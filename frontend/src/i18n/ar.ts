@@ -18,6 +18,9 @@ const ar: import('./en').Translations = {
     page: 'صفحة',
     of: 'من',
     view: 'عرض',
+    closeMenu: 'إغلاق القائمة',
+    toggleMenu: 'تبديل القائمة',
+    unavailable: 'غير متوفر',
   },
 
   // Header / Nav
@@ -109,6 +112,7 @@ const ar: import('./en').Translations = {
     errorLink: 'الرجاء إدخال الرابط / اسم المستخدم',
     errorQuantity: 'يجب أن تكون الكمية 1 على الأقل',
     errorNotes: 'الملاحظات مطلوبة',
+    errorEnter: 'الرجاء إدخال {label}',
   },
 
   // Account dashboard
@@ -134,6 +138,9 @@ const ar: import('./en').Translations = {
     amount: 'المبلغ',
     status: 'الحالة',
     date: 'التاريخ',
+    vipLevel: 'مستوى VIP',
+    spendingTrend: 'اتجاه الإنفاق',
+    last7Days: 'آخر 7 أيام',
   },
 
   // Auth
@@ -189,6 +196,10 @@ const ar: import('./en').Translations = {
     pending: 'معلق',
     processing: 'قيد المعالجة',
     completed: 'مكتمل',
+    vip: 'VIP',
+    statsOranos: 'منتجات أورانوس',
+    statsManual: 'منتجات يدوية',
+    statsTotal: 'المجموع',
     noOrdersYet: 'لا توجد طلبات بعد.',
     noDepositsYet: 'لا توجد إيداعات بعد.',
     noWithdrawalsYet: 'لا توجد سحوبات بعد.',
@@ -320,6 +331,7 @@ const ar: import('./en').Translations = {
     refundPolicy: 'سياسة الاسترداد',
     noSocialLinks: 'لا توجد روابط تواصل اجتماعي بعد.',
     poweredBy: 'مدعوم من Marketly',
+    telegram: 'تيليجرام',
   },
 
   // Legal pages
@@ -381,6 +393,11 @@ const ar: import('./en').Translations = {
     pending: 'معلق',
     newDeposit: 'إيداع جديد',
     receipt: 'الإيصال',
+  },
+  store: {
+    noStores: 'لم تقم بإنشاء أي متاجر بعد.',
+    createFirst: 'إنشاء أول متجر',
+    viewStore: 'عرض المتجر',
   },
   vip: {
     title: 'حالة VIP',

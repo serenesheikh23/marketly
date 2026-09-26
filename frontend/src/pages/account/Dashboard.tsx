@@ -111,7 +111,7 @@ export default function Dashboard() {
             color: 'accent',
           },
           {
-            label: 'VIP Level',
+            label: t('account.vipLevel'),
             value: vip?.label ?? '—',
             sub: vip?.withdrawal_limit > 0 ? `${t('admin.withdrawals')}: $${vip.withdrawal_limit}` : null,
             color: 'vip',
@@ -154,14 +154,14 @@ export default function Dashboard() {
           <motion.div {...stagger(3)} className="bg-white dark:bg-ink-800 rounded-xl border border-gray-200 dark:border-ink-700 shadow-sm p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-h3 text-gray-900 dark:text-ink-900">
-                {isRtl ? 'اتجاه الإنفاق' : 'Spending Trend (7 days)'}
+                {t('account.spendingTrend')}
               </h2>
             </div>
             <div dir={isRtl ? 'rtl' : 'ltr'}>
               <TrendChart data={spendPerDay} labels={labels} showAxis className="text-gray-500 dark:text-ink-500" />
             </div>
             <p className="text-micro text-gray-400 dark:text-ink-400 mt-2 text-center">
-              {isRtl ? 'آخر 7 أيام' : 'Last 7 days'}
+              {t('account.last7Days')}
             </p>
           </motion.div>
         );

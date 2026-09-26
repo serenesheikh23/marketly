@@ -105,6 +105,7 @@ Route::middleware(['auth:sanctum', 'role:admin|moderator'])->prefix('admin')->gr
     Route::delete('/users/{user}', [UserController::class, 'destroy']);
 
     Route::get('/products', [AdminProductController::class, 'index']);
+    Route::get('/products/stats', [AdminProductController::class, 'stats']);
     Route::post('/products', [AdminProductController::class, 'store']);
     Route::patch('/products/{product}', [AdminProductController::class, 'update']);
     Route::delete('/products/{product}', [AdminProductController::class, 'destroy']);

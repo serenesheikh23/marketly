@@ -42,6 +42,15 @@ class AdminProductController extends Controller
         }
     }
 
+    public function stats(): JsonResponse
+    {
+        return response()->json([
+            'oranos' => Product::whereNotNull('oranos_product_id')->count(),
+            'manual' => Product::whereNull('oranos_product_id')->count(),
+            'total'  => Product::count(),
+        ]);
+    }
+
     public function store(StoreProductRequest $request): JsonResponse
     {
         try {

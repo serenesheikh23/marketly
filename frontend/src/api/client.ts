@@ -128,6 +128,7 @@ export const adminUserApi = {
 // Admin — Products
 export const adminProductApi = {
   list: (params?: Record<string, string>) => api.get('/admin/products', { params }),
+  stats: () => api.get('/admin/products/stats'),
   create: (data: Record<string, unknown>) => api.post('/admin/products', data),
   update: (id: number, data: Record<string, unknown>) => api.patch(`/admin/products/${id}`, data),
   delete: (id: number) => api.delete(`/admin/products/${id}`),

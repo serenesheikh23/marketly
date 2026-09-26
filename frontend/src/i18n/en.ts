@@ -18,6 +18,9 @@ const en = {
     page: 'Page',
     of: 'of',
     view: 'View',
+    closeMenu: 'Close menu',
+    toggleMenu: 'Toggle menu',
+    unavailable: 'Unavailable',
   },
 
   // Header / Nav
@@ -109,6 +112,7 @@ const en = {
     errorLink: 'Please enter your Link / Username',
     errorQuantity: 'Quantity must be at least 1',
     errorNotes: 'Notes is required',
+    errorEnter: 'Please enter {label}',
   },
 
   // Account dashboard
@@ -134,6 +138,9 @@ const en = {
     amount: 'Amount',
     status: 'Status',
     date: 'Date',
+    vipLevel: 'VIP Level',
+    spendingTrend: 'Spending Trend (7 days)',
+    last7Days: 'Last 7 days',
   },
 
   // Auth
@@ -189,6 +196,10 @@ const en = {
     pending: 'Pending',
     processing: 'Processing',
     completed: 'Completed',
+    vip: 'VIP',
+    statsOranos: 'Oranos Products',
+    statsManual: 'Manual Products',
+    statsTotal: 'Total',
     noOrdersYet: 'No orders yet.',
     noDepositsYet: 'No deposits yet.',
     noWithdrawalsYet: 'No withdrawals yet.',
@@ -320,6 +331,7 @@ const en = {
     refundPolicy: 'Refund Policy',
     noSocialLinks: 'No social links yet.',
     poweredBy: 'Powered by Marketly',
+    telegram: 'Telegram',
   },
 
   // Legal pages
@@ -381,6 +393,11 @@ const en = {
     pending: 'Pending',
     newDeposit: 'New Deposit',
     receipt: 'Receipt',
+  },
+  store: {
+    noStores: "You haven't created any stores yet.",
+    createFirst: 'Create Your First Store',
+    viewStore: 'View Store',
   },  vip: {
     title: 'VIP Status',
     upgrade: 'Upgrade',
