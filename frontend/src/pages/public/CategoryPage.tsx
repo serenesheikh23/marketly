@@ -8,7 +8,6 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import { useI18n } from '@/i18n';
 import { localized } from '@/utils/localize';
 import { categoryEmoji } from '@/utils/categoryEmoji';
-import { getChildren } from '@/utils/categoryTree';
 import { GENERIC_ICONS } from '@/utils/oranosCategories';
 
 const CATEGORY_ICON: Record<string, string> = {
@@ -61,18 +60,22 @@ export default function CategoryPage() {
     if (!slug) return;
     setLoading(true);
 
-    categoryApi.list()
-      .then((res) => {
-        const list = res.data.categories ?? [];
+    Promise.all([
+      categoryApi.list(),
+      categoryApi.show(slug)
+    ])
+      .then(([listRes, showRes]) => {
+        const list = listRes.data.categories ?? [];
         setAll(list);
-        const found = list.find((c: any) => c.slug === slug);
-        setCategory(found ?? null);
-        if (found) {
-          const kids = getChildren(list, found);
-          setChildren(kids);
-          return productApi.list({ category: String(found.id), per_page: '60' });
+        
+        const cat = showRes.data.category;
+        if (!cat) {
+          setCategory(null);
+          return null;
         }
-        return null;
+        setCategory(cat);
+        setChildren(cat.children ?? []);
+        return productApi.list({ category: String(cat.id), per_page: '60' });
       })
       .then((prodRes) => {
         if (prodRes?.data?.data) setProducts(prodRes.data.data);
