@@ -59,7 +59,7 @@ export default function AdminManualOrders() {
                   {formatDateTime(order.created_at)}
                 </p>
               </div>
-              <span className={`badge-${order.status}`}>{order.status}</span>
+              <span className={`badge-${order.status}`}>{t(`orders.statuses.${order.status.toLowerCase()}`)}</span>
             </div>
 
             <div className="space-y-2">

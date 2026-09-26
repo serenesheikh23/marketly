@@ -113,6 +113,7 @@ const en = {
     errorQuantity: 'Quantity must be at least 1',
     errorNotes: 'Notes is required',
     errorEnter: 'Please enter {label}',
+    idLabel: 'Account ID',
   },
 
   // Account dashboard
@@ -414,6 +415,12 @@ const en = {
     status: 'Status',
     date: 'Date',
     total: 'Total',
+    statuses: {
+      pending: 'Pending',
+      processing: 'Processing',
+      completed: 'Completed',
+      rejected: 'Rejected',
+    },
   },
   manualServices: {
     title: 'Manual Services',

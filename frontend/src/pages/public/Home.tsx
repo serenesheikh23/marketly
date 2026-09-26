@@ -8,6 +8,7 @@ import PageTransition from '@/components/PageTransition';
 import { useI18n } from '@/i18n';
 import { localized } from '@/utils/localize';
 import { categoryEmoji } from '@/utils/categoryEmoji';
+import { ORANOS_TOP_CATEGORIES } from '@/utils/oranosCategories';
 
 const HOME_CATEGORY_NAMES = [
   'التطبيقات',
@@ -71,9 +72,10 @@ export default function Home() {
           const i2 = HOME_CATEGORY_NAMES.indexOf(c.name_ar ?? '');
           return Math.min(i1 === -1 ? 999 : i1, i2 === -1 ? 999 : i2);
         };
+        const isTop = (c: any) => ORANOS_TOP_CATEGORIES.includes(c.name ?? '') || ORANOS_TOP_CATEGORIES.includes(c.name_ar ?? '');
         const filtered = all
           .filter((c: any) => rank(c) < 999 && !!c.oranos_category_id)
-          .filter((c: any) => (c.products_count ?? 0) > 0 || (c.children?.length ?? 0) > 0)
+          .filter((c: any) => isTop(c) || (c.products_count ?? 0) > 0 || (c.children?.length ?? 0) > 0)
           .sort((a: any, b: any) => rank(a) - rank(b));
         setCategories(filtered);
       })
@@ -185,10 +187,6 @@ export default function Home() {
                 {t('home.categories')}
               </h2>
             </div>
-            <Link to="/categories" className="group inline-flex items-center gap-1 text-sm text-green-500 hover:text-green-400 transition-colors">
-              {t('home.viewAll')}
-              <ArrowUpRight size={14} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </Link>
           </motion.div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
             {categories.map((cat, i) => {
