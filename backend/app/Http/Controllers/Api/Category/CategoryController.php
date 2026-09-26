@@ -10,7 +10,7 @@ class CategoryController extends Controller
 {
     public function index(): JsonResponse
     {
-        // Load root categories with:
+        // Load all root categories with:
         //  - count of active products directly under them
         //  - their children, each with its own active product count
         $categories = Category::whereNull('parent_id')
@@ -27,12 +27,6 @@ class CategoryController extends Controller
                     ->filter(fn ($c) => $c->products_count > 0)
                     ->values();
                 return $cat;
-            })
-            ->filter(function (Category $cat) {
-                // Keep a root category only if:
-                //  - it has active products directly, OR
-                //  - it has children with active products
-                return $cat->products_count > 0 || $cat->children->count() > 0;
             })
             ->values();
 
