@@ -73,6 +73,7 @@ export default function Home() {
         };
         const filtered = all
           .filter((c: any) => rank(c) < 999 && !!c.oranos_category_id)
+          .filter((c: any) => (c.products_count ?? 0) > 0 || (c.children?.length ?? 0) > 0)
           .sort((a: any, b: any) => rank(a) - rank(b));
         setCategories(filtered);
       })
