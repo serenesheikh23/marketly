@@ -21,13 +21,6 @@ class CategoryController extends Controller
             ->withCount(['products' => fn ($q) => $q->where('is_active', true)])
             ->orderBy('sort_order')
             ->get()
-            ->map(function (Category $cat) {
-                // Hide children that have no active products
-                $cat->children = $cat->children
-                    ->filter(fn ($c) => $c->products_count > 0)
-                    ->values();
-                return $cat;
-            })
             ->values();
 
         return response()->json(['categories' => $categories]);
@@ -42,20 +35,10 @@ class CategoryController extends Controller
             }, 'manualOrderFields'])
             ->firstOrFail();
 
-        // Only show children that have active products
-        $category->children = $category->children
-            ->filter(fn ($c) => $c->products_count > 0)
-            ->values();
-
         // Load active products directly on this category
         $category->load(['products' => function ($q) {
             $q->where('is_active', true)->latest();
         }]);
-
-        // 404 if the category is empty on both levels
-        if ($category->children->isEmpty() && $category->products->isEmpty()) {
-            return response()->json(['message' => 'Category is empty.'], 404);
-        }
 
         return response()->json(['category' => $category]);
     }
