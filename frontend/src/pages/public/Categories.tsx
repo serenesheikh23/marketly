@@ -29,9 +29,10 @@ export default function Categories() {
           const i2 = ORANOS_TOP_CATEGORIES.indexOf(c.name_ar ?? '');
           return Math.min(i1 === -1 ? 999 : i1, i2 === -1 ? 999 : i2);
         };
+        const isTop = (c: any) => ORANOS_TOP_CATEGORIES.includes(c.name ?? '') || ORANOS_TOP_CATEGORIES.includes(c.name_ar ?? '');
         const filtered = all
           .filter((c: any) => rank(c) < 999 && !!c.oranos_category_id)
-          .filter((c: any) => (c.products_count ?? 0) > 0 || (c.children?.length ?? 0) > 0)
+          .filter((c: any) => isTop(c) || (c.products_count ?? 0) > 0 || (c.children?.length ?? 0) > 0)
           .sort((a: any, b: any) => rank(a) - rank(b));
         setCategories(filtered);
       })
