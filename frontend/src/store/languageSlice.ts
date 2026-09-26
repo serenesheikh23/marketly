@@ -7,29 +7,31 @@ interface LanguageState {
   dir: 'ltr' | 'rtl';
 }
 
-const stored = (localStorage.getItem('language') as Language) || 'en';
+// Locked to Arabic — no language switching
+const stored = 'ar' as Language;
 
 // Apply dir/lang on initial load
 if (typeof document !== 'undefined') {
-  document.documentElement.dir = stored === 'ar' ? 'rtl' : 'ltr';
-  document.documentElement.lang = stored;
+  document.documentElement.dir = 'rtl';
+  document.documentElement.lang = 'ar';
 }
 
 const initialState: LanguageState = {
-  locale: stored,
-  dir: stored === 'ar' ? 'rtl' : 'ltr',
+  locale: 'ar',
+  dir: 'rtl',
 };
 
 const languageSlice = createSlice({
   name: 'language',
   initialState,
   reducers: {
+    // Kept for compatibility but does nothing — Arabic only
     setLanguage(state, action: PayloadAction<Language>) {
-      state.locale = action.payload;
-      state.dir = action.payload === 'ar' ? 'rtl' : 'ltr';
-      localStorage.setItem('language', action.payload);
-      document.documentElement.dir = state.dir;
-      document.documentElement.lang = action.payload;
+      state.locale = 'ar';
+      state.dir = 'rtl';
+      localStorage.setItem('language', 'ar');
+      document.documentElement.dir = 'rtl';
+      document.documentElement.lang = 'ar';
     },
   },
 });
