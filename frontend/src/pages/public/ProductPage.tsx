@@ -192,6 +192,7 @@ export default function ProductPage() {
                 <label className="label">{t('product.quantity')}</label>
                 <div className="flex items-center gap-3">
                   <button
+                    type="button"
                     onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                     className="btn-secondary btn-sm"
                   >
@@ -200,7 +201,7 @@ export default function ProductPage() {
                   <input
                     type="number"
                     min="1"
-                    max={product.stock}
+                    max={Number(product.stock)}
                     className="input w-20 text-center"
                     value={quantity}
                     onChange={(e) =>
@@ -208,7 +209,8 @@ export default function ProductPage() {
                     }
                   />
                   <button
-                    onClick={() => setQuantity((q) => Math.min(product.stock, q + 1))}
+                    type="button"
+                    onClick={() => setQuantity((q) => Math.min(Number(product.stock), q + 1))}
                     className="btn-secondary btn-sm"
                   >
                     +

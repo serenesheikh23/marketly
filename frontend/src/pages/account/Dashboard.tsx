@@ -74,6 +74,9 @@ export default function Dashboard() {
   const [vip, setVip] = useState<any>(null);
   const [txns, setTxns] = useState<any[]>([]);
 
+  const roles = (user as unknown as { roles?: Array<{ name: string }> })?.roles?.map((r) => r.name) ?? [];
+  const isAdmin = roles.includes('admin') || roles.includes('moderator');
+
   useEffect(() => {
     vipApi.status()
       .then((r) => {
@@ -93,7 +96,12 @@ export default function Dashboard() {
       <Breadcrumbs items={[{ label: t('nav.home'), link: '/' }, { label: t('nav.dashboard') }]} />
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-h1 text-gray-900 dark:text-ink-900">{user?.name ?? 'User'}</h1>
+          <h1 className="text-h1 text-gray-900 dark:text-ink-900 flex items-center gap-2">
+            {user?.name ?? 'User'}
+            {isAdmin && (
+              <span className="badge-neutral text-xs px-2 py-0.5">{t('home.siteAdmin')}</span>
+            )}
+          </h1>
         </div>
         <div className="text-right">
           <p className="text-micro text-gray-500 dark:text-ink-500 uppercase">{t('account.balance')}</p>
@@ -208,16 +216,28 @@ export default function Dashboard() {
               </tr>
             </thead>
             <tbody>
-              {txns.slice(0, 10).map((t) => {
-                const isPositive = ['deposit', 'refund', 'vip_upgrade'].includes(t.type);
+              {txns.slice(0, 10).map((txn) => {
+                const isPositive = ['deposit', 'refund', 'vip_upgrade'].includes(txn.type);
+                const typeKey = txn.type === 'deposit' ? 'transactions.deposit' :
+                               txn.type === 'purchase' ? 'transactions.purchase' :
+                               txn.type === 'withdrawal' ? 'transactions.withdrawal' :
+                               txn.type === 'refund' ? 'transactions.refund' :
+                               txn.type === 'vip_upgrade' ? 'transactions.vipUpgrade' :
+                               txn.type;
+                const statusKey = txn.status === 'pending' ? 'transactions.status.pending' :
+                                 txn.status === 'approved' ? 'transactions.status.approved' :
+                                 txn.status === 'rejected' ? 'transactions.status.rejected' :
+                                 txn.status === 'completed' ? 'transactions.status.completed' :
+                                 txn.status === 'processing' ? 'transactions.status.processing' :
+                                 txn.status;
                 return (
-                  <tr key={t.id}>
-                    <td className="capitalize text-gray-900 dark:text-ink-800">{t.type.replace('_', ' ')}</td>
+                  <tr key={txn.id}>
+                    <td className="capitalize text-gray-900 dark:text-ink-800">{t(typeKey)}</td>
                     <td className={`font-semibold tabular-nums ${isPositive ? 'text-green-400' : 'text-status-rejected'}`}>
-                      {isPositive ? '+' : '-'}{formatPrice(t.amount)}
+                      {isPositive ? '+' : '-'}{formatPrice(txn.amount)}
                     </td>
-                    <td><span className={`badge-${t.status}`}>{t.status}</span></td>
-                    <td className="text-gray-500 dark:text-ink-500">{formatDateTime(t.created_at)}</td>
+                    <td><span className={`badge-${txn.status}`}>{t(statusKey)}</span></td>
+                    <td className="text-gray-500 dark:text-ink-500">{formatDateTime(txn.created_at)}</td>
                   </tr>
                 );
               })}
