@@ -102,7 +102,8 @@ export default function CategoryPage() {
   }
 
   const catName = localized(category, 'name', 'name_ar', locale);
-  const showChildren = children.length > 0;
+  const filteredChildren = children.filter((child: any) => (child.products_count ?? 0) > 0 || (child.children?.length ?? 0) > 0);
+  const showChildren = filteredChildren.length > 0;
   const breadcrumbItems = buildBreadcrumbs(category, all);
 
   return (
@@ -119,7 +120,7 @@ export default function CategoryPage() {
             </h2>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {children.map((child, i) => {
+            {filteredChildren.map((child, i) => {
               const childName = localized(child, 'name', 'name_ar', locale);
               const emoji = GENERIC_ICONS.includes(child.icon ?? '')
                 ? categoryEmoji(childName)
