@@ -371,6 +371,9 @@ const ar: import('./en').Translations = {
     another: 'إيداع آخر',
     walletAddress: 'عنوان المحفظة',
     memoTag: 'الملاحظة / الوسم',
+    qrTitle: 'رمز الدفع QR',
+    qrInstructions: 'امسح الرمز بتطبيق Binance Pay لإكمال الدفع',
+    qrAlt: 'رمز الدفع QR',
   },
   favorites: {
     title: 'المفضلة',
@@ -439,6 +442,20 @@ const ar: import('./en').Translations = {
     success: 'تم تقديم طلب الخدمة اليدوية!',
     failed: 'فشل تقديم الطلب.',
     noProducts: 'لا توجد منتجات في هذا القسم.',
+  },
+  transactions: {
+    deposit: 'إيداع',
+    purchase: 'شراء',
+    withdrawal: 'سحب',
+    refund: 'استرداد',
+    vipUpgrade: 'ترقية VIP',
+    status: {
+      pending: 'قيد الانتظار',
+      approved: 'مقبول',
+      rejected: 'مرفوض',
+      completed: 'مكتمل',
+      processing: 'قيد المعالجة',
+    },
   },
 
   // Toasts / Errors (fallback)

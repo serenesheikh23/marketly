@@ -131,7 +131,7 @@ export default function Favorites() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05, duration: 0.35 }}
                 >
-                  <Link to={`/products/${fav.product.slug}`} className="block group">
+                  <Link to={`/product/${fav.product.slug}`} className="block group">
                     <div className="relative aspect-square mb-3 overflow-hidden rounded-xl bg-gray-100 dark:bg-ink-100 group-hover:shadow-lg transition-shadow">
                       <ProductImage
                         name={getProductName(fav.product)}
