@@ -49,7 +49,7 @@ export default function Categories() {
 
   return (
     <PageTransition className="space-y-8">
-      <Breadcrumbs items={[{ label: t('nav.home') ?? 'Home', link: '/' }, { label: 'Categories' }]} />
+      <Breadcrumbs items={[{ label: t('nav.home'), link: '/' }, { label: t('nav.categories') }]} />
       <div className="flex items-end justify-between">
         <h1 className="text-h1 text-gray-900 dark:text-ink-900">{t('home.categories')}</h1>
         <p className="text-small text-gray-500 dark:text-ink-500">{categories.length}</p>

@@ -11,9 +11,13 @@ const ar: import('./en').Translations = {
     submit: 'إرسال',
     back: 'رجوع',
     next: 'التالي',
+    prev: 'السابق',
     search: 'بحث',
     loading: 'جاري التحميل...',
     failed: 'فشل',
+    page: 'صفحة',
+    of: 'من',
+    view: 'عرض',
   },
 
   // Header / Nav
@@ -40,6 +44,8 @@ const ar: import('./en').Translations = {
   products: {
     searchPlaceholder: '...بحث عن منتجات',
     noProducts: 'لا توجد منتجات متاحة.',
+    item: 'منتج',
+    items: 'منتجات',
   },
 
   // Hero / Home
@@ -117,6 +123,17 @@ const ar: import('./en').Translations = {
     noDeposits: 'لا توجد إيداعات بعد.',
     noWithdrawals: 'لا توجد سحوبات بعد.',
     welcomeBack: 'أهلاً بك',
+    wallet: 'المحفظة',
+    walletBalance: 'رصيد المحفظة',
+    depositFunds: 'إيداع أموال',
+    depositHistory: 'سجل الإيداعات',
+    withdrawFunds: 'سحب أموال',
+    transactions: 'المعاملات',
+    noTransactions: 'لا توجد معاملات بعد.',
+    type: 'النوع',
+    amount: 'المبلغ',
+    status: 'الحالة',
+    date: 'التاريخ',
   },
 
   // Auth

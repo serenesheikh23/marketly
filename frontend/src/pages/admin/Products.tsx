@@ -207,17 +207,17 @@ export default function AdminProducts() {
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page <= 1}
             >
-              ← Prev
+              ← {t('common.prev')}
             </button>
             <span className="text-small text-gray-600 dark:text-ink-500">
-              Page {page} / {lastPage}
+              {t('common.page')} {page} {t('common.of')} {lastPage}
             </span>
             <button
               className="btn-secondary btn-sm"
               onClick={() => setPage((p) => Math.min(lastPage, p + 1))}
               disabled={page >= lastPage}
             >
-              Next →
+              {t('common.next')} →
             </button>
           </div>
         )}
