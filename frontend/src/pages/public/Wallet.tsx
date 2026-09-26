@@ -5,11 +5,13 @@ import { useAppSelector } from '@/store';
 import PageTransition from '@/components/PageTransition';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { formatPrice } from '@/utils/format';
+import { useI18n } from '@/i18n';
 
 export default function Wallet() {
   const user = useAppSelector((s) => s.auth.user);
   const [transactions, setTransactions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const { t } = useI18n();
 
   useEffect(() => {
     transactionApi.list()
@@ -20,30 +22,30 @@ export default function Wallet() {
 
   return (
     <PageTransition className="max-w-3xl mx-auto space-y-8">
-      <Breadcrumbs items={[{ label: 'Home', link: '/' }, { label: 'Wallet' }]} />
-      <h1 className="text-h1 text-gray-900 dark:text-ink-900">Wallet</h1>
+      <Breadcrumbs items={[{ label: t('nav.home'), link: '/' }, { label: t('account.wallet') }]} />
+      <h1 className="text-h1 text-gray-900 dark:text-ink-900">{t('account.wallet')}</h1>
 
       <div className="card-pad">
-        <p className="text-micro text-gray-600 dark:text-ink-500 uppercase tracking-wider mb-2">Balance</p>
+        <p className="text-micro text-gray-600 dark:text-ink-500 uppercase tracking-wider mb-2">{t('account.walletBalance')}</p>
         <p className="text-display-1 text-green-500 font-bold tabular-nums">
           {formatPrice(user?.balance)}
         </p>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        <Link to="/dashboard/deposit" className="btn-accent text-center">Deposit</Link>
-        <Link to="/dashboard/deposits" className="btn-ghost text-center">Deposit History</Link>
-        <Link to="/dashboard/withdraw" className="btn-secondary text-center">Withdraw</Link>
+        <Link to="/dashboard/deposit" className="btn-accent text-center">{t('account.depositFunds')}</Link>
+        <Link to="/dashboard/deposits" className="btn-ghost text-center">{t('account.depositHistory')}</Link>
+        <Link to="/dashboard/withdraw" className="btn-secondary text-center">{t('account.withdrawFunds')}</Link>
       </div>
 
       <div>
-        <h2 className="text-h3 text-gray-900 dark:text-ink-900 mb-4">Transactions</h2>
+        <h2 className="text-h3 text-gray-900 dark:text-ink-900 mb-4">{t('account.transactions')}</h2>
         {loading ? (
           <div className="flex justify-center py-12">
             <span className="w-6 h-6 rounded-full border-2 border-green-500 border-t-transparent animate-spin" />
           </div>
         ) : transactions.length === 0 ? (
-          <p className="text-body text-gray-600 dark:text-ink-600">No transactions yet.</p>
+          <p className="text-body text-gray-600 dark:text-ink-600">{t('account.noTransactions')}</p>
         ) : (
           <div className="space-y-2">
             {transactions.map((tx) => (

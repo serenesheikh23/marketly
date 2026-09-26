@@ -11,9 +11,13 @@ const en = {
     submit: 'Submit',
     back: 'Back',
     next: 'Next',
+    prev: 'Previous',
     search: 'Search',
     loading: 'Loading...',
     failed: 'Failed',
+    page: 'Page',
+    of: 'of',
+    view: 'View',
   },
 
   // Header / Nav
@@ -40,6 +44,8 @@ const en = {
   products: {
     searchPlaceholder: 'Search products…',
     noProducts: 'No products available.',
+    item: 'product',
+    items: 'products',
   },
 
   // Hero / Home
@@ -117,6 +123,17 @@ const en = {
     noDeposits: 'No deposits yet.',
     noWithdrawals: 'No withdrawals yet.',
     welcomeBack: 'Welcome back',
+    wallet: 'Wallet',
+    walletBalance: 'Wallet Balance',
+    depositFunds: 'Deposit Funds',
+    depositHistory: 'Deposit History',
+    withdrawFunds: 'Withdraw Funds',
+    transactions: 'Transactions',
+    noTransactions: 'No transactions yet.',
+    type: 'Type',
+    amount: 'Amount',
+    status: 'Status',
+    date: 'Date',
   },
 
   // Auth

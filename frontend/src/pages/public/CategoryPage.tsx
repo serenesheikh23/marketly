@@ -71,14 +71,11 @@ export default function CategoryPage() {
         const cat = showRes.data.category;
         if (!cat) {
           setCategory(null);
-          return null;
+          return;
         }
         setCategory(cat);
         setChildren(cat.children ?? []);
-        return productApi.list({ category: String(cat.id), per_page: '60' });
-      })
-      .then((prodRes) => {
-        if (prodRes?.data?.data) setProducts(prodRes.data.data);
+        setProducts(cat.products ?? []);
       })
       .catch(console.error)
       .finally(() => setLoading(false));
