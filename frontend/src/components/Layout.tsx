@@ -47,15 +47,22 @@ export default function Layout() {
             <Logo size="sm" showText />
           </Link>
 
-          {/* Desktop nav — use gap-1.5, text-xs, no flex-wrap to prevent overflow at 1280px+ */}
+          {/* Desktop nav — primary links for all, then account links for logged in */}
           <nav className="hidden lg:flex items-center gap-1.5 flex-1 min-w-0 overflow-hidden">
+            {/* Primary links — visible to ALL users */}
+            <Link to="/" className="nav-link text-xs whitespace-nowrap">{t('nav.home')}</Link>
+            <Link to="/categories" className="nav-link text-xs whitespace-nowrap">{t('nav.categories')}</Link>
+            <Link to="/products" className="nav-link text-xs whitespace-nowrap">{t('nav.products')}</Link>
+            
             {isAuthenticated ? (
               <>
-                <Link to="/dashboard" className="nav-link text-xs whitespace-nowrap">{t('nav.dashboard')}</Link>
-                <Link to="/my-stores" className="nav-link text-xs whitespace-nowrap">{t('nav.myStores')}</Link>
-                <Link to="/create-store" className="nav-link text-xs whitespace-nowrap">{t('nav.createStore')}</Link>
-                <Link to="/wallet" className="nav-link text-xs whitespace-nowrap">{t('nav.wallet')}</Link>
                 <Link to="/dashboard/favorites" className="nav-link text-xs whitespace-nowrap">{t('nav.favorites')}</Link>
+                
+                {/* Separator before account links */}
+                <div className="mx-1.5 w-px h-4 bg-gray-300 dark:bg-ink-200" />
+                
+                <Link to="/dashboard" className="nav-link text-xs whitespace-nowrap">{t('nav.dashboard')}</Link>
+                <Link to="/wallet" className="nav-link text-xs whitespace-nowrap">{t('nav.wallet')}</Link>
                 {(roles.includes('admin') || roles.includes('moderator')) && (
                   <Link to="/admin" className="nav-link text-xs whitespace-nowrap text-green-400">{t('nav.admin')}</Link>
                 )}
@@ -69,6 +76,7 @@ export default function Layout() {
               </>
             ) : (
               <>
+                <div className="mx-1.5 w-px h-4 bg-gray-300 dark:bg-ink-200" />
                 <Link to="/login" className="nav-link text-xs whitespace-nowrap">{t('nav.signIn')}</Link>
                 <Link to="/register" className="btn-accent btn-sm whitespace-nowrap">{t('nav.getStarted')}</Link>
               </>
@@ -148,16 +156,25 @@ export default function Layout() {
           <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={closeMenu} />
           <div className="lg:hidden z-50 bg-white dark:bg-ink-50 border-b border-gray-200 dark:border-ink-200 shadow-lg">
             <nav className="px-4 py-3 space-y-1">
+              {/* Primary links at top of drawer — for ALL users */}
+              <Link to="/" className="nav-link" onClick={closeMenu}>{t('nav.home')}</Link>
+              <Link to="/categories" className="nav-link" onClick={closeMenu}>{t('nav.categories')}</Link>
+              <Link to="/products" className="nav-link" onClick={closeMenu}>{t('nav.products')}</Link>
+              
               {isAuthenticated ? (
                 <>
-                  <Link to="/dashboard" className="nav-link" onClick={closeMenu}>{t('nav.dashboard')}</Link>
-                  <Link to="/my-stores" className="nav-link" onClick={closeMenu}>{t('nav.myStores')}</Link>
-                  <Link to="/create-store" className="nav-link" onClick={closeMenu}>{t('nav.createStore')}</Link>
-                  <Link to="/wallet" className="nav-link" onClick={closeMenu}>{t('nav.wallet')}</Link>
                   <Link to="/dashboard/favorites" className="nav-link" onClick={closeMenu}>{t('nav.favorites')}</Link>
+                  
+                  <div className="my-2 border-t border-gray-200 dark:border-ink-200" />
+                  
+                  <Link to="/dashboard" className="nav-link" onClick={closeMenu}>{t('nav.dashboard')}</Link>
+                  <Link to="/wallet" className="nav-link" onClick={closeMenu}>{t('nav.wallet')}</Link>
                   {(roles.includes('admin') || roles.includes('moderator')) && (
                     <Link to="/admin" className="nav-link text-green-400" onClick={closeMenu}>{t('nav.admin')}</Link>
                   )}
+                  
+                  <div className="my-2 border-t border-gray-200 dark:border-ink-200" />
+                  
                   <button onClick={() => { closeMenu(); setCartOpen(true); }} className="nav-link w-full text-left">{t('nav.cart')}</button>
                   <div className="pt-2 pb-1 text-xs text-gray-500 dark:text-ink-500 font-semibold uppercase tracking-wider">Balance: {formatPrice(user?.balance)}</div>
                   <button onClick={handleLogout} className="nav-link text-status-rejected/80 hover:text-status-rejected hover:bg-status-rejected/10 w-full text-left">
@@ -166,9 +183,9 @@ export default function Layout() {
                 </>
               ) : (
                 <>
-                  <Link to="/products" className="nav-link" onClick={closeMenu}>{t('nav.products')}</Link>
+                  <div className="my-2 border-t border-gray-200 dark:border-ink-200" />
                   <Link to="/login" className="nav-link" onClick={closeMenu}>{t('nav.signIn')}</Link>
-                  <Link to="/register" className="nav-link" onClick={closeMenu}>{t('nav.getStarted')}</Link>
+                  <Link to="/register" className="btn-accent btn-sm w-full text-center">{t('nav.getStarted')}</Link>
                 </>
               )}
             </nav>
