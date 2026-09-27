@@ -138,16 +138,18 @@ export default function ProductPage() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
         >
+          <div className="aspect-video overflow-hidden rounded-2xl">
 <ProductImage
              name={localized(product, 'name', 'name_ar', locale)}
              icon={product.icon}
              category={localized(product.category, 'name', 'name_ar', locale)}
              imageBase64={product.image_base64}
              imageUrl={product.image_url}
-             className="w-full h-80 rounded-2xl"
+             className="w-full h-full"
              productId={product.id}
              showFavorite
            />
+          </div>
         </motion.div>
 
         <motion.div
