@@ -151,6 +151,7 @@ class SyncOranosProducts extends Command
                             'params' => $params,
                             'is_active' => $isActive,
                             'oranos_available' => $oranosAvailable,
+                            'stock' => $oranosAvailable ? 999 : 0,
                             'slug' => $slug,
                             'image_url' => $productImg,
                             'image_base64' => $productImgBase64,
