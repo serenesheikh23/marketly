@@ -14,7 +14,11 @@ class AdminSyncController extends Controller
             Artisan::call('oranos:apply-markup');
             return response()->json(['ok' => true, 'output' => Artisan::output()]);
         } catch (\Throwable $e) {
-            return response()->json(['ok' => false, 'error' => $e->getMessage()], 500);
+            return response()->json([
+                'ok' => false,
+                'error' => $e->getMessage(),
+                'class' => get_class($e),
+            ], 500);
         }
     }
 
@@ -24,7 +28,11 @@ class AdminSyncController extends Controller
             Artisan::call('oranos:sync-products');
             return response()->json(['ok' => true, 'output' => Artisan::output()]);
         } catch (\Throwable $e) {
-            return response()->json(['ok' => false, 'error' => $e->getMessage()], 500);
+            return response()->json([
+                'ok' => false,
+                'error' => $e->getMessage(),
+                'class' => get_class($e),
+            ], 500);
         }
     }
 }
