@@ -50,3 +50,5 @@ composer.phar
 *.tsbuildinfo
 vite.config.d.ts
 .aider*
+*.bak
+*.orig
