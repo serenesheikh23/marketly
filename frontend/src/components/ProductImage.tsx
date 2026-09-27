@@ -136,7 +136,7 @@ export default function ProductImage({
   if (adminEmoji) {
     return renderWithFavorite(
       <div
-        className={`relative w-full overflow-hidden rounded-lg flex items-center justify-center ${tint(name || 'default')} ${className}`}
+        className={`relative w-full overflow-hidden rounded-lg h-full flex items-center justify-center ${tint(name || 'default')} ${className}`}
         role="img"
         aria-label={name}
       >
@@ -175,7 +175,7 @@ export default function ProductImage({
 
   return renderWithFavorite(
     <div
-      className={`relative w-full overflow-hidden rounded-lg flex items-center justify-center ${bg} ${className}`}
+      className={`relative w-full overflow-hidden rounded-lg h-full flex items-center justify-center ${bg} ${className}`}
       role="img"
       aria-label={name}
     >
