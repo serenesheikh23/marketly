@@ -99,14 +99,7 @@ class SyncOranosProducts extends Command
                 }
 
                 if ($categoryName) {
-                    $slug = Str::slug($categoryName);
-                    if (empty($slug)) {
-                        $slug = 'cat-'.md5($categoryName);
-                    }
-                    $category = Category::firstOrCreate(
-                        ['slug' => $slug],
-                        ['name' => $categoryName, 'name_ar' => $categoryName, 'type' => 'auto', 'icon' => 'package']
-                    );
+                    $category = $this->findOrCreateCategory($categoryName, null);
 
                     // Always set the image_url to match what Oranos currently reports.
                     // If Oranos sends empty.png (their placeholder), we store null so
@@ -170,14 +163,7 @@ class SyncOranosProducts extends Command
         foreach ($topCategories as $category) {
             if (preg_match('/^(.+?)\s*\(/', $category->name, $matches)) {
                 $parentName = trim($matches[1]);
-                $parentSlug = Str::slug($parentName);
-                if (empty($parentSlug)) {
-                    $parentSlug = 'cat-'.md5($parentName);
-                }
-                $parent = Category::firstOrCreate(
-                    ['slug' => $parentSlug],
-                    ['name' => $parentName, 'name_ar' => $parentName, 'type' => 'auto', 'icon' => 'package']
-                );
+                $parent = $this->findOrCreateCategory($parentName, null);
                 if ($category->parent_id !== $parent->id) {
                     $category->update(['parent_id' => $parent->id]);
                 }
@@ -236,11 +222,6 @@ class SyncOranosProducts extends Command
                     continue;
                 }
 
-                $slug = Str::slug($name);
-                if (empty($slug)) {
-                    $slug = 'cat-'.md5($name);
-                }
-
                 // Extract Oranos category image
                 $rawImg = $categoryData['image'] ?? $categoryData['image_url'] ?? $categoryData['img'] ?? $categoryData['image_base64'] ?? null;
                 $categoryImg = null;
@@ -253,10 +234,28 @@ class SyncOranosProducts extends Command
                     }
                 }
 
-                $category = Category::firstOrCreate(
-                    ['slug' => $slug],
-                    ['name' => $name, 'name_ar' => $name, 'type' => 'auto', 'icon' => 'package']
-                );
+                // Match by name_ar/name first, then by oranos_category_id
+                $category = Category::where('name_ar', $name)
+                    ->orWhere('name', $name)
+                    ->first();
+
+                if (! $category && $oranosId) {
+                    $category = Category::where('oranos_category_id', $oranosId)->first();
+                }
+
+                if (! $category) {
+                    $slug = Str::slug($name);
+                    if (empty($slug)) {
+                        $slug = 'cat-'.substr(md5($name), 0, 12);
+                    }
+                    $category = Category::create([
+                        'slug' => $slug,
+                        'name' => $name,
+                        'name_ar' => $name,
+                        'type' => 'auto',
+                        'icon' => 'package',
+                    ]);
+                }
 
                 // Store Oranos category ID for parent linking
                 if ($oranosId && ! $category->oranos_category_id) {
@@ -291,5 +290,39 @@ class SyncOranosProducts extends Command
         }
 
         $this->info("Pre-synced {$synced} categories from Oranos API. Categories updated: {$categoriesUpdated}.");
+    }
+
+    /**
+     * Find or create a category by name, with fallback to oranos_category_id.
+     * Avoids creating duplicate categories for Arabic names by matching on name_ar/name first.
+     */
+    private function findOrCreateCategory(string $name, ?int $oranosId = null): Category
+    {
+        // 1. Exact match by name_ar or name (handles Arabic correctly)
+        $category = Category::where('name_ar', $name)
+            ->orWhere('name', $name)
+            ->first();
+
+        // 2. If not found, also try matching by oranos_category_id if available
+        if (! $category && $oranosId) {
+            $category = Category::where('oranos_category_id', $oranosId)->first();
+        }
+
+        // 3. Only create new if no match — build a stable slug for Arabic names
+        if (! $category) {
+            $slug = Str::slug($name);
+            if (empty($slug)) {
+                $slug = 'cat-'.substr(md5($name), 0, 12);
+            }
+            $category = Category::create([
+                'slug' => $slug,
+                'name' => $name,
+                'name_ar' => $name,
+                'type' => 'auto',
+                'icon' => 'package',
+            ]);
+        }
+
+        return $category;
     }
 }

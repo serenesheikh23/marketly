@@ -35,31 +35,32 @@ class SyncOranosCategories extends Command
                 $name = $categoryData['name'] ?? null;
                 $parentId = $categoryData['parent_id'] ?? null;
 
-                if (! $name) {
+if (! $name) {
                     continue;
                 }
 
-                $slug = Str::slug($name);
-                if (empty($slug)) {
-                    $slug = 'cat-'.md5($name);
+                // Match by name_ar/name first, then by oranos_category_id
+                $category = Category::where('name_ar', $name)
+                    ->orWhere('name', $name)
+                    ->first();
+
+                if (! $category && $oranosId) {
+                    $category = Category::where('oranos_category_id', $oranosId)->first();
                 }
 
-                // Extract Oranos category image
-                $rawImg = $categoryData['image'] ?? $categoryData['image_url'] ?? $categoryData['img'] ?? $categoryData['image_base64'] ?? null;
-                $categoryImg = null;
-                $categoryImgBase64 = null;
-                if (is_string($rawImg) && $rawImg !== '' && ! str_contains($rawImg, 'empty.png')) {
-                    if (str_starts_with($rawImg, 'data:image/') || str_starts_with($rawImg, 'data:application/')) {
-                        $categoryImgBase64 = $rawImg;
-                    } else {
-                        $categoryImg = $rawImg;
+                if (! $category) {
+                    $slug = Str::slug($name);
+                    if (empty($slug)) {
+                        $slug = 'cat-'.substr(md5($name), 0, 12);
                     }
+                    $category = Category::create([
+                        'slug' => $slug,
+                        'name' => $name,
+                        'name_ar' => $name,
+                        'type' => 'auto',
+                        'icon' => 'package',
+                    ]);
                 }
-
-                $category = Category::firstOrCreate(
-                    ['slug' => $slug],
-                    ['name' => $name, 'name_ar' => $name, 'type' => 'auto', 'icon' => 'package']
-                );
 
                 // Handle parent category
                 if ($parentId) {
