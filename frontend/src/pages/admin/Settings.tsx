@@ -22,10 +22,6 @@ const GROUPS: Record<string, { labelKey: string; keys: string[] }> = {
     labelKey: 'admin.paymentProviders',
     keys: ['binance_pay_key', 'binance_pay_secret', 'usdt_wallet_address', 'oranos_markup_percent', 'store_markup_percent'],
   },
-  oranos: {
-    labelKey: 'admin.oranosSync',
-    keys: [],
-  },
 };
 
 const COMPANY_FIELDS = [
