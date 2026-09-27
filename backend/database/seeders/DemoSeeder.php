@@ -61,6 +61,7 @@ class DemoSeeder extends Seeder
             ['key' => 'binance_pay_key', 'value' => 'MOCK_BINANCE_KEY', 'group' => 'payment', 'type' => 'string', 'description' => 'Binance Pay API key'],
             ['key' => 'binance_pay_secret', 'value' => 'MOCK_BINANCE_SECRET', 'group' => 'payment', 'type' => 'string', 'description' => 'Binance Pay API secret'],
             ['key' => 'usdt_wallet_address', 'value' => '0xMOCKUSDTWALLETADDRESS', 'group' => 'payment', 'type' => 'string', 'description' => 'USDT BEP-20 shared deposit wallet'],
+            ['key' => 'oranos_markup_percent', 'value' => '20', 'group' => 'payment', 'type' => 'float', 'description' => 'Oranos markup percentage applied to base prices'],
         ];
 
         foreach ($defaults as $setting) {
