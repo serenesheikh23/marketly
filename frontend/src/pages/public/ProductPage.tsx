@@ -17,7 +17,7 @@ export default function ProductPage() {
   const dispatch = useAppDispatch();
   const { t, locale } = useI18n();
   const [product, setProduct] = useState<any>(null);
-  const [quantity, setQuantity] = useState(1);
+  const quantity = 1;
   const [payload, setPayload] = useState<Record<string, string>>({});
   const [paramValues, setParamValues] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
@@ -58,15 +58,7 @@ export default function ProductPage() {
   const getDisplayLabel = (label: string) =>
     ['الايدي', 'id', 'الايدي'].includes(label?.toLowerCase()) ? t('product.idLabel') : label;
 
-  const rawStock = Number(product.stock);
-  const isUnlimited = rawStock <= 0;
-  const effectiveStock = product.oranos_available === false ? 0 : (isUnlimited ? 999 : rawStock);
-
   const handleAddToCart = () => {
-    if (!quantity || quantity < 1) {
-      setErrors({ quantity: t('product.errorQuantity') });
-      return;
-    }
 
     if (isAutomation) {
       const newErrors: Record<string, string> = {};
@@ -191,39 +183,6 @@ export default function ProductPage() {
               <span className="text-body text-gray-600 dark:text-ink-500">{t('product.perUnit')}</span>
             </div>
 
-            {!isManual && (
-              <div>
-                <label className="label">{t('product.quantity')}</label>
-                <div className="flex items-center gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                    className="btn-secondary btn-sm"
-                  >
-                    −
-                  </button>
-                  <input
-                    type="number"
-                    min="1"
-                    max={effectiveStock}
-                    className="input w-20 text-center"
-                    value={quantity}
-                    onChange={(e) =>
-                      setQuantity(Math.max(1, Math.min(effectiveStock, parseInt(e.target.value) || 1)))
-                    }
-                  />
-                  <button
-                    type="button"
-                    disabled={effectiveStock === 0}
-                    onClick={() => setQuantity((q) => Math.max(1, Math.min(effectiveStock, q + 1)))}
-                    className="btn-secondary btn-sm"
-                  >
-                    +
-                  </button>
-                </div>
-              </div>
-            )}
-
             {isAutomation && (
               <div className="space-y-3">
                 <p className="text-micro text-gray-600 dark:text-ink-500 uppercase tracking-wide">
@@ -286,7 +245,7 @@ export default function ProductPage() {
               <span className="text-body text-gray-600 dark:text-ink-600">
                 {t('product.total')}:{' '}
                 <strong className="text-gray-900 dark:text-ink-900">
-                  {formatPrice(Number(product.price) * quantity)}
+                  {formatPrice(Number(product.price))}
                 </strong>
               </span>
               {product.stock === 0 || product.oranos_available === false ? (

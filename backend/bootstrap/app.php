@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'role' => \App\Http\Middleware\EnsureRole::class,
+            'partner.api' => \App\Http\Middleware\PartnerApiAuth::class,
         ]);
         $middleware->api(prepend: [
             \Illuminate\Cookie\Middleware\EncryptCookies::class,

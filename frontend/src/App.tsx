@@ -40,6 +40,12 @@ const MyStores         = lazy(() => import('@/pages/public/MyStores'));
 const StorePage        = lazy(() => import('@/pages/public/StorePage'));
 const Wallet           = lazy(() => import('@/pages/public/Wallet'));
 
+// Partner API pages
+const ConnectStore     = lazy(() => import('@/pages/public/ConnectStore'));
+const CreateWebsite    = lazy(() => import('@/pages/public/CreateWebsite'));
+const ApiDocs          = lazy(() => import('@/pages/account/ApiDocs'));
+const PartnerRequests  = lazy(() => import('@/pages/admin/PartnerRequests'));
+
 function LoadingSpinner() {
   return (
     <div className="flex items-center justify-center py-24">
@@ -80,6 +86,8 @@ export default function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/legal/:page" element={<LegalPage />} />
+            <Route path="/connect-store" element={<ConnectStore />} />
+            <Route path="/create-website" element={<CreateWebsite />} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/wallet" element={<ProtectedRoute><Wallet /></ProtectedRoute>} />
             <Route path="/create-store" element={<ProtectedRoute><CreateStore /></ProtectedRoute>} />
@@ -91,6 +99,7 @@ export default function App() {
             <Route path="/dashboard/manual-services" element={<ProtectedRoute><ManualServices /></ProtectedRoute>} />
             <Route path="/dashboard/favorites" element={<ProtectedRoute><Favorites /></ProtectedRoute>} />
             <Route path="/dashboard/deposits" element={<ProtectedRoute><Deposits /></ProtectedRoute>} />
+            <Route path="/dashboard/api-docs" element={<ProtectedRoute><ApiDocs /></ProtectedRoute>} />
           </Route>
 
           <Route element={<AdminRoute><AdminLayout /></AdminRoute>}>
@@ -104,6 +113,7 @@ export default function App() {
             <Route path="/admin/withdrawals" element={<AdminWithdrawals />} />
             <Route path="/admin/oranos" element={<AdminOranos />} />
             <Route path="/admin/settings" element={<AdminSettings />} />
+            <Route path="/admin/partner-requests" element={<PartnerRequests />} />
           </Route>
 
           <Route path="*" element={<NotFound />} />

@@ -53,6 +53,8 @@ export default function Layout() {
             <Link to="/" className="nav-link text-xs whitespace-nowrap">{t('nav.home')}</Link>
             <Link to="/categories" className="nav-link text-xs whitespace-nowrap">{t('nav.categories')}</Link>
             <Link to="/products" className="nav-link text-xs whitespace-nowrap">{t('nav.products')}</Link>
+            <Link to="/connect-store" className="nav-link text-xs whitespace-nowrap">{t('nav.connectStore')}</Link>
+            <Link to="/create-website" className="nav-link text-xs whitespace-nowrap">{t('nav.createWebsite')}</Link>
             
             {isAuthenticated ? (
               <>
@@ -64,6 +66,7 @@ export default function Layout() {
                 
                 <Link to="/dashboard" className="nav-link text-xs whitespace-nowrap">{t('nav.dashboard')}</Link>
                 <Link to="/wallet" className="nav-link text-xs whitespace-nowrap">{t('nav.wallet')}</Link>
+                <Link to="/dashboard/api-docs" className="nav-link text-xs whitespace-nowrap">{t('nav.apiDocs')}</Link>
                 {(roles.includes('admin') || roles.includes('moderator')) && (
                   <Link to="/admin" className="nav-link text-xs whitespace-nowrap text-green-400">{t('nav.admin')}</Link>
                 )}
@@ -166,11 +169,14 @@ export default function Layout() {
                 <>
                   <Link to="/dashboard/favorites" className="nav-link" onClick={closeMenu}>{t('nav.favorites')}</Link>
                   <Link to="/my-stores" className="nav-link" onClick={closeMenu}>{t('nav.myStores')}</Link>
+                  <Link to="/connect-store" className="nav-link" onClick={closeMenu}>{t('nav.connectStore')}</Link>
+                  <Link to="/create-website" className="nav-link" onClick={closeMenu}>{t('nav.createWebsite')}</Link>
                   
                   <div className="my-2 border-t border-gray-200 dark:border-ink-200" />
                   
                   <Link to="/dashboard" className="nav-link" onClick={closeMenu}>{t('nav.dashboard')}</Link>
                   <Link to="/wallet" className="nav-link" onClick={closeMenu}>{t('nav.wallet')}</Link>
+                  <Link to="/dashboard/api-docs" className="nav-link" onClick={closeMenu}>{t('nav.apiDocs')}</Link>
                   {(roles.includes('admin') || roles.includes('moderator')) && (
                     <Link to="/admin" className="nav-link text-green-400" onClick={closeMenu}>{t('nav.admin')}</Link>
                   )}

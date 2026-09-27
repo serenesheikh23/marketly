@@ -192,3 +192,17 @@ export const adminDashboardApi = {
   stats: () => api.get('/admin/dashboard'),
   health: () => api.get('/admin/health'),
 };
+
+// Partner Request (user)
+export const partnerRequestApi = {
+  myRequest: () => api.get('/partner-request'),
+  create: (data: { store_name: string; store_url: string; phone: string; notes?: string }) =>
+    api.post('/partner-request', data),
+};
+
+// Admin Partner Requests
+export const adminPartnerApi = {
+  list: (params?: Record<string, string>) => api.get('/admin/partner-requests', { params }),
+  approve: (id: number) => api.post(`/admin/partner-requests/${id}/approve`),
+  reject: (id: number, reason: string) => api.post(`/admin/partner-requests/${id}/reject`, { reason }),
+};
