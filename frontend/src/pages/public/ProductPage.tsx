@@ -58,7 +58,9 @@ export default function ProductPage() {
   const getDisplayLabel = (label: string) =>
     ['الايدي', 'id', 'الايدي'].includes(label?.toLowerCase()) ? t('product.idLabel') : label;
 
-  const effectiveStock = product.oranos_available === false ? 0 : Number(product.stock);
+  const rawStock = Number(product.stock);
+  const isUnlimited = rawStock <= 0;
+  const effectiveStock = product.oranos_available === false ? 0 : (isUnlimited ? 999 : rawStock);
 
   const handleAddToCart = () => {
     if (!quantity || quantity < 1) {
@@ -213,7 +215,7 @@ export default function ProductPage() {
                   <button
                     type="button"
                     disabled={effectiveStock === 0}
-                    onClick={() => setQuantity((q) => Math.min(effectiveStock, q + 1))}
+                    onClick={() => setQuantity((q) => Math.max(1, Math.min(effectiveStock, q + 1)))}
                     className="btn-secondary btn-sm"
                   >
                     +
