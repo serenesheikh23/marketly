@@ -88,8 +88,13 @@ class OrderService
             $isManualOrder = collect($productMap)->every(fn ($i) => $i['product']->isManual());
 
             // For automatic orders paid with cash_wallet, debit immediately
-            if (! $isManualOrder && $paymentMethod === 'cash_wallet' && (float) $user->balance < $total) {
-                throw new \DomainException('Insufficient balance.');
+            // Lock user row to prevent race conditions on balance check
+            if (! $isManualOrder && $paymentMethod === 'cash_wallet') {
+                $lockedUser = User::lockForUpdate()->findOrFail($user->id);
+                if ((float) $lockedUser->balance < $total) {
+                    throw new \DomainException('Insufficient balance.');
+                }
+                $user = $lockedUser; // Use locked user for subsequent operations
             }
 
             $hasAutomation = collect($productMap)->contains(fn ($i) => $i['product']->is_automation);
@@ -101,7 +106,7 @@ class OrderService
             // Generate payment_ref — wallet gets wallet-xxx; Binance/USDT get a simulated TX id
             $paymentRef = match ($paymentMethod) {
                 'cash_wallet' => 'wallet-'.uniqid(),
-                'binance_pay', 'usdt' => $this->simulatePaymentRef($paymentMethod, $meta, $total),
+                'binance_pay', 'usdt', 'partner_api' => $this->simulatePaymentRef($paymentMethod, $meta, $total),
                 default => null,
             };
 
@@ -149,9 +154,10 @@ class OrderService
                         'gateway_ref' => $order->payment_ref,
                         'meta' => ['order_id' => $order->id],
                     ]);
-                } elseif (in_array($paymentMethod, ['binance_pay', 'usdt'])) {
+                } elseif (in_array($paymentMethod, ['binance_pay', 'usdt', 'partner_api'])) {
                     // In real mode payment_ref is null — wait for webhook to create the transaction.
                     // In demo mode we create a simulated TX for admin visibility.
+                    // For partner_api, balance is already deducted by caller; just record the transaction.
                     if ($order->payment_ref) {
                         Transaction::create([
                             'user_id' => $user->id,
@@ -222,6 +228,8 @@ class OrderService
     {
         $oranosService = app(OranosMarketService::class);
         $oranosOrderIds = [];
+        $hasFailure = false;
+        $failureReason = '';
 
         foreach ($order->items as $item) {
             $product = $item->product;
@@ -229,9 +237,15 @@ class OrderService
                 continue;
             }
 
-            $playerId = (string) $item->payload['id'] ?? $item->payload['player_id'] ?? $item->payload['user_id'] ?? '';
+            $playerId = (string) ($item->payload['id'] ?? $item->payload['player_id'] ?? $item->payload['user_id'] ?? '');
             if ($playerId === '') {
                 // Required playerId not provided; will need manual fulfillment
+                $hasFailure = true;
+                $failureReason = 'Missing required playerId for product: ' . $product->name;
+                Log::warning('Oranos fulfillment skipped: missing playerId', [
+                    'local_order_id' => $order->id,
+                    'product_id' => $product->id,
+                ]);
                 continue;
             }
 
@@ -261,18 +275,28 @@ class OrderService
                         'product_id' => $product->id,
                     ]);
                 } else {
+                    $hasFailure = true;
+                    $failureReason = 'Oranos returned unexpected response for product: ' . $product->name;
                     Log::warning('Oranos createOrder unexpected response', [
                         'local_order_id' => $order->id,
                         'response' => $response,
                     ]);
                 }
             } catch (\Throwable $e) {
+                $hasFailure = true;
+                $failureReason = 'Oranos API error: ' . $e->getMessage();
                 Log::error('Oranos createOrder failed', [
                     'local_order_id' => $order->id,
                     'product_id' => $product->id,
                     'error' => $e->getMessage(),
                 ]);
             }
+        }
+
+        // If any failure occurred during order creation, refund and reject
+        if ($hasFailure) {
+            $this->refundFailedOrder($order, $failureReason);
+            return;
         }
 
         if (! empty($oranosOrderIds)) {
@@ -300,7 +324,7 @@ class OrderService
                     return;
                 }
             } catch (\Throwable $e) {
-                Log::warning('Oranos checkOrders failed, leaving as Processing', [
+                Log::warning('Oranos checkOrders failed', [
                     'local_order_id' => $order->id,
                     'error' => $e->getMessage(),
                 ]);
@@ -311,6 +335,39 @@ class OrderService
         if ($order->status === OrderStatus::Completed) {
             $order->update(['status' => OrderStatus::Processing]);
         }
+    }
+
+    private function refundFailedOrder(Order $order, string $reason): void
+    {
+        DB::transaction(function () use ($order, $reason) {
+            $order->update([
+                'status' => OrderStatus::Rejected,
+                'failure_reason' => $reason,
+            ]);
+
+            // Refund the user's balance for the total amount
+            $user = $order->user;
+            $user->increment('balance', (float) $order->total);
+
+            // Create a refund transaction
+            Transaction::create([
+                'user_id' => $user->id,
+                'type' => TransactionType::Refund,
+                'amount' => $order->total,
+                'fee' => 0,
+                'status' => TransactionStatus::Approved,
+                'method' => $order->payment_method,
+                'gateway_ref' => 'refund-' . $order->payment_ref,
+                'meta' => [
+                    'order_id' => $order->id,
+                    'original_payment_ref' => $order->payment_ref,
+                    'refund_reason' => $reason,
+                ],
+            ]);
+
+            $this->safeBroadcast(new OrderCompleted($order));
+            $user->notify(new OrderStatusChanged($order));
+        });
     }
 
     private function creditStoreOwner(Order $order, int $storeId): void
@@ -382,6 +439,11 @@ class OrderService
      */
     private function simulatePaymentRef(string $paymentMethod, array $meta, float $total): ?string
     {
+        // partner_api is not a real payment gateway - generate a simple ref
+        if ($paymentMethod === 'partner_api') {
+            return 'partner_api_'.uniqid();
+        }
+
         $gateway = app(PaymentGatewayManager::class)->driver($paymentMethod);
 
         if (! $gateway->isDemoMode()) {
