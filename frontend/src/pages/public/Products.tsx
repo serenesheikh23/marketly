@@ -76,7 +76,7 @@ export default function Products() {
               <Link to={`/product/${p.slug}`} className="card-hover group block overflow-hidden">
                 <div className="aspect-square overflow-hidden relative">
                   <ProductImage name={localized(p, 'name', 'name_ar', locale)} icon={p.icon} category={localized(p.category, 'name', 'name_ar', locale)} categoryImageUrl={p.category?.image_url} imageBase64={p.image_base64} imageUrl={p.image_url} className="w-full h-full object-cover" productId={p.id} showFavorite />
-                  {p.stock === 0 && (
+                  {(p.stock === 0 || p.oranos_available === false) && (
                     <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-10">
                       <span className="badge-rejected text-base px-4 py-2">{t('common.unavailable')}</span>
                     </div>

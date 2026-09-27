@@ -26,7 +26,7 @@ class UsdtGateway implements PaymentGatewayInterface
     public function createDeposit(float $amount, string $currency, array $meta = []): array
     {
         $reference = 'usdt_'.Str::uuid()->toString();
-        $wallet = config('services.usdt.wallet');
+        $wallet = Setting::get('usdt_wallet_address') ?? config('services.usdt.wallet');
         $memo = strtoupper(substr($reference, -8));
 
         Log::info('USDT deposit created', [
@@ -43,8 +43,10 @@ class UsdtGateway implements PaymentGatewayInterface
             'currency' => 'USDT_BEP20',
             'wallet_address' => $wallet,
             'memo' => $memo,
-            'qr_code' => 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data='.urlencode("usdt:{$wallet}?memo={$memo}"),
-            'instructions' => 'Send USDT (BEP-20) to the address above with the memo. Your balance will be credited after 1 confirmation.',
+            'qr_code' => $wallet ? 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data='.urlencode("usdt:{$wallet}?memo={$memo}") : null,
+            'instructions' => $wallet
+                ? 'Send USDT (BEP-20) to the address above with the memo. Your balance will be credited after 1 confirmation.'
+                : 'USDT wallet address not configured. Please contact support.',
         ];
     }
 

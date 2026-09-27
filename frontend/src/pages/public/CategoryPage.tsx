@@ -183,7 +183,7 @@ export default function CategoryPage() {
                        productId={p.id}
                        showFavorite
                      />
-                    {p.stock === 0 && (
+                    {(p.stock === 0 || p.oranos_available === false) && (
                       <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-10">
                         <span className="badge-rejected text-base px-4 py-2">{t('common.unavailable')}</span>
                       </div>

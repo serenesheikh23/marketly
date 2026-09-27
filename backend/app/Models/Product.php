@@ -34,6 +34,7 @@ class Product extends Model
         'is_automation',
         'qty_values',
         'params',
+        'oranos_available',
     ];
 
     protected $casts = [
@@ -47,6 +48,7 @@ class Product extends Model
         'base_price' => 'decimal:2',
         'is_automation' => 'boolean',
         'oranos_product_id' => 'integer',
+        'oranos_available' => 'boolean',
     ];
 
     protected static function booted(): void

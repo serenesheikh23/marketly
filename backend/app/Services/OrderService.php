@@ -201,10 +201,10 @@ class OrderService
             return $order->fresh(['items.product']);
         });
 
-        // After commit — call Oranos for any automation items (outside the transaction).
+        // After commit — mark automation items as pending for manual admin fulfillment.
         $anyFailed = false;
         if ($order->items->contains(fn ($i) => $i->product?->is_automation)) {
-            $this->forwardAutomationItems($order);
+            $this->markAutomationItemsPending($order);
             $order = $order->fresh(['items.product']);
             $anyFailed = $order->status === OrderStatus::Rejected;
         }
@@ -218,86 +218,23 @@ class OrderService
         return $order;
     }
 
-    private function forwardAutomationItems(Order $order): void
+    private function markAutomationItemsPending(Order $order): void
     {
-        $svc = new OranosMarketService();
-
-        $oranosIds = [];
-        $oranosStatuses = [];
-        $totalCommission = 0.0;
-        $failed = [];
-
+        $hasAutomation = false;
         foreach ($order->items as $item) {
             $product = $item->product;
-
-            if (! $product
-                || ! $product->is_automation
-                || empty($product->oranos_product_id)
-            ) {
-                continue;
-            }
-
-            $params = is_array($item->payload) ? array_values($item->payload) : [];
-            $playerId = (string) ($params[0] ?? '');
-            $extra = array_slice($params, 1);
-
-            try {
-                $result = $svc->createOrder(
-                    (int) $product->oranos_product_id,
-                    (int) $item->quantity,
-                    $playerId,
-                    $extra,
-                );
-
-                $oranosIds[] = $result['data']['order_id']
-                    ?? $result['order_id']
-                    ?? null;
-
-                $oranosStatuses[] = $result['data']['status']
-                    ?? $result['status']
-                    ?? 'pending';
-
-                $totalCommission += ((float) $product->price - (float) $product->base_price)
-                    * (int) $item->quantity;
-            } catch (\Throwable $e) {
-                Log::error('Oranos order failed', [
-                    'order_id' => $order->id,
-                    'product_id' => $product->id,
-                    'error' => $e->getMessage(),
-                ]);
-
-                $failed[] = $product->name . ': ' . $e->getMessage();
+            if ($product && $product->is_automation && !empty($product->oranos_product_id)) {
+                $hasAutomation = true;
+                break;
             }
         }
 
-        if (empty($failed)) {
-            $order->update([
-                'oranos_order_id' => implode(',', array_filter($oranosIds)),
-                'oranos_status' => implode(',', $oranosStatuses),
-                'commission' => $totalCommission,
-            ]);
-
-            return;
-        }
-
-        // At least one Oranos call failed — refund the order locally and reject.
-        DB::transaction(function () use ($order, $failed) {
-            if ($order->payment_method === 'cash_wallet') {
-                $order->user->increment('balance', (float) $order->total);
+        if ($hasAutomation) {
+            // Mark order as Processing so admin knows it needs manual fulfillment.
+            // Cash Wallet payments already deducted balance; Binance/USDT stay pending until admin confirms.
+            if ($order->status === OrderStatus::Completed) {
+                $order->update(['status' => OrderStatus::Processing]);
             }
-
-            $order->update([
-                'status' => OrderStatus::Rejected,
-                'failure_reason' => implode(' | ', $failed),
-            ]);
-        });
-
-        // Log any Oranos orders that did succeed — they must be reconciled manually.
-        if (! empty($oranosIds)) {
-            Log::warning('Partial Oranos success on rejected order — reconcile manually', [
-                'order_id' => $order->id,
-                'oranos_order_ids' => $oranosIds,
-            ]);
         }
     }
 

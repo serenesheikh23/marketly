@@ -318,6 +318,14 @@ const en = {
     createCategory: 'Create Category',
     companyInfoUpdated: 'Company info updated.',
     legalPageUpdated: 'Legal page updated.',
+    oranosSync: 'Oranos Sync',
+    applyMarkup: 'Apply Markup',
+    syncProductsNow: 'Sync Products Now',
+    confirmApplyMarkup: 'Are you sure you want to apply markup to all products?',
+    confirmSyncProducts: 'Do you want to sync products from Oranos now?',
+    markupApplied: 'Markup applied successfully.',
+    syncTriggered: 'Sync triggered.',
+    oranosSyncInfo: 'Markup is applied to base cost of products. Sync imports products from Oranos and updates prices.',
   },
 
   // Footer
@@ -374,6 +382,8 @@ const en = {
     qrTitle: 'Payment QR Code',
     qrInstructions: 'Scan the QR code with Binance Pay to complete the payment.',
     qrAlt: 'Payment QR code',
+    sendInstructions: 'Send USDT (BEP-20) to the address above with the memo. Your balance will be credited after 1 confirmation.',
+    walletNotConfigured: 'USDT wallet address not configured. Please contact support.',
   },
   favorites: {
     title: 'Favorites',

@@ -318,6 +318,14 @@ const ar: import('./en').Translations = {
     createCategory: 'إنشاء فئة',
     companyInfoUpdated: 'تم تحديث معلومات الشركة.',
     legalPageUpdated: 'تم تحديث الصفحة القانونية.',
+    oranosSync: 'مزامنة أورانوس',
+    applyMarkup: 'تطبيق نسبة الربح',
+    syncProductsNow: 'مزامنة المنتجات الآن',
+    confirmApplyMarkup: 'هل أنت متأكد من تطبيق نسبة الربح على جميع المنتجات؟',
+    confirmSyncProducts: 'هل تريد مزامنة المنتجات من أورانوس الآن؟',
+    markupApplied: 'تم تطبيق نسبة الربح بنجاح.',
+    syncTriggered: 'تم بدء المزامنة.',
+    oranosSyncInfo: 'نسبة الربح تُطبق على سعر التكلفة الأساسي للمنتجات. المزامنة تستورد المنتجات من أورانوس وتحديث الأسعار.',
   },
 
   // Footer
@@ -374,6 +382,8 @@ const ar: import('./en').Translations = {
     qrTitle: 'رمز الدفع QR',
     qrInstructions: 'امسح الرمز بتطبيق Binance Pay لإكمال الدفع',
     qrAlt: 'رمز الدفع QR',
+    sendInstructions: 'أرسل USDT (BEP-20) إلى العنوان أعلاه مع الملاحظة. سيتم إضافة الرصيد بعد تأكيد واحد.',
+    walletNotConfigured: 'لم يتم ضبط عنوان محفظة USDT بعد. يرجى التواصل مع الدعم.',
   },
   favorites: {
     title: 'المفضلة',
