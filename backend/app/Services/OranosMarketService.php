@@ -51,6 +51,11 @@ class OranosMarketService
         return $this->http()->get("{$this->base}/api/configs?lang={$lang}&currency={$currency}")->json() ?? [];
     }
 
+    public function getProfile(): array
+    {
+        return $this->http()->get("{$this->base}/client/api/profile")->json() ?? [];
+    }
+
     public function createOrder(int $productId, int $quantity, string $playerId, array $extraParams = []): array
     {
         $query = http_build_query(array_merge([
