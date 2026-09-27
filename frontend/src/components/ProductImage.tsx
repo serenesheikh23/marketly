@@ -99,7 +99,7 @@ export default function ProductImage({
   const renderWithFavorite = (content: ReactNode): ReactNode => {
     if (!showFavorite || !productId) return content;
     return (
-      <div className="relative">
+      <div className="relative h-full">
         {content}
         <button
           onClick={handleFavorite}
