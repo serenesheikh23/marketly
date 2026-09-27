@@ -41,6 +41,9 @@ const en = {
     backToSite: 'Back to site',
     adminPanel: 'Admin Panel',
     searchProducts: 'Search products...',
+    connectStore: 'Connect Store',
+    createWebsite: 'Create Website',
+    apiDocs: 'API Docs',
   },
 
   // Products page
@@ -161,8 +164,6 @@ const en = {
 
   // Admin
   admin: {
-    searchProducts: 'Search products…',
-    allCategories: 'All categories',
     dashboard: 'Dashboard',
     favorites: 'Favorites',
     users: 'Users',
@@ -174,6 +175,7 @@ const en = {
     withdrawals: 'Withdrawals',
     oranosMonitor: 'Oranos Monitor',
     settings: 'Settings',
+    partnerRequests: 'Partner Requests',
     allOrders: 'All orders',
     operations: 'Operations',
     finance: 'Finance',
@@ -472,6 +474,194 @@ const en = {
     error: 'Error',
     success: 'Success',
     failed: 'Failed',
+  },
+
+  // Connect Store
+  connectStore: {
+    title: 'Connect Your Store',
+    description: 'Apply to become a Marketly partner and connect your external store via API. Once approved, you\'ll get an API key to fetch products and create orders programmatically.',
+    notLoggedIn: 'Please log in to connect your store.',
+    login: 'Log in',
+    form: {
+      storeName: 'Store Name',
+      storeUrl: 'Store URL',
+      phone: 'Phone Number',
+      notes: 'Notes (optional)',
+      submit: 'Submit Request',
+      submitting: 'Submitting...',
+    },
+    status: {
+      pending: 'Your request is under review.',
+      approved: 'Request approved! Your API key:',
+      rejected: 'Request rejected.',
+      rejectedReason: 'Reason: {reason}',
+      reapply: 'Submit New Request',
+    },
+    apiKey: {
+      yourKey: 'Your API Key',
+      copy: 'Copy',
+      copied: 'Copied!',
+      warning: 'Keep this key secure. Do not share it with anyone.',
+      viewDocs: 'View API Documentation',
+    },
+  },
+
+  // Create Website
+  createWebsite: {
+    title: 'Create Your Website',
+    description: 'Want to build a storefront powered by Marketly? Tell us about your project and we\'ll get in touch.',
+    form: {
+      name: 'Your Name',
+      email: 'Email',
+      phone: 'Phone',
+      needs: 'What do you need?',
+      submit: 'Submit Inquiry',
+      submitting: 'Submitting...',
+    },
+    success: 'Your inquiry has been submitted. We\'ll contact you soon.',
+    error: 'Failed to submit inquiry.',
+  },
+
+  // API Docs
+  apiDocs: {
+    title: 'API Documentation',
+    baseUrl: 'Base URL',
+    auth: 'Authentication',
+    authHeader: 'Include your API key in the header:',
+    authExample: 'api-token: YOUR_API_KEY',
+    endpoints: 'Endpoints',
+    me: {
+      title: 'Get Account Info',
+      method: 'GET',
+      path: '/partner/me',
+      description: 'Returns your account information and current balance.',
+      exampleResponse: {
+        ok: true,
+        data: {
+          id: 123,
+          name: 'John Doe',
+          email: 'john@example.com',
+          balance: 100.50,
+          currency: 'USD',
+        },
+      },
+    },
+    categories: {
+      title: 'List Categories',
+      method: 'GET',
+      path: '/partner/categories',
+      description: 'Returns all categories that have Oranos products.',
+      exampleResponse: {
+        ok: true,
+        data: [
+          { id: 1, name: 'Game Keys', name_ar: 'مفاتيح الألعاب', slug: 'game-keys', parent_id: null, image_url: null },
+        ],
+      },
+    },
+    products: {
+      title: 'List Products',
+      method: 'GET',
+      path: '/partner/products',
+      description: 'Returns paginated products available for purchase. Supports filtering by category_slug and search query (q).',
+      queryParams: [
+        { name: 'page', description: 'Page number (default: 1)' },
+        { name: 'per_page', description: 'Items per page, max 100 (default: 50)' },
+        { name: 'category_slug', description: 'Filter by category slug' },
+        { name: 'q', description: 'Search by name/description' },
+      ],
+      exampleResponse: {
+        ok: true,
+        data: {
+          current_page: 1,
+          data: [
+            { id: 1, oranos_product_id: 1001, name: 'Product Name', name_ar: 'اسم المنتج', slug: 'product-name', price: '10.00', stock: 50, image_url: null, category_id: 1, category_slug: 'game-keys', product_type: 'auto', params: [] },
+          ],
+          last_page: 5,
+          total: 250,
+        },
+      },
+    },
+    product: {
+      title: 'Get Product',
+      method: 'GET',
+      path: '/partner/products/{slug}',
+      description: 'Returns a single product by slug.',
+      exampleResponse: {
+        ok: true,
+        data: { id: 1, oranos_product_id: 1001, name: 'Product Name', name_ar: 'اسم المنتج', slug: 'product-name', price: '10.00', stock: 50, image_url: null, category_id: 1, category_slug: 'game-keys', product_type: 'auto', params: [] },
+      },
+    },
+    createOrder: {
+      title: 'Create Order',
+      method: 'POST',
+      path: '/partner/orders',
+      description: 'Creates an order for a product. Deducts from your wallet balance. Returns 402 if insufficient balance.',
+      bodyParams: [
+        { name: 'product_slug', required: true, description: 'Product slug' },
+        { name: 'quantity', required: true, description: 'Quantity (1-9999)' },
+        { name: 'params', required: false, description: 'Additional parameters required by the product' },
+      ],
+      exampleResponse: {
+        ok: true,
+        order_id: 456,
+        status: 'processing',
+        total_charged: 20.00,
+        new_balance: 80.50,
+      },
+      errorResponse: {
+        ok: false,
+        error: 'insufficient_balance',
+        required: 20.00,
+        current: 10.00,
+      },
+    },
+    orderStatus: {
+      title: 'Get Order Status',
+      method: 'GET',
+      path: '/partner/orders/{id}',
+      description: 'Returns the status of an order belonging to your account.',
+      exampleResponse: {
+        ok: true,
+        data: { id: 456, status: 'completed', created_at: '2024-01-15T10:30:00Z', fulfilled_at: '2024-01-15T10:30:05Z' },
+      },
+    },
+    rateLimit: 'Rate limit: 60 requests per minute.',
+    copyKey: 'Copy API Key',
+    keyCopied: 'API key copied to clipboard!',
+    yourApiKey: 'Your API Key',
+    keyWarning: 'Keep this key secure. Do not share it with anyone. Regenerate by contacting support if compromised.',
+  },
+
+  // Admin Partner Requests
+  partnerRequests: {
+    title: 'Partner Requests',
+    table: {
+      user: 'User',
+      storeName: 'Store Name',
+      storeUrl: 'Store URL',
+      phone: 'Phone',
+      status: 'Status',
+      date: 'Date',
+      actions: 'Actions',
+    },
+    filters: {
+      all: 'All',
+      pending: 'Pending',
+      approved: 'Approved',
+      rejected: 'Rejected',
+    },
+    approve: 'Approve',
+    reject: 'Reject',
+    confirmApprove: 'Approve this request and generate an API key?',
+    confirmReject: 'Reject this request?',
+    rejectReason: 'Rejection Reason',
+    rejectReasonPlaceholder: 'Enter reason for rejection...',
+    apiKeyGenerated: 'API Key Generated',
+    apiKey: 'API Key',
+    copyKey: 'Copy Key',
+    keyCopied: 'Copied!',
+    keyWarning: 'Share this key with the partner. It will not be shown again.',
+    noRequests: 'No partner requests found.',
   },
 };
 

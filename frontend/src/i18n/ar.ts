@@ -41,6 +41,9 @@ const ar: import('./en').Translations = {
     backToSite: 'العودة للموقع',
     adminPanel: 'لوحة الإدارة',
     searchProducts: 'ابحث عن المنتجات...',
+    connectStore: 'ربط متجر',
+    createWebsite: 'إنشاء موقع',
+    apiDocs: 'توثيق API',
   },
 
   // Products page
@@ -161,8 +164,6 @@ const ar: import('./en').Translations = {
 
   // Admin
   admin: {
-    searchProducts: 'ابحث عن منتج…',
-    allCategories: 'كل الفئات',
     dashboard: 'لوحة التحكم',
     favorites: 'المفضلة',
     users: 'المستخدمون',
@@ -174,6 +175,7 @@ const ar: import('./en').Translations = {
     withdrawals: 'السحوبات',
     oranosMonitor: 'مراقبة Oranos',
     settings: 'الإعدادات',
+    partnerRequests: 'طلبات الشراكة',
     allOrders: 'جميع الطلبات',
     operations: 'العمليات',
     finance: 'المالية',
@@ -473,6 +475,194 @@ const ar: import('./en').Translations = {
     error: 'خطأ',
     success: 'نجاح',
     failed: 'فشل',
+  },
+
+  // Connect Store
+  connectStore: {
+    title: 'ربط متجرك',
+    description: 'تقدم لتصبح شريكاً في Marketly وربط متجرك الخارجي عبر API. عند الموافقة، ستحصل على مفتاح API لجلب المنتجات وإنشاء الطلبات برمجياً.',
+    notLoggedIn: 'الرجاء تسجيل الدخول لربط متجرك.',
+    login: 'تسجيل الدخول',
+    form: {
+      storeName: 'اسم المتجر',
+      storeUrl: 'رابط المتجر',
+      phone: 'رقم الهاتف',
+      notes: 'ملاحظات (اختياري)',
+      submit: 'إرسال الطلب',
+      submitting: 'جاري الإرسال...',
+    },
+    status: {
+      pending: 'طلبك قيد المراجعة.',
+      approved: 'تمت الموافقة على طلبك! مفتاح API الخاص بك:',
+      rejected: 'تم رفض الطلب.',
+      rejectedReason: 'السبب: {reason}',
+      reapply: 'إرسال طلب جديد',
+    },
+    apiKey: {
+      yourKey: 'مفتاح API الخاص بك',
+      copy: 'نسخ',
+      copied: 'تم النسخ!',
+      warning: 'احتفظ بهذا المفتاح في مكان آمن، لا تشاركه مع أحد.',
+      viewDocs: 'عرض توثيق API',
+    },
+  },
+
+  // Create Website
+  createWebsite: {
+    title: 'إنشاء موقعك الإلكتروني',
+    description: 'هل تريد بناء واجهة متجر مدعومة من Marketly؟ أخبرنا عن مشروعك وسنتواصل معك.',
+    form: {
+      name: 'اسمك',
+      email: 'البريد الإلكتروني',
+      phone: 'الهاتف',
+      needs: 'ماذا تحتاج؟',
+      submit: 'إرسال الاستفسار',
+      submitting: 'جاري الإرسال...',
+    },
+    success: 'تم إرسال استفسارك. سنتواصل معك قريباً.',
+    error: 'فشل إرسال الاستفسار.',
+  },
+
+  // API Docs
+  apiDocs: {
+    title: 'توثيق API',
+    baseUrl: 'الرابط الأساسي',
+    auth: 'المصادقة',
+    authHeader: 'أضف مفتاح API في الهيدر:',
+    authExample: 'api-token: YOUR_API_KEY',
+    endpoints: 'نقاط النهاية',
+    me: {
+      title: 'معلومات الحساب',
+      method: 'GET',
+      path: '/partner/me',
+      description: 'يعرض معلومات حسابك والرصيد الحالي.',
+      exampleResponse: {
+        ok: true,
+        data: {
+          id: 123,
+          name: 'أحمد محمد',
+          email: 'ahmed@example.com',
+          balance: 100.50,
+          currency: 'USD',
+        },
+      },
+    },
+    categories: {
+      title: 'قائمة الفئات',
+      method: 'GET',
+      path: '/partner/categories',
+      description: 'يعرض جميع الفئات التي تحتوي على منتجات Oranos.',
+      exampleResponse: {
+        ok: true,
+        data: [
+          { id: 1, name: 'مفاتيح الألعاب', name_ar: 'مفاتيح الألعاب', slug: 'game-keys', parent_id: null, image_url: null },
+        ],
+      },
+    },
+    products: {
+      title: 'قائمة المنتجات',
+      method: 'GET',
+      path: '/partner/products',
+      description: 'يعرض المنتجات المتاحة للشراء مع ترقيم الصفحات. يدعم التصفية بـ category_slug والبحث بـ q.',
+      queryParams: [
+        { name: 'page', description: 'رقم الصفحة (افتراضي: 1)' },
+        { name: 'per_page', description: 'عناصر في الصفحة، حد أقصى 100 (افتراضي: 50)' },
+        { name: 'category_slug', description: 'تصفية حسب رابط الفئة' },
+        { name: 'q', description: 'بحث بالاسم/الوصف' },
+      ],
+      exampleResponse: {
+        ok: true,
+        data: {
+          current_page: 1,
+          data: [
+            { id: 1, oranos_product_id: 1001, name: 'اسم المنتج', name_ar: 'اسم المنتج', slug: 'product-name', price: '10.00', stock: 50, image_url: null, category_id: 1, category_slug: 'game-keys', product_type: 'auto', params: [] },
+          ],
+          last_page: 5,
+          total: 250,
+        },
+      },
+    },
+    product: {
+      title: 'عرض منتج',
+      method: 'GET',
+      path: '/partner/products/{slug}',
+      description: 'يعرض منتجاً واحداً بالرابط.',
+      exampleResponse: {
+        ok: true,
+        data: { id: 1, oranos_product_id: 1001, name: 'اسم المنتج', name_ar: 'اسم المنتج', slug: 'product-name', price: '10.00', stock: 50, image_url: null, category_id: 1, category_slug: 'game-keys', product_type: 'auto', params: [] },
+      },
+    },
+    createOrder: {
+      title: 'إنشاء طلب',
+      method: 'POST',
+      path: '/partner/orders',
+      description: 'ينشئ طلباً لمنتج. يخصم من رصيد محفظتك. يعيد 402 إذا كان الرصيد غير كافٍ.',
+      bodyParams: [
+        { name: 'product_slug', required: true, description: 'رابط المنتج' },
+        { name: 'quantity', required: true, description: 'الكمية (1-9999)' },
+        { name: 'params', required: false, description: 'معاملات إضافية يطلبها المنتج' },
+      ],
+      exampleResponse: {
+        ok: true,
+        order_id: 456,
+        status: 'processing',
+        total_charged: 20.00,
+        new_balance: 80.50,
+      },
+      errorResponse: {
+        ok: false,
+        error: 'insufficient_balance',
+        required: 20.00,
+        current: 10.00,
+      },
+    },
+    orderStatus: {
+      title: 'حالة الطلب',
+      method: 'GET',
+      path: '/partner/orders/{id}',
+      description: 'يعرض حالة طلب يتبع لحسابك.',
+      exampleResponse: {
+        ok: true,
+        data: { id: 456, status: 'completed', created_at: '2024-01-15T10:30:00Z', fulfilled_at: '2024-01-15T10:30:05Z' },
+      },
+    },
+    rateLimit: 'حد المعدل: 60 طلب في الدقيقة.',
+    copyKey: 'نسخ مفتاح API',
+    keyCopied: 'تم نسخ مفتاح API إلى الحافظة!',
+    yourApiKey: 'مفتاح API الخاص بك',
+    keyWarning: 'احتفظ بهذا المفتاح في مكان آمن. لا تشاركه مع أحد. أعد إنشاؤه بالتواصل مع الدعم إذا تم اختراقه.',
+  },
+
+  // Admin Partner Requests
+  partnerRequests: {
+    title: 'طلبات الشراكة',
+    table: {
+      user: 'المستخدم',
+      storeName: 'اسم المتجر',
+      storeUrl: 'رابط المتجر',
+      phone: 'الهاتف',
+      status: 'الحالة',
+      date: 'التاريخ',
+      actions: 'الإجراءات',
+    },
+    filters: {
+      all: 'الكل',
+      pending: 'معلق',
+      approved: 'موافق عليه',
+      rejected: 'مرفوض',
+    },
+    approve: 'موافقة',
+    reject: 'رفض',
+    confirmApprove: 'الموافقة على هذا الطلب وإنشاء مفتاح API؟',
+    confirmReject: 'رفض هذا الطلب؟',
+    rejectReason: 'سبب الرفض',
+    rejectReasonPlaceholder: 'أدخل سبب الرفض...',
+    apiKeyGenerated: 'تم إنشاء مفتاح API',
+    apiKey: 'مفتاح API',
+    copyKey: 'نسخ المفتاح',
+    keyCopied: 'تم النسخ!',
+    keyWarning: 'شارك هذا المفتاح مع الشريك. لن يظهر مرة أخرى.',
+    noRequests: 'لا توجد طلبات شراكة.',
   },
 };
 

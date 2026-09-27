@@ -20,6 +20,8 @@ class User extends Authenticatable
         'vip_level',
         'balance',
         'banned_at',
+        'api_key',
+        'api_key_generated_at',
     ];
 
     protected $hidden = [
@@ -33,6 +35,7 @@ class User extends Authenticatable
         'vip_level' => VipLevel::class,
         'balance' => 'decimal:2',
         'banned_at' => 'datetime',
+        'api_key_generated_at' => 'datetime',
     ];
 
     public function orders()
@@ -73,5 +76,10 @@ class User extends Authenticatable
     public function isVip(): bool
     {
         return $this->vip_level !== VipLevel::None;
+    }
+
+    public function partnerApiRequest(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(PartnerApiRequest::class);
     }
 }

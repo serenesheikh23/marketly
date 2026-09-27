@@ -9,6 +9,9 @@ use App\Http\Controllers\Api\Admin\AdminSyncController;
 use App\Http\Controllers\Api\Admin\AdminSettingsController;
 use App\Http\Controllers\Api\Admin\AdminTransactionController;
 use App\Http\Controllers\Api\Admin\UserController;
+use App\Http\Controllers\Api\ContactWebsiteController;
+use App\Http\Controllers\Api\PartnerRequestController;
+use App\Http\Controllers\Api\Partner\PartnerApiController;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Auth\ForgotPasswordController;
 use App\Http\Controllers\Api\Category\CategoryController;
@@ -54,10 +57,17 @@ Route::post('/webhooks/payments/{gateway}', [WebhookController::class, 'handle']
 Route::post('/webhooks/binance', [BinanceWebhookController::class, 'handle']);
 Route::post('/webhooks/usdt', [UsdtWebhookController::class, 'handle']);
 
+// Public contact form (no auth, throttle)
+Route::middleware('throttle:register')->post('/contact-website', [ContactWebsiteController::class, 'store']);
+
 // Authenticated user routes
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::get('/auth/me', [AuthController::class, 'me']);
+
+    // Partner API requests
+    Route::get('/partner-request', [PartnerRequestController::class, 'myRequest']);
+    Route::post('/partner-request', [PartnerRequestController::class, 'store']);
 
     // Orders
     Route::get('/orders', [OrderController::class, 'index']);
@@ -147,4 +157,19 @@ Route::middleware(['auth:sanctum', 'role:admin|moderator'])->prefix('admin')->gr
         Route::put('/settings/company', [AdminSettingsController::class, 'updateCompany']);
         Route::put('/settings/legal/{page}', [AdminSettingsController::class, 'updateLegal']);
     });
+
+    // Partner API requests
+    Route::get('/partner-requests', [PartnerRequestController::class, 'index']);
+    Route::post('/partner-requests/{partnerApiRequest}/approve', [PartnerRequestController::class, 'approve']);
+    Route::post('/partner-requests/{partnerApiRequest}/reject', [PartnerRequestController::class, 'reject']);
+});
+
+// Partner API routes (public, auth via api-token header)
+Route::middleware(['partner.api', 'throttle:60,1'])->prefix('partner')->group(function () {
+    Route::get('/me', [PartnerApiController::class, 'me']);
+    Route::get('/categories', [PartnerApiController::class, 'categories']);
+    Route::get('/products', [PartnerApiController::class, 'products']);
+    Route::get('/products/{slug}', [PartnerApiController::class, 'product']);
+    Route::post('/orders', [PartnerApiController::class, 'createOrder']);
+    Route::get('/orders/{id}', [PartnerApiController::class, 'orderStatus']);
 });
