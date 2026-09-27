@@ -53,6 +53,12 @@ if (! $name) {
                     if (empty($slug)) {
                         $slug = 'cat-'.substr(md5($name), 0, 12);
                     }
+
+                    // Ensure slug is unique by appending oranos_id if needed
+                    if ($oranosId && Category::where('slug', $slug)->exists()) {
+                        $slug = $slug.'-'.$oranosId;
+                    }
+
                     $category = Category::create([
                         'slug' => $slug,
                         'name' => $name,
