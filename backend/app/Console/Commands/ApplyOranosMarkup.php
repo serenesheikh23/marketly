@@ -13,7 +13,7 @@ class ApplyOranosMarkup extends Command
 
     public function handle(): int
     {
-        $markupPercent = (float) Setting::get('oranos_markup_percent', config('services.oranos.markup', 1.20) * 100);
+        $markupPercent = (float) Setting::get('oranos_markup_percent', 20);
         $markup = 1 + ($markupPercent / 100);
 
         $products = Product::whereNotNull('oranos_product_id')->get();
