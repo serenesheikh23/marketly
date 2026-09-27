@@ -56,20 +56,6 @@ export default function CategoryPage() {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Recursively collect all descendant category slugs
-  const getAllDescendantSlugs = (cats: any[], parentIds: number[]): string[] => {
-    const slugs: string[] = [];
-    for (const cat of cats) {
-      if (parentIds.includes(cat.id)) {
-        slugs.push(cat.slug);
-        if (cat.children?.length) {
-          slugs.push(...getAllDescendantSlugs(cat.children, [cat.id]));
-        }
-      }
-    }
-    return slugs;
-  };
-
   useEffect(() => {
     if (!slug) return;
     setLoading(true);
@@ -89,23 +75,7 @@ export default function CategoryPage() {
         }
         setCategory(cat);
         setChildren(cat.children ?? []);
-        
-        // Get all descendant category slugs including self
-        const descendantSlugs = getAllDescendantSlugs(list, [cat.id]);
-        
-        // Fetch products for each descendant category and combine
-        Promise.all(
-          descendantSlugs.map((s) => productApi.list({ category: s, per_page: '100' }))
-        )
-          .then((responses) => {
-            const allProducts = responses.flatMap((res) => res.data.data ?? []);
-            // Deduplicate by product ID
-            const uniqueProducts = Array.from(
-              new Map(allProducts.map((p) => [p.id, p])).values()
-            );
-            setProducts(uniqueProducts);
-          })
-          .catch(console.error);
+        setProducts(cat.products ?? []);
       })
       .catch(console.error)
       .finally(() => setLoading(false));
