@@ -201,10 +201,10 @@ class OrderService
             return $order->fresh(['items.product']);
         });
 
-        // After commit — mark automation items as pending for manual admin fulfillment.
+        // After commit — attempt auto-fulfillment for automation items via Oranos.
         $anyFailed = false;
         if ($order->items->contains(fn ($i) => $i->product?->is_automation)) {
-            $this->markAutomationItemsPending($order);
+            $this->fulfillAutomationItems($order);
             $order = $order->fresh(['items.product']);
             $anyFailed = $order->status === OrderStatus::Rejected;
         }
@@ -218,23 +218,98 @@ class OrderService
         return $order;
     }
 
-    private function markAutomationItemsPending(Order $order): void
+    private function fulfillAutomationItems(Order $order): void
     {
-        $hasAutomation = false;
+        $oranosService = app(OranosMarketService::class);
+        $oranosOrderIds = [];
+
         foreach ($order->items as $item) {
             $product = $item->product;
-            if ($product && $product->is_automation && !empty($product->oranos_product_id)) {
-                $hasAutomation = true;
-                break;
+            if (! $product || ! $product->is_automation || empty($product->oranos_product_id)) {
+                continue;
+            }
+
+            $playerId = (string) $item->payload['id'] ?? $item->payload['player_id'] ?? $item->payload['user_id'] ?? '';
+            if ($playerId === '') {
+                // Required playerId not provided; will need manual fulfillment
+                continue;
+            }
+
+            $extraParams = [];
+            if (is_array($product->params)) {
+                foreach ($product->params as $param) {
+                    if (isset($item->payload[$param])) {
+                        $extraParams[$param] = $item->payload[$param];
+                    }
+                }
+            }
+
+            try {
+                $response = $oranosService->createOrder(
+                    (int) $product->oranos_product_id,
+                    (int) $item->quantity,
+                    $playerId,
+                    $extraParams
+                );
+
+                if (isset($response['data']['order_id']) || isset($response['order_id'])) {
+                    $oranosOrderId = $response['data']['order_id'] ?? $response['order_id'];
+                    $oranosOrderIds[] = $oranosOrderId;
+                    Log::info('Oranos order created', [
+                        'local_order_id' => $order->id,
+                        'oranos_order_id' => $oranosOrderId,
+                        'product_id' => $product->id,
+                    ]);
+                } else {
+                    Log::warning('Oranos createOrder unexpected response', [
+                        'local_order_id' => $order->id,
+                        'response' => $response,
+                    ]);
+                }
+            } catch (\Throwable $e) {
+                Log::error('Oranos createOrder failed', [
+                    'local_order_id' => $order->id,
+                    'product_id' => $product->id,
+                    'error' => $e->getMessage(),
+                ]);
             }
         }
 
-        if ($hasAutomation) {
-            // Mark order as Processing so admin knows it needs manual fulfillment.
-            // Cash Wallet payments already deducted balance; Binance/USDT stay pending until admin confirms.
-            if ($order->status === OrderStatus::Completed) {
-                $order->update(['status' => OrderStatus::Processing]);
+        if (! empty($oranosOrderIds)) {
+            // Check order statuses from Oranos
+            try {
+                $checkResponse = $oranosService->checkOrders($oranosOrderIds);
+                $allCompleted = true;
+
+                if (isset($checkResponse['data']) && is_array($checkResponse['data'])) {
+                    foreach ($checkResponse['data'] as $oranosOrder) {
+                        $status = $oranosOrder['status'] ?? $oranosOrder['state'] ?? null;
+                        if ($status !== 'completed' && $status !== 'delivered' && $status !== 'success') {
+                            $allCompleted = false;
+                            break;
+                        }
+                    }
+                } else {
+                    $allCompleted = false;
+                }
+
+                if ($allCompleted) {
+                    $order->update(['status' => OrderStatus::Completed]);
+                    $this->safeBroadcast(new OrderCompleted($order));
+                    $order->user->notify(new OrderStatusChanged($order));
+                    return;
+                }
+            } catch (\Throwable $e) {
+                Log::warning('Oranos checkOrders failed, leaving as Processing', [
+                    'local_order_id' => $order->id,
+                    'error' => $e->getMessage(),
+                ]);
             }
+        }
+
+        // If we reach here, auto-fulfillment didn't complete — mark as Processing for manual admin fulfillment.
+        if ($order->status === OrderStatus::Completed) {
+            $order->update(['status' => OrderStatus::Processing]);
         }
     }
 

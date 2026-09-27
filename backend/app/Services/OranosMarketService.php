@@ -3,6 +3,9 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use RuntimeException;
 
 class OranosMarketService
 {
@@ -46,5 +49,54 @@ class OranosMarketService
     public function getConfigs(string $lang = 'ar', string $currency = 'USD'): array
     {
         return $this->http()->get("{$this->base}/api/configs?lang={$lang}&currency={$currency}")->json() ?? [];
+    }
+
+    public function createOrder(int $productId, int $quantity, string $playerId, array $extraParams = []): array
+    {
+        $query = http_build_query(array_merge([
+            'qty' => $quantity,
+            'playerId' => $playerId,
+            'order_uuid' => Str::random(32),
+        ], $extraParams));
+
+        try {
+            $response = $this->http()->get("{$this->base}/client/api/newOrder/{$productId}/params?{$query}");
+        } catch (\Exception $e) {
+            Log::error('Oranos API createOrder failed', ['error' => $e->getMessage(), 'product_id' => $productId]);
+            throw new RuntimeException('Oranos API request failed: '.$e->getMessage());
+        }
+
+        if (! $response->successful()) {
+            Log::error('Oranos API createOrder error', [
+                'status' => $response->status(),
+                'body' => $response->body(),
+                'product_id' => $productId,
+            ]);
+            throw new RuntimeException('Oranos API error: '.$response->status());
+        }
+
+        return $response->json();
+    }
+
+    public function checkOrders(array $orderIds): array
+    {
+        $orders = rawurlencode(json_encode($orderIds));
+
+        try {
+            $response = $this->http()->get("{$this->base}/client/api/check?orders={$orders}");
+        } catch (\Exception $e) {
+            Log::error('Oranos API checkOrders failed', ['error' => $e->getMessage(), 'order_ids' => $orderIds]);
+            throw new RuntimeException('Oranos API request failed: '.$e->getMessage());
+        }
+
+        if (! $response->successful()) {
+            Log::error('Oranos API checkOrders error', [
+                'status' => $response->status(),
+                'body' => $response->body(),
+            ]);
+            throw new RuntimeException('Oranos API error: '.$response->status());
+        }
+
+        return $response->json();
     }
 }
