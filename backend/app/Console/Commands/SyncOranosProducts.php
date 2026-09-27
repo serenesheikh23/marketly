@@ -31,7 +31,8 @@ class SyncOranosProducts extends Command
             return 1;
         }
 
-        $markup = (float) config('services.oranos.markup', 1.20);
+        $markupPercent = (float) Setting::get('oranos_markup_percent', 20);
+        $markup = 1 + ($markupPercent / 100);
 
         $defaultCategory = Category::firstOrCreate(
             ['slug' => 'oranos-other'],
@@ -129,25 +130,31 @@ class SyncOranosProducts extends Command
                     $slug = 'product-'.$oranosId;
                 }
 
-                Product::updateOrCreate(
-                    ['oranos_product_id' => $oranosId],
-                    [
-                        'category_id' => $category->id,
-                        'name' => $name,
-                        'name_ar' => $name,
-                        'description' => $name,
-                        'description_ar' => $name,
-                        'base_price' => $ourCost,
-                        'price' => $ourRetail,
-                        'is_automation' => true,
-                        'qty_values' => $qtyValues,
-                        'params' => $params,
-                        'is_active' => $isActive,
-                        'slug' => $slug,
-                        'image_url' => $productImg,
-                        'image_base64' => $productImgBase64,
-                    ]
-                );
+                $oranosAvailable = $product['available'] ?? $product['is_available'] ?? $product['status'] ?? true;
+                    if (is_string($oranosAvailable)) {
+                        $oranosAvailable = in_array(strtolower($oranosAvailable), ['active', 'available', 'in_stock', 'true', '1']);
+                    }
+
+                    Product::updateOrCreate(
+                        ['oranos_product_id' => $oranosId],
+                        [
+                            'category_id' => $category->id,
+                            'name' => $name,
+                            'name_ar' => $name,
+                            'description' => $name,
+                            'description_ar' => $name,
+                            'base_price' => $ourCost,
+                            'price' => $ourRetail,
+                            'is_automation' => true,
+                            'qty_values' => $qtyValues,
+                            'params' => $params,
+                            'is_active' => $isActive,
+                            'oranos_available' => $oranosAvailable,
+                            'slug' => $slug,
+                            'image_url' => $productImg,
+                            'image_base64' => $productImgBase64,
+                        ]
+                    );
 
                 $synced++;
             } catch (\Throwable $e) {
@@ -178,7 +185,8 @@ class SyncOranosProducts extends Command
 
         // Refresh store prices to match current product prices
         $updatedStores = 0;
-        $storeMarkup = 1.10;
+        $storeMarkupPercent = (float) Setting::get('store_markup_percent', 10);
+        $storeMarkup = 1 + ($storeMarkupPercent / 100);
 
         DB::table('stores')->orderBy('id')->chunk(50, function ($stores) use (&$updatedStores, $storeMarkup) {
             foreach ($stores as $store) {

@@ -1,58 +1,116 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Marketly Backend
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Laravel API for Marketly digital marketplace with Oranos integration.
 
-## About Laravel
+## Oranos Sync Pipeline
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Marketly syncs products and categories from Oranos Market API on a scheduled basis.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Sync Flow
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+1. **Categories Sync** (`oranos:sync-categories`) - Daily at 03:00
+   - Fetches categories from `GET /client/api/categories`
+   - Creates/updates local categories with images
+   - Links parent categories via `oranos_category_id`
 
-## Learning Laravel
+2. **Products Sync** (`oranos:sync-products`) - Daily at 03:10
+   - Fetches products from `GET /client/api/products`
+   - For each product:
+     - Reads `price` as `base_price` (our cost)
+     - Applies markup: `price = base_price * (1 + markup_percent/100)`
+     - Default markup: 20% (configurable via `oranos_markup_percent` setting)
+     - Reads `available`/`is_available`/`status` for `oranos_available`
+     - Downloads images (skips placeholder `empty.png`)
+     - Links to categories, creates missing categories
+   - Refreshes store prices with 10% markup (configurable via `store_markup_percent`)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+3. **Price Verification** (`oranos:verify-price-sync`) - Weekly
+   - Samples 10 random Oranos-linked products
+   - Compares Oranos `price` vs local `base_price`
+   - Reports MATCH/MISMATCH with diff
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+4. **Markup Recalculation** (`oranos:apply-markup`) - Weekly
+   - Recomputes all Oranos product prices from `base_price` using current markup
+   - Updates store custom prices
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+5. **Harvest** (`oranos:harvest --update`) - Weekly Sunday 03:30
+   - Processes pending automation orders via Oranos
+   - Updates order statuses based on Oranos responses
 
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+### Manual Commands
 
 ```bash
-composer require laravel/boost --dev
+# Sync categories from Oranos
+php artisan oranos:sync-categories
 
-php artisan boost:install
+# Sync products from Oranos (with markup)
+php artisan oranos:sync-products
+
+# Recalculate all prices from base_price using current markup
+php artisan oranos:apply-markup
+
+# Verify prices match Oranos (spot check 10 products)
+php artisan oranos:verify-price-sync
+
+# Process automation orders
+php artisan oranos:harvest --update
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### Key Settings (Admin → Settings)
 
-## Contributing
+| Key | Default | Description |
+|-----|---------|-------------|
+| `oranos_markup_percent` | 20 | Markup % on Oranos base price |
+| `store_markup_percent` | 10 | Store markup on product price |
+| `usdt_wallet_address` | - | USDT BEP-20 deposit wallet |
+| `binance_pay_key` | - | Binance Pay API key |
+| `binance_pay_secret` | - | Binance Pay secret |
+| `services.oranos.url` | `https://api.oranosmarket.com` | Oranos API base URL |
+| `services.oranos.token` | - | Oranos API token |
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Environment Variables
 
-## Code of Conduct
+```env
+ORANOS_API_URL=https://api.oranosmarket.com
+ORANOS_API_TOKEN=your_token
+ORANOS_MARKUP=1.20
+BINANCE_PAY_KEY=
+BINANCE_PAY_SECRET=
+USDT_WALLET_ADDRESS=
+USDT_WEBHOOK_SECRET=placeholder
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Deployment (Railway)
 
-## Security Vulnerabilities
+1. Set environment variables in Railway dashboard
+2. Custom Start Command:
+   ```
+   sh -c "php artisan storage:link || true; php artisan migrate --force; php artisan schedule:work > /dev/null 2>&1 & php artisan serve --host=0.0.0.0 --port=$PORT"
+   ```
+3. Ensure `schedule:work` runs for cron jobs
+4. Configure webhook URLs for Binance/USDT in Oranos dashboard
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Database
 
-## License
+Run migrations:
+```bash
+php artisan migrate --force
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Key tables: `products`, `categories`, `orders`, `transactions`, `settings`, `stores`, `users`.
+
+### Webhooks
+
+- **Binance Pay**: `POST /webhooks/binance` (verify `X-Binance-Signature` HMAC-SHA512)
+- **USDT**: `POST /webhooks/usdt` (verify `X-Usdt-Signature` HMAC-SHA256)
+- **Oranos Orders**: `POST /webhooks/payments/{gateway}` (generic)
+
+Both verify HMAC signatures and auto-approve deposits on success.
+
+### Admin Features
+
+- **Products**: List, create, edit, toggle active, stats (Oranos vs Manual count)
+- **Categories**: Search, emoji picker, form fields
+- **Orders**: Pending manual, status updates
+- **Deposits/Withdrawals**: Approve/reject
+- **Settings**: VIP, Payment, Oranos markup, Company info, Legal pages

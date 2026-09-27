@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { adminSettingsApi, settingsApi } from '@/api/client';
+import { adminSettingsApi, settingsApi, adminSyncApi } from '@/api/client';
 import toast from 'react-hot-toast';
 import Button from '@/components/Button';
 import PageTransition from '@/components/PageTransition';
@@ -20,7 +20,11 @@ const GROUPS: Record<string, { labelKey: string; keys: string[] }> = {
   },
   payment: {
     labelKey: 'admin.paymentProviders',
-    keys: ['binance_pay_key', 'binance_pay_secret', 'usdt_wallet_address'],
+    keys: ['binance_pay_key', 'binance_pay_secret', 'usdt_wallet_address', 'oranos_markup_percent', 'store_markup_percent'],
+  },
+  oranos: {
+    labelKey: 'admin.oranosSync',
+    keys: [],
   },
 };
 
@@ -104,6 +108,26 @@ export default function AdminSettings() {
     finally { setLegalSaving(null); }
   };
 
+  const handleApplyMarkup = async () => {
+    if (!confirm(t('admin.confirmApplyMarkup'))) return;
+    try {
+      const r = await adminSyncApi.applyMarkup();
+      toast.success((r.data?.output ?? 'done').slice(0, 200));
+    } catch (err: any) {
+      toast.error(err?.response?.data?.error ?? t('common.failed'));
+    }
+  };
+
+  const handleSyncProducts = async () => {
+    if (!confirm(t('admin.confirmSyncProducts'))) return;
+    try {
+      const r = await adminSyncApi.syncProducts();
+      toast.success((r.data?.output ?? 'done').slice(0, 200));
+    } catch (err: any) {
+      toast.error(err?.response?.data?.error ?? t('common.failed'));
+    }
+  };
+
   return (
     <PageTransition className="space-y-8">
       <div>
@@ -139,6 +163,20 @@ export default function AdminSettings() {
             </div>
           </div>
         ))}
+      </div>
+
+      {/* ── Oranos Sync ── */}
+      <div className="card-pad">
+        <h2 className="text-h3 text-gray-900 dark:text-ink-900 mb-5">{t('admin.oranosSync')}</h2>
+        <div className="flex flex-wrap gap-3">
+          <Button variant="accent" onClick={handleApplyMarkup}>
+            {t('admin.applyMarkup')}
+          </Button>
+          <Button variant="secondary" onClick={handleSyncProducts}>
+            {t('admin.syncProductsNow')}
+          </Button>
+        </div>
+        <p className="text-micro text-gray-500 dark:text-ink-500 mt-3">{t('admin.oranosSyncInfo')}</p>
       </div>
 
       {/* ── Company Info (editable) ── */}
