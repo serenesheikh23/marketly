@@ -126,6 +126,11 @@ export const adminUserApi = {
 };
 
 // Admin — Products
+export const adminSyncApi = {
+  applyMarkup: () => api.post('/admin/sync/apply-markup'),
+  syncProducts: () => api.post('/admin/sync/products'),
+};
+
 export const adminProductApi = {
   list: (params?: Record<string, string>) => api.get('/admin/products', { params }),
   stats: () => api.get('/admin/products/stats'),

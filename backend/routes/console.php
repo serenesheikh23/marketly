@@ -24,3 +24,13 @@ Schedule::command('oranos:harvest --update')
     ->weeklyOn(0, '03:30')
     ->withoutOverlapping()
     ->appendOutputTo($log);
+
+Schedule::command('oranos:apply-markup')
+    ->weekly()
+    ->withoutOverlapping()
+    ->appendOutputTo($log);
+
+Schedule::command('oranos:verify-price-sync')
+    ->weekly()
+    ->withoutOverlapping()
+    ->appendOutputTo($log);

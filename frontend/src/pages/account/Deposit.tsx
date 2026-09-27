@@ -149,7 +149,14 @@ export default function Deposit() {
                 </div>
               )}
               {deposit.deposit.instructions && (
-                <p className="text-small text-gray-600 dark:text-ink-500 text-center">{deposit.deposit.instructions}</p>
+                <p className="text-small text-gray-600 dark:text-ink-500 text-center">
+                  {(() => {
+                    const instr = deposit.deposit.instructions;
+                    if (instr.includes('wallet address not configured')) return t('deposit.walletNotConfigured');
+                    if (instr.includes('Send USDT')) return t('deposit.sendInstructions');
+                    return instr;
+                  })()}
+                </p>
               )}
             </div>
 

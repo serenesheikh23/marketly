@@ -58,6 +58,8 @@ export default function ProductPage() {
   const getDisplayLabel = (label: string) =>
     ['الايدي', 'id', 'الايدي'].includes(label?.toLowerCase()) ? t('product.idLabel') : label;
 
+  const effectiveStock = product.oranos_available === false ? 0 : Number(product.stock);
+
   const handleAddToCart = () => {
     if (!quantity || quantity < 1) {
       setErrors({ quantity: t('product.errorQuantity') });
@@ -201,16 +203,17 @@ export default function ProductPage() {
                   <input
                     type="number"
                     min="1"
-                    max={Number(product.stock)}
+                    max={effectiveStock}
                     className="input w-20 text-center"
                     value={quantity}
                     onChange={(e) =>
-                      setQuantity(Math.max(1, parseInt(e.target.value) || 1))
+                      setQuantity(Math.max(1, Math.min(effectiveStock, parseInt(e.target.value) || 1)))
                     }
                   />
                   <button
                     type="button"
-                    onClick={() => setQuantity((q) => Math.min(Number(product.stock), q + 1))}
+                    disabled={effectiveStock === 0}
+                    onClick={() => setQuantity((q) => Math.min(effectiveStock, q + 1))}
                     className="btn-secondary btn-sm"
                   >
                     +
@@ -284,7 +287,7 @@ export default function ProductPage() {
                   {formatPrice(Number(product.price) * quantity)}
                 </strong>
               </span>
-              {product.stock === 0 ? (
+              {product.stock === 0 || product.oranos_available === false ? (
                 <span className="badge-rejected text-base px-4 py-2">{t('common.unavailable')}</span>
               ) : (
                 <Button
