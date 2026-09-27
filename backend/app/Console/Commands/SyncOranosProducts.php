@@ -26,7 +26,7 @@ class SyncOranosProducts extends Command
         try {
             $products = $service->getProducts();
         } catch (\Throwable $e) {
-            Log::error('Failed to fetch Oranos products', ['error' => $e->getMessage()]);
+            Log::error('Oranos getProducts failed', ['error' => $e->getMessage()]);
             $this->error('Failed to fetch products: '.$e->getMessage());
 
             return 1;

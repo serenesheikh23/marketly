@@ -33,12 +33,68 @@ class OranosMarketService
 
     public function getCategories(): array
     {
-        return $this->http()->get("{$this->base}/client/api/categories")->json() ?? [];
+        $response = $this->http()->get("{$this->base}/client/api/categories");
+        $this->logRawResponse('getCategories', $response);
+
+        $data = $response->json() ?? [];
+
+        return $this->validateListResponse($data, 'getCategories');
     }
 
     public function getProducts(): array
     {
-        return $this->http()->get("{$this->base}/client/api/products")->json() ?? [];
+        $response = $this->http()->get("{$this->base}/client/api/products");
+        $this->logRawResponse('getProducts', $response);
+
+        $data = $response->json() ?? [];
+
+        return $this->validateListResponse($data, 'getProducts');
+    }
+
+    /**
+     * Log raw HTTP response for debugging.
+     */
+    protected function logRawResponse(string $method, $response): void
+    {
+        $status = $response->status();
+        $body = $response->body();
+        $preview = substr($body, 0, 500);
+        Log::debug("Oranos {$method} response", [
+            'status' => $status,
+            'body_preview' => $preview,
+        ]);
+    }
+
+    /**
+     * Validate that the response is a non-empty list of items with 'id' key.
+     *
+     * @param  array|mixed  $data
+     * @return array
+     * @throws RuntimeException if response is not a valid list
+     */
+    protected function validateListResponse(mixed $data, string $method): array
+    {
+        if (! is_array($data)) {
+            throw new RuntimeException("Oranos {$method} returned non-array response: " . json_encode($data));
+        }
+
+        if (empty($data)) {
+            throw new RuntimeException("Oranos {$method} returned empty response");
+        }
+
+        // Check if it's an associative array (error object) vs a list
+        $keys = array_keys($data);
+        if ($keys !== range(0, count($data) - 1)) {
+            throw new RuntimeException("Oranos {$method} returned associative array (likely error object): " . json_encode($data));
+        }
+
+        // Check first item has 'id' key
+        $first = $data[0] ?? null;
+        if (! is_array($first) || ! array_key_exists('id', $first)) {
+            throw new RuntimeException("Oranos {$method} returned malformed item (missing 'id'): " . json_encode($first));
+        }
+
+        return $data;
     }
 
     public function getCategoryProducts(int $oranosCategoryId, string $lang = 'ar'): array
