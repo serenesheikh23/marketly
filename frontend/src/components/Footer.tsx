@@ -6,7 +6,6 @@ import { useI18n } from '@/i18n';
 
 interface CompanySettings {
   company_name?: string;
-  support_email?: string;
   phone?: string;
   address?: string;
   facebook_url?: string;
@@ -83,27 +82,6 @@ export default function Footer() {
             <p className="text-micro text-gray-600 dark:text-ink-500">
               {t('footer.tagline')}
             </p>
-          </div>
-
-          {/* Contact */}
-          <div>
-            <h3 className="text-small font-semibold text-gray-900 dark:text-ink-900 mb-3">{t('footer.contact')}</h3>
-            <ul className="space-y-1.5 text-micro text-gray-600 dark:text-ink-500">
-              {company.support_email && (
-                <li>
-                  <a href={`mailto:${company.support_email}`} className="hover:text-green-400 transition-colors" dir="ltr">
-                    {company.support_email}
-                  </a>
-                </li>
-              )}
-              {/* FIX: Force phone number to LTR so + sign stays on the left */}
-              {company.phone && (
-                <li>
-                  <span dir="ltr">{company.phone}</span>
-                </li>
-              )}
-              {company.address && <li>{company.address}</li>}
-            </ul>
           </div>
 
           {/* Legal */}
