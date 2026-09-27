@@ -4,7 +4,7 @@ use App\Http\Controllers\Api\Admin\AdminCategoryController;
 use App\Http\Controllers\Api\Admin\AdminDashboardController;
 use App\Http\Controllers\Api\Admin\AdminOrderController;
 use App\Http\Controllers\Api\Admin\AdminOranosController;
-$1
+use App\Http\Controllers\Api\Admin\AdminProductController;
 use App\Http\Controllers\Api\Admin\AdminSyncController;
 use App\Http\Controllers\Api\Admin\AdminSettingsController;
 use App\Http\Controllers\Api\Admin\AdminTransactionController;
@@ -106,7 +106,7 @@ Route::middleware(['auth:sanctum', 'role:admin|moderator'])->prefix('admin')->gr
     Route::delete('/users/{user}', [UserController::class, 'destroy']);
 
     Route::get('/products', [AdminProductController::class, 'index']);
-    $1
+    Route::get('/products/stats', [AdminProductController::class, 'stats']);
     Route::post('/sync/apply-markup', [AdminSyncController::class, 'applyMarkup']);
     Route::post('/sync/products', [AdminSyncController::class, 'syncProducts']);
     Route::post('/products', [AdminProductController::class, 'store']);
