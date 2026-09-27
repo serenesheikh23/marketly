@@ -301,40 +301,75 @@ class SyncOranosProducts extends Command
     /**
      * Find or create a category by name, with fallback to oranos_category_id.
      * Avoids creating duplicate categories for Arabic names by matching on name_ar/name first.
+     * Guarantees unique slug even under concurrent inserts.
      */
     private function findOrCreateCategory(string $name, ?int $oranosId = null): Category
     {
+        $name = trim($name);
+
         // 1. Exact match by name_ar or name (handles Arabic correctly)
         $category = Category::where('name_ar', $name)
             ->orWhere('name', $name)
             ->first();
-
-        // 2. If not found, also try matching by oranos_category_id if available
-        if (! $category && $oranosId) {
-            $category = Category::where('oranos_category_id', $oranosId)->first();
+        if ($category) {
+            return $category;
         }
 
-        // 3. Only create new if no match — build a stable slug for Arabic names
-        if (! $category) {
-            $slug = Str::slug($name);
-            if (empty($slug)) {
-                $slug = 'cat-'.substr(md5($name), 0, 12);
+        // 1b. Fuzzy fallback: strip RTL/invisible marks before comparing
+        $clean = preg_replace('/[\x{200B}-\x{200F}\x{202A}-\x{202E}\x{2066}-\x{2069}]/u', '', $name);
+        if ($clean !== $name) {
+            $category = Category::whereRaw(
+                "REPLACE(REPLACE(REPLACE(name_ar, CHAR(0x200F USING utf8mb4), ''), ' ', ''), ' ', '') = ?",
+                [str_replace(' ', '', $clean)]
+            )->first();
+            if ($category) {
+                return $category;
             }
+        }
 
-            // Ensure slug is unique by appending oranos_id if needed
-            if ($oranosId && Category::where('slug', $slug)->exists()) {
-                $slug = $slug.'-'.$oranosId;
+        // 2. Match by oranos_category_id
+        if ($oranosId) {
+            $category = Category::where('oranos_category_id', $oranosId)->first();
+            if ($category) {
+                return $category;
             }
+        }
 
-            $category = Category::create([
+        // 3. Build a GUARANTEED-unique slug
+        $base = Str::slug($name);
+        if (empty($base)) {
+            $base = 'cat-' . substr(md5($name), 0, 12);
+        }
+        $slug = $base;
+        $i = 2;
+        while (Category::where('slug', $slug)->exists()) {
+            $slug = $base . '-' . $i;
+            $i++;
+        }
+
+        // 4. Create with race-condition fallback
+        try {
+            return Category::create([
                 'slug' => $slug,
                 'name' => $name,
                 'name_ar' => $name,
                 'type' => 'auto',
                 'icon' => 'package',
             ]);
+        } catch (\Illuminate\Database\QueryException $e) {
+            // Race: someone else created it between our check and insert
+            if (str_contains($e->getMessage(), 'categories_slug_unique')
+                || str_contains($e->getMessage(), 'Duplicate entry')) {
+                // Try to find it by name or slug one more time
+                $category = Category::where('name_ar', $name)
+                    ->orWhere('name', $name)
+                    ->orWhere('slug', $base)
+                    ->first();
+                if ($category) {
+                    return $category;
+                }
+            }
+            throw $e;
         }
-
-        return $category;
     }
 }
