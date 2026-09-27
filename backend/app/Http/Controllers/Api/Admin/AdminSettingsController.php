@@ -11,7 +11,9 @@ class AdminSettingsController extends Controller
 {
     public function index(): JsonResponse
     {
-        $settings = Setting::all()->groupBy('group');
+        $settings = Setting::all()->groupBy('group')->map(function ($groupSettings) {
+            return $groupSettings->keyBy('key');
+        });
 
         return response()->json(['settings' => $settings]);
     }

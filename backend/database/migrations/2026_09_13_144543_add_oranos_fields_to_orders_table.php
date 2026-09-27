@@ -12,6 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('orders', function (Blueprint $table) {
+            if (!Schema::hasColumn('orders', 'oranos_order_id')) {
+                $table->string('oranos_order_id')->nullable()->after('payment_ref');
+            }
             if (!Schema::hasColumn('orders', 'oranos_status')) {
                 $table->string('oranos_status')->nullable()->after('oranos_order_id');
             }
