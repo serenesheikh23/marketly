@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { categoryApi, productApi } from '@/api/client';
 import ProductImage from '@/components/ProductImage';
@@ -49,6 +49,7 @@ function buildBreadcrumbs(category: any, allCategories: any[]): Array<{label: st
 
 export default function CategoryPage() {
   const { slug } = useParams<{ slug: string }>();
+  const navigate = useNavigate();
   const { t, locale } = useI18n();
   const [all, setAll] = useState<any[]>([]);
   const [category, setCategory] = useState<any | null>(null);
@@ -105,6 +106,18 @@ export default function CategoryPage() {
 
   return (
     <PageTransition className="space-y-10">
+      {/* Back Button */}
+      <button
+        onClick={() => navigate(-1)}
+        className="mb-4 text-small text-gray-600 dark:text-ink-500 hover:text-green-400 dark:hover:text-green-300 transition-colors flex items-center gap-1.5"
+        aria-label={t('product.back')}
+      >
+        <svg className="w-4 h-4 rtl:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
+        <span>{t('product.back')}</span>
+      </button>
+
       <Breadcrumbs items={breadcrumbItems} />
 
       {/* Subcategories section */}
