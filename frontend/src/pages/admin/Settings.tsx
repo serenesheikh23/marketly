@@ -60,9 +60,6 @@ export default function AdminSettings() {
       .then((r) => setCompany(r.data.settings ?? {}))
       .catch(console.error);
     LEGAL_PAGES.forEach((p) => {
-      settingsApi.legal(p.slug, 'en')
-        .then((r) => setLegalContent((prev) => ({ ...prev, [`${p.slug}_en`]: r.data.content ?? '' })))
-        .catch(console.error);
       settingsApi.legal(p.slug, 'ar')
         .then((r) => setLegalContent((prev) => ({ ...prev, [`${p.slug}_ar`]: r.data.content ?? '' })))
         .catch(console.error);
@@ -93,7 +90,6 @@ export default function AdminSettings() {
     setLegalSaving(slug);
     try {
       await adminSettingsApi.updateLegal(slug, {
-        content_en: legalContent[`${slug}_en`] ?? '',
         content_ar: legalContent[`${slug}_ar`] ?? '',
       });
       toast.success(t('admin.legalPageUpdated'));
@@ -206,16 +202,6 @@ export default function AdminSettings() {
               <label className="text-small font-medium text-gray-800 dark:text-ink-800">
                 {t(p.labelKey)}
               </label>
-              {/* English */}
-              <div className="space-y-1">
-                <p className="text-micro text-gray-500 dark:text-ink-500 font-medium">English</p>
-                <textarea
-                  className="input min-h-[120px] font-mono text-small"
-                  value={legalContent[`${p.slug}_en`] ?? ''}
-                  onChange={(e) => setLegalContent((prev) => ({ ...prev, [`${p.slug}_en`]: e.target.value }))}
-                  placeholder="Enter English content..."
-                />
-              </div>
               {/* Arabic */}
               <div className="space-y-1">
                 <p className="text-micro text-gray-500 dark:text-ink-500 font-medium" dir="rtl">المحتوى بالعربية</p>
