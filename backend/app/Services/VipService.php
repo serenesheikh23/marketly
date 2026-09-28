@@ -13,6 +13,7 @@ class VipService
         $key = match ($user->vip_level) {
             VipLevel::Vip1 => 'vip1_withdrawal_limit',
             VipLevel::Vip2 => 'vip2_withdrawal_limit',
+            VipLevel::Vip3 => 'vip3_withdrawal_limit',
             default => null,
         };
 
@@ -28,6 +29,7 @@ class VipService
         $key = match ($user->vip_level) {
             VipLevel::Vip1 => 'vip1_fee_percent',
             VipLevel::Vip2 => 'vip2_fee_percent',
+            VipLevel::Vip3 => 'vip3_fee_percent',
             default => 'regular_fee_percent',
         };
 
@@ -79,6 +81,7 @@ class VipService
         $key = match ($target) {
             VipLevel::Vip1 => 'vip1_upgrade_price',
             VipLevel::Vip2 => 'vip2_upgrade_price',
+            VipLevel::Vip3 => 'vip3_upgrade_price',
             default => null,
         };
 

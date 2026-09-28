@@ -127,6 +127,7 @@ export default function AdminUsers() {
                       <option value="none">{t('admin.regular')}</option>
                       <option value="vip1">VIP1</option>
                       <option value="vip2">VIP2</option>
+                      <option value="vip3">VIP3</option>
                     </select>
                   </td>
                   <td className="font-medium tabular-nums">{formatPrice(u.balance)}</td>

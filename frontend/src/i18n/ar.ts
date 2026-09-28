@@ -435,6 +435,7 @@ const ar: import('./en').Translations = {
     fee: 'الرسوم',
     price: 'السعر',
     buy: 'شراء',
+    vip3: 'VIP 3',
   },
   orders: {
     title: 'طلباتي',
