@@ -21,10 +21,11 @@ interface CartDrawerProps {
 
 export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   const { items } = useAppSelector((s) => s.cart);
+  const { user } = useAppSelector((s) => s.auth);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { t, isRtl } = useI18n();
-  const [paymentMethod, setPaymentMethod] = useState('cash_wallet');
+  const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [confirming, setConfirming] = useState(false);
 
@@ -33,38 +34,35 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   const [usdtTxHash, setUsdtTxHash] = useState('');
   const [usdtNetwork, setUsdtNetwork] = useState('BEP-20');
 
-  const handleMethodChange = (method: string) => {
-    setPaymentMethod(method);
-    if (method !== 'binance_pay') setBinanceId('');
-    if (method !== 'usdt') { setUsdtAddress(''); setUsdtTxHash(''); }
-  };
-
+  const hasManualProduct = items.some((i) => i.product_type === 'manual');
+  const userBalance = user ? parseFloat(user.balance) : 0;
   const total = items.reduce((sum, i) => {
       const price = typeof i.price === 'number' ? i.price : parseFloat(String(i.price ?? '0'));
       const qty = typeof i.quantity === 'number' ? i.quantity : parseInt(String(i.quantity ?? '0'), 10);
       return sum + (isNaN(price) ? 0 : price) * (isNaN(qty) ? 0 : qty);
     }, 0);
 
-  const handleConfirm = () => {
-    if (items.length === 0) return;
-    setConfirming(true);
+  const handleMethodChange = (method: string) => {
+    setPaymentMethod(method);
+    if (method !== 'binance_pay') setBinanceId('');
+    if (method !== 'usdt') { setUsdtAddress(''); setUsdtTxHash(''); }
   };
 
-  const handleCheckout = async () => {
+  const handleCheckout = async (method: string) => {
     if (items.length === 0) return;
 
-    if (paymentMethod === 'binance_pay' && !binanceId.trim()) {
+    if (method === 'binance_pay' && !binanceId.trim()) {
       toast.error('Please enter your Binance ID or email.');
       return;
     }
-    if (paymentMethod === 'usdt' && (!usdtAddress.trim() || !usdtTxHash.trim())) {
+    if (method === 'usdt' && (!usdtAddress.trim() || !usdtTxHash.trim())) {
       toast.error('Please enter your USDT wallet address and transaction hash.');
       return;
     }
 
-    const meta: Record<string, string> | undefined = paymentMethod === 'binance_pay'
+    const meta: Record<string, string> | undefined = method === 'binance_pay'
       ? { binance_id: binanceId.trim(), binance_email: binanceId.trim() }
-      : paymentMethod === 'usdt'
+      : method === 'usdt'
         ? { wallet_address: usdtAddress.trim(), tx_hash: usdtTxHash.trim(), network: usdtNetwork }
         : undefined;
 
@@ -76,7 +74,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
           quantity: i.quantity,
           payload: i.payload,
         })),
-        payment_method: paymentMethod,
+        payment_method: method,
         ...(meta ? { meta } : {}),
       });
       toast.success(t('cart.orderPlaced', { id: res.data.order.id }));
@@ -89,6 +87,29 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
       setSubmitting(false);
     }
   };
+
+  const handleConfirm = () => {
+    if (items.length === 0) return;
+
+    if (hasManualProduct) {
+      setPaymentMethod('cash_wallet');
+      setConfirming(true);
+      return;
+    }
+
+    // Auto products only
+    if (userBalance >= total) {
+      setPaymentMethod('cash_wallet');
+      handleCheckout('cash_wallet');
+      return;
+    }
+
+    // Insufficient balance → redirect to deposit
+    toast.error(t('cart.insufficientBalance'));
+    navigate('/dashboard/deposit');
+  };
+
+  const showPaymentPicker = hasManualProduct || (paymentMethod && paymentMethod !== 'cash_wallet');
 
   return (
     <AnimatePresence>
@@ -200,8 +221,8 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
             {/* Footer — checkout */}
             {items.length > 0 && (
               <div className="border-t border-gray-200 dark:border-ink-200 px-6 py-5 space-y-4 bg-white dark:bg-ink-50">
-                {/* Payment method */}
-                {!confirming && (
+                {/* Payment method — only show for manual products or when user chose alternative */}
+                {!confirming && showPaymentPicker && (
                   <div className="space-y-2">
                     {PAYMENT_METHODS.map((m) => (
                       <label
@@ -268,7 +289,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                       </p>
                     </div>
                     <div className="flex gap-2">
-                      <Button variant="accent" size="lg" className="flex-1" loading={submitting} onClick={handleCheckout}>
+                      <Button variant="accent" size="lg" className="flex-1" loading={submitting} onClick={() => handleCheckout(paymentMethod!)}>
                         {t('cart.confirmOrder')}
                       </Button>
                       <Button variant="secondary" onClick={() => setConfirming(false)} disabled={submitting}>
@@ -278,7 +299,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                   </div>
                 ) : (
                   <Button variant="accent" size="lg" className="w-full" onClick={handleConfirm}>
-                    {t('cart.reviewAndPlace')}
+                    {hasManualProduct ? t('cart.reviewAndPlace') : t('cart.confirmOrder')}
                   </Button>
                 )}
               </div>

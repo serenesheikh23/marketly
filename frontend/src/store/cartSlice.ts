@@ -6,6 +6,7 @@ export interface CartItem {
   price: number;
   quantity: number;
   payload?: string[] | Record<string, unknown>;
+  product_type?: 'auto' | 'manual';
 }
 
 interface CartState {

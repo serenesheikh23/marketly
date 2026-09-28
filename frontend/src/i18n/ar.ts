@@ -94,6 +94,7 @@ const ar: import('./en').Translations = {
     for: 'مقابل',
     ordersProcessed: 'تُعالج الطلبات فوراً بعد تأكيد الدفع.',
     demoNotice: 'وضع تجريبي: الدفع حالياً محاكاة — لن يتم خصم أي مبالغ حتى يتم تكوين مفاتيح الدفع الحقيقية.',
+    insufficientBalance: 'رصيدك غير كافٍ. يرجى إيداع الأموال أولاً.',
   },
 
   // Product page
