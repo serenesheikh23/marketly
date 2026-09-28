@@ -101,6 +101,7 @@ const en = {
   product: {
     productNotFound: 'Product not found',
     backToHome: 'Back to home',
+    back: 'Back',
     manualService: 'Manual Service',
     autoDelivery: 'Auto Delivery',
     externalStore: 'External Store',
