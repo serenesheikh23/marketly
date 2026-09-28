@@ -270,6 +270,10 @@ class OrderService
                 if (isset($response['data']['order_id']) || isset($response['order_id'])) {
                     $oranosOrderId = $response['data']['order_id'] ?? $response['order_id'];
                     $oranosOrderIds[] = $oranosOrderId;
+                    $order->update([
+                        'oranos_order_id' => (string) $oranosOrderId,
+                        'oranos_status' => 'pending',
+                    ]);
                     Log::info('Oranos order created', [
                         'local_order_id' => $order->id,
                         'oranos_order_id' => $oranosOrderId,
