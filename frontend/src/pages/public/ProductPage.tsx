@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { productApi } from '@/api/client';
@@ -11,17 +11,49 @@ import { useI18n } from '@/i18n';
 import { localized } from '@/utils/localize';
 import Breadcrumbs from '@/components/Breadcrumbs';
 
+function isFormatA(qtyValues: any): boolean {
+  return qtyValues && typeof qtyValues === 'object' && !Array.isArray(qtyValues) && 'min' in qtyValues && 'max' in qtyValues;
+}
+
+function isFormatB(qtyValues: any): boolean {
+  return Array.isArray(qtyValues) && qtyValues.length > 0;
+}
+
+function parseQtyValue(v: string | number): number {
+  const n: number = typeof v === 'string' ? parseInt(v, 10) : v;
+  return isNaN(n) ? 0 : n;
+}
+
 export default function ProductPage() {
   const { slug } = useParams();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { t, locale } = useI18n();
   const [product, setProduct] = useState<any>(null);
-  const quantity = 1;
+  const [selectedQty, setSelectedQty] = useState<number | null>(null);
   const [payload, setPayload] = useState<Record<string, string>>({});
   const [paramValues, setParamValues] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const qtyValues = useMemo(() => product?.qty_values ?? null, [product?.qty_values]);
+  const isFormatAQty = useMemo(() => isFormatA(qtyValues), [qtyValues]);
+  const isFormatBQty = useMemo(() => isFormatB(qtyValues), [qtyValues]);
+  const minQty = useMemo(() => isFormatAQty ? parseQtyValue(qtyValues.min) : null, [isFormatAQty, qtyValues]);
+  const maxQty = useMemo(() => isFormatAQty ? parseQtyValue(qtyValues.max) : null, [isFormatAQty, qtyValues]);
+  const tierValues = useMemo(() => isFormatBQty ? qtyValues.map(parseQtyValue).filter((n: number) => n > 0) : [], [isFormatBQty, qtyValues]);
+  const defaultQty = useMemo(() => {
+    if (isFormatAQty && minQty) return minQty;
+    if (isFormatBQty && tierValues.length > 0) return tierValues[0];
+    return 1;
+  }, [isFormatAQty, isFormatBQty, minQty, tierValues]);
+
+  // Initialize selectedQty on product load
+  useEffect(() => {
+    if (product && selectedQty === null) {
+      setSelectedQty(defaultQty);
+    }
+  }, [product, defaultQty, selectedQty]);
 
   useEffect(() => {
     if (!slug) return;
@@ -58,15 +90,30 @@ export default function ProductPage() {
   const getDisplayLabel = (label: string) =>
     ['الايدي', 'id', 'الايدي'].includes(label?.toLowerCase()) ? t('product.idLabel') : label;
 
+  const manualFields = [
+    t('product.linkUsername'),
+    t('product.quantity'),
+    t('product.notesOptional'),
+  ];
+
   const handleAddToCart = () => {
+    const newErrors: Record<string, string> = {};
 
     if (isAutomation) {
-      const newErrors: Record<string, string> = {};
       automationParams.forEach((label, i) => {
         if (!(paramValues[i] ?? '').trim()) {
           newErrors[`param-${i}`] = t('product.errorEnter', { label: getDisplayLabel(label) });
         }
       });
+      if (!selectedQty || selectedQty < 1) {
+        newErrors['quantity'] = t('product.errorQuantity');
+      }
+      if (isFormatAQty && (selectedQty! < (minQty ?? 1) || selectedQty! > (maxQty ?? Infinity))) {
+        newErrors['quantity'] = t('product.errorQtyRange', { min: minQty ?? 1, max: maxQty ?? 999999 });
+      }
+      if (isFormatBQty && tierValues.length > 0 && !tierValues.includes(selectedQty!)) {
+        newErrors['quantity'] = t('product.errorInvalidTier');
+      }
       setErrors(newErrors);
       if (Object.keys(newErrors).length > 0) return;
 
@@ -75,7 +122,7 @@ export default function ProductPage() {
           product_id: product.id,
           name: product.name,
           price: Number(product.price),
-          quantity,
+          quantity: selectedQty!,
           payload: paramValues as any,
         }),
       );
@@ -84,7 +131,6 @@ export default function ProductPage() {
     }
 
     if (isManual) {
-      const newErrors: Record<string, string> = {};
       const linkValue = (payload[t('product.linkUsername')] ?? '').trim();
       if (!linkValue) {
         newErrors[t('product.linkUsername')] = t('product.errorLink');
@@ -97,7 +143,17 @@ export default function ProductPage() {
       setErrors(newErrors);
       if (Object.keys(newErrors).length > 0) return;
     } else {
-      setErrors({});
+      if (!selectedQty || selectedQty < 1) {
+        newErrors['quantity'] = t('product.errorQuantity');
+      }
+      if (isFormatAQty && (selectedQty! < (minQty ?? 1) || selectedQty! > (maxQty ?? Infinity))) {
+        newErrors['quantity'] = t('product.errorQtyRange', { min: minQty ?? 1, max: maxQty ?? 999999 });
+      }
+      if (isFormatBQty && tierValues.length > 0 && !tierValues.includes(selectedQty!)) {
+        newErrors['quantity'] = t('product.errorInvalidTier');
+      }
+      setErrors(newErrors);
+      if (Object.keys(newErrors).length > 0) return;
     }
 
     dispatch(
@@ -107,18 +163,14 @@ export default function ProductPage() {
         price: Number(product.price),
         quantity: isManual
           ? Math.max(1, parseInt((payload[t('product.quantity')] ?? '1').trim(), 10) || 1)
-          : quantity,
+          : selectedQty!,
         payload: isManual ? payload : undefined,
       }),
     );
     navigate('/cart');
   };
 
-  const manualFields = [
-    t('product.linkUsername'),
-    t('product.quantity'),
-    t('product.notesOptional'),
-  ];
+  const totalPrice = selectedQty ? Number(product.price) * selectedQty : Number(product.price);
 
   return (
     <PageTransition className="max-w-5xl mx-auto">
@@ -243,11 +295,76 @@ export default function ProductPage() {
               </div>
             )}
 
+            {(isFormatAQty || isFormatBQty) && !isManual && !isAutomation && (
+              <div className="space-y-3">
+                <p className="text-micro text-gray-600 dark:text-ink-500 uppercase tracking-wide">
+                  {t('product.quantity')}
+                </p>
+                {isFormatAQty && (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-4">
+                      <label htmlFor="qty-input" className="label flex-1 min-w-0">
+                        <input
+                          id="qty-input"
+                          type="number"
+                          className={`input ${errors.quantity ? 'border-status-rejected' : ''}`}
+                          min={minQty ?? 1}
+                          max={maxQty ?? 1000000}
+                          value={selectedQty ?? ''}
+                          onChange={(e) => {
+                            const val = e.target.value === '' ? null : parseInt(e.target.value, 10);
+                            setSelectedQty(val);
+                            setErrors((prev) => ({ ...prev, quantity: '' }));
+                          }}
+                          onBlur={(e) => {
+                            const val = e.target.value === '' ? null : parseInt(e.target.value, 10);
+                            if (val !== null && (val < (minQty ?? 1) || val > (maxQty ?? Infinity))) {
+                              setErrors((prev) => ({ ...prev, quantity: t('product.errorQtyRange', { min: minQty ?? 1, max: maxQty ?? 999999 }) }));
+                            }
+                          }}
+                        />
+                      </label>
+                    </div>
+                    <p className="text-micro text-gray-500 dark:text-ink-400">
+                      {t('product.qtyRangeHint', { min: minQty ?? 1, max: maxQty ?? 999999 })}
+                    </p>
+                    {errors.quantity && (
+                      <p className="text-micro text-status-rejected">{errors.quantity}</p>
+                    )}
+                  </div>
+                )}
+                {isFormatBQty && (
+                  <div className="flex flex-wrap gap-2" role="radiogroup" aria-label={t('product.quantity')}>
+                    {tierValues.map((val: number) => (
+                      <button
+                        key={val}
+                        type="button"
+                        role="radio"
+                        aria-checked={selectedQty === val}
+                        className={`flex items-center justify-center min-w-[80px] px-4 py-2.5 rounded-lg border-2 text-body font-medium transition-colors ${
+                          selectedQty === val
+                            ? 'border-green-400 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300'
+                            : 'border-gray-200 dark:border-ink-700 text-gray-700 dark:text-ink-300 hover:border-green-300 dark:hover:border-green-700'
+                        }`}
+                        onClick={() => {
+                          setSelectedQty(val);
+                          setErrors((prev) => ({ ...prev, quantity: '' }));
+                        }}
+                      >
+                        {val.toLocaleString()}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+
             <div className="flex items-center justify-between">
               <span className="text-body text-gray-600 dark:text-ink-600">
                 {t('product.total')}:{' '}
                 <strong className="text-gray-900 dark:text-ink-900">
-                  {formatPrice(Number(product.price))}
+                  {formatPrice(totalPrice)}
                 </strong>
               </span>
               {product.stock === 0 || product.oranos_available === false ? (
