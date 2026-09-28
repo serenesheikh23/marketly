@@ -5,7 +5,6 @@ import { authApi, adminOrderApi } from '@/api/client';
 import Logo from './Logo';
 import PageTransition from './PageTransition';
 import { useI18n } from '@/i18n';
-import LanguageSwitcher from './LanguageSwitcher';
 import ThemeToggle from './ThemeToggle';
 
 const NAV_ITEMS = [
@@ -207,7 +206,6 @@ export default function AdminLayout() {
             </svg>
           </button>
           <div className="flex items-center gap-2">
-            <LanguageSwitcher />
             <ThemeToggle />
           </div>
         </header>
