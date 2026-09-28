@@ -30,6 +30,7 @@ class VipController extends Controller
             'upgrade_prices' => [
                 'vip1' => $this->vip->upgradePrice(VipLevel::Vip1),
                 'vip2' => $this->vip->upgradePrice(VipLevel::Vip2),
+                'vip3' => $this->vip->upgradePrice(VipLevel::Vip3),
             ],
         ]);
     }
@@ -37,7 +38,7 @@ class VipController extends Controller
     public function upgrade(Request $request): JsonResponse
     {
         $data = $request->validate([
-            'target' => ['required', 'string', 'in:vip1,vip2'],
+            'target' => ['required', 'string', 'in:vip1,vip2,vip3'],
         ]);
 
         $user = $request->user();
@@ -50,6 +51,10 @@ class VipController extends Controller
 
         if ($target === VipLevel::Vip2 && $user->vip_level === VipLevel::None) {
             return response()->json(['message' => 'You must upgrade to VIP1 first.'], 422);
+        }
+
+        if ($target === VipLevel::Vip3 && $user->vip_level !== VipLevel::Vip2) {
+            return response()->json(['message' => 'يجب الوصول إلى VIP2 أولاً.'], 422);
         }
 
         if ((float) $user->balance < $price) {

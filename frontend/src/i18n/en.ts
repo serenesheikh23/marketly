@@ -434,6 +434,7 @@ const en = {
     fee: 'Fee',
     price: 'Price',
     buy: 'Purchase',
+    vip3: 'VIP 3',
   },
   orders: {
     title: 'My Orders',

@@ -25,6 +25,12 @@ const TIER_ICONS: Record<string, ReactNode> = {
       <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" transform="scale(0.55) translate(6,6)" />
     </svg>
   ),
+  vip3: (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" transform="scale(0.55) translate(6,6)" />
+    </svg>
+  ),
 };
 
 export default function VipPage() {
@@ -85,6 +91,15 @@ export default function VipPage() {
       color: 'green-400',
       icon: TIER_ICONS.vip2,
     },
+    {
+      key: 'vip3',
+      label: t('vip.vip3'),
+      limit: `$${vip?.vip3_limit ?? 10000}`,
+      fee: '0.5%',
+      price: vip?.upgrade_prices?.vip3,
+      color: 'purple-400',
+      icon: TIER_ICONS.vip3,
+    },
   ];
 
   const currentIndex = tiers.findIndex((t) => t.key === (user as any)?.vip_level);
@@ -125,6 +140,7 @@ export default function VipPage() {
               </span>
 
               <h3 className={`text-h3 mb-1 ${
+                tier.key === 'vip3' ? 'text-purple-400' :
                 tier.key === 'vip2' ? 'text-green-400' :
                 tier.key === 'vip1' ? 'text-status-vip' : 'text-gray-800 dark:text-ink-800'
               }`}>
