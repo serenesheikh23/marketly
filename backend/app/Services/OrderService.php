@@ -237,7 +237,8 @@ class OrderService
                 continue;
             }
 
-            $playerId = (string) ($item->payload['id'] ?? $item->payload['player_id'] ?? $item->payload['user_id'] ?? '');
+            $payload = is_array($item->payload) ? $item->payload : [];
+            $playerId = (string) ($payload['id'] ?? $payload['player_id'] ?? $payload['user_id'] ?? (array_is_list($payload) ? ($payload[0] ?? '') : ''));
             if ($playerId === '') {
                 // Required playerId not provided; will need manual fulfillment
                 $hasFailure = true;
