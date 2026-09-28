@@ -51,15 +51,19 @@ class SyncOranosProducts extends Command
                 $oranosId = $product['id'];
                 $name = $product['name'];
                 $oranosPrice = (float) ($product['price'] ?? 0);
-                $hasQtyValues = ! empty($product['qty_values']);
+$hasQtyValues = ! empty($product['qty_values']);
 
                 $ourCost = $oranosPrice;
                 $ourRetail = round($ourCost * $markup, 2);
 
-                $isActive = ! $hasQtyValues
+                $oranosAvailable = $product['available'] ?? $product['is_available'] ?? $product['status'] ?? true;
+                if (is_string($oranosAvailable)) {
+                    $oranosAvailable = in_array(strtolower($oranosAvailable), ['active', 'available', 'in_stock', 'true', '1']);
+                }
+
+                $isActive = $oranosAvailable
                     && $ourCost > 0
-                    && $ourRetail > $ourCost
-                    && $markup > 1.0;
+                    && $ourRetail > $ourCost;
 
                 if ($isActive) {
                     $sellable++;
@@ -101,14 +105,12 @@ class SyncOranosProducts extends Command
                 if ($categoryName) {
                     $category = $this->findOrCreateCategory($categoryName, null);
 
-                    // Always set the image_url to match what Oranos currently reports.
-                    // If Oranos sends empty.png (their placeholder), we store null so
-                    // the frontend falls back to a letter avatar.
+                    // Only update category images if new value is valid OR category has no image yet
                     $updateData = [];
-                    if ($category->image_url !== $categoryImg) {
+                    if ($categoryImg !== null || ! $category->image_url) {
                         $updateData['image_url'] = $categoryImg;
                     }
-                    if ($categoryImgBase64 && $category->image_base64 !== $categoryImgBase64) {
+                    if ($categoryImgBase64 !== null || ! $category->image_base64) {
                         $updateData['image_base64'] = $categoryImgBase64;
                     }
                     if (! empty($updateData)) {
@@ -129,26 +131,36 @@ class SyncOranosProducts extends Command
                         $oranosAvailable = in_array(strtolower($oranosAvailable), ['active', 'available', 'in_stock', 'true', '1']);
                     }
 
+                    $existing = Product::where('oranos_product_id', $oranosId)->first();
+
+                    $payload = [
+                        'category_id' => $category->id,
+                        'name' => $name,
+                        'name_ar' => $name,
+                        'description' => $name,
+                        'description_ar' => $name,
+                        'base_price' => $ourCost,
+                        'price' => $ourRetail,
+                        'is_automation' => true,
+                        'qty_values' => $qtyValues,
+                        'params' => $params,
+                        'is_active' => $isActive,
+                        'oranos_available' => $oranosAvailable,
+                        'stock' => $oranosAvailable ? 999 : 0,
+                        'slug' => $slug,
+                    ];
+
+                    // Only update image_url if new value is valid OR product has no image yet
+                    if ($productImg !== null || ! $existing?->image_url) {
+                        $payload['image_url'] = $productImg;
+                    }
+                    if ($productImgBase64 !== null || ! $existing?->image_base64) {
+                        $payload['image_base64'] = $productImgBase64;
+                    }
+
                     Product::updateOrCreate(
                         ['oranos_product_id' => $oranosId],
-                        [
-                            'category_id' => $category->id,
-                            'name' => $name,
-                            'name_ar' => $name,
-                            'description' => $name,
-                            'description_ar' => $name,
-                            'base_price' => $ourCost,
-                            'price' => $ourRetail,
-                            'is_automation' => true,
-                            'qty_values' => $qtyValues,
-                            'params' => $params,
-                            'is_active' => $isActive,
-                            'oranos_available' => $oranosAvailable,
-                            'stock' => $oranosAvailable ? 999 : 0,
-                            'slug' => $slug,
-                            'image_url' => $productImg,
-                            'image_base64' => $productImgBase64,
-                        ]
+                        $payload
                     );
 
                 $synced++;
