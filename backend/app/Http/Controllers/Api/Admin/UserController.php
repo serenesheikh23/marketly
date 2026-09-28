@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
+use App\Enums\TransactionType;
 use App\Enums\VipLevel;
 use App\Events\VipLevelChanged;
 use App\Http\Controllers\Controller;
+use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -75,5 +78,41 @@ class UserController extends Controller
         }
         $user->delete();
         return response()->json(['message' => 'User deleted.']);
+    }
+
+    public function adjustBalance(Request $request, User $user): JsonResponse
+    {
+        $data = $request->validate([
+            'amount' => ['required', 'numeric'],
+            'note' => ['nullable', 'string', 'max:500'],
+        ]);
+
+        $amount = (float) $data['amount'];
+        $note = $data['note'] ?? null;
+
+        return DB::transaction(function () use ($user, $amount, $note) {
+            $user = User::lockForUpdate()->findOrFail($user->id);
+
+            $user->balance += $amount;
+            $user->save();
+
+            Transaction::create([
+                'user_id' => $user->id,
+                'type' => TransactionType::AdminAdjustment,
+                'amount' => $amount,
+                'note' => $note,
+                'reference' => 'admin-' . auth()->id() . '-' . now()->timestamp,
+                'status' => 'approved',
+                'method' => 'admin',
+            ]);
+
+            return response()->json([
+                'user' => [
+                    'id' => $user->id,
+                    'balance' => (float) $user->balance,
+                ],
+                'message' => $amount >= 0 ? 'Balance added successfully' : 'Balance deducted successfully',
+            ]);
+        });
     }
 }

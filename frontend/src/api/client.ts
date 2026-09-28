@@ -123,6 +123,8 @@ export const adminUserApi = {
   list: (params?: Record<string, string>) => api.get('/admin/users', { params }),
   update: (id: number, data: Record<string, unknown>) => api.patch(`/admin/users/${id}`, data),
   delete: (id: number) => api.delete(`/admin/users/${id}`),
+  adjustBalance: (id: number, data: { amount: number; note?: string }) =>
+    api.post(`/admin/users/${id}/balance`, data),
 };
 
 // Admin — Products
