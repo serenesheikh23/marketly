@@ -473,6 +473,13 @@ class OrderService
 
     public function markRejected(Order $order, ?string $reason = null): void
     {
+        if ($order->status === OrderStatus::Rejected) {
+            return;
+        }
+        if ($order->payment_method === 'cash_wallet') {
+            $this->refundFailedOrder($order, $reason ?? 'Rejected by admin');
+            return;
+        }
         DB::transaction(function () use ($order, $reason) {
             $order->update([
                 'status' => OrderStatus::Rejected,
