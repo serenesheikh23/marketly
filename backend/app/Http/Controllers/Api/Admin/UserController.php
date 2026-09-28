@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
+use App\Enums\TransactionStatus;
 use App\Enums\TransactionType;
 use App\Enums\VipLevel;
 use App\Events\VipLevelChanged;
@@ -100,10 +101,11 @@ class UserController extends Controller
                 'user_id' => $user->id,
                 'type' => TransactionType::AdminAdjustment,
                 'amount' => $amount,
-                'note' => $note,
-                'reference' => 'admin-' . auth()->id() . '-' . now()->timestamp,
-                'status' => 'approved',
+                'fee' => 0,
+                'status' => TransactionStatus::Approved,
                 'method' => 'admin',
+                'gateway_ref' => 'admin-' . auth()->id() . '-' . now()->timestamp,
+                'meta' => $note ? ['note' => $note, 'admin_id' => auth()->id()] : ['admin_id' => auth()->id()],
             ]);
 
             return response()->json([
