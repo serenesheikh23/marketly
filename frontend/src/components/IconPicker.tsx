@@ -75,7 +75,7 @@ export default function IconPicker({ value, onChange }: IconPickerProps) {
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
-      <div className="grid grid-cols-8 gap-1 max-h-48 overflow-y-auto p-1 border border-ink-200 rounded-lg">
+      <div className="grid grid-cols-8 gap-1 max-h-48 overflow-y-auto p-1 border border-gray-200 dark:border-ink-200 rounded-lg">
         {filtered.map((name) => (
           <button
             key={name}

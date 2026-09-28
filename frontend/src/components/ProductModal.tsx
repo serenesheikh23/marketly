@@ -180,7 +180,7 @@ export default function ProductModal({ product, onClose, onSaved }: ProductModal
             <input
               type="checkbox"
               id="is_active"
-              className="green-green-500"
+              className="accent-green-500"
               checked={form.is_active}
               onChange={(e) => set('is_active')(e.target.checked)}
             />
