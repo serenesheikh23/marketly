@@ -11,11 +11,14 @@ const GROUPS: Record<string, { labelKey: string; keys: string[] }> = {
     keys: [
       'vip1_withdrawal_limit',
       'vip2_withdrawal_limit',
+      'vip3_withdrawal_limit',
       'vip1_fee_percent',
       'vip2_fee_percent',
+      'vip3_fee_percent',
       'regular_fee_percent',
       'vip1_upgrade_price',
       'vip2_upgrade_price',
+      'vip3_upgrade_price',
     ],
   },
   payment: {
