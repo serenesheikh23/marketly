@@ -44,13 +44,41 @@ export default function ProductModal({ product, onClose, onSaved }: ProductModal
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!form.name_ar || !form.name_ar.trim()) {
+      toast.error('الاسم بالعربية مطلوب');
+      setSaving(false);
+      return;
+    }
+    if (!form.category_id) {
+      toast.error('الفئة مطلوبة');
+      setSaving(false);
+      return;
+    }
+    const priceVal = parseFloat(form.price as string);
+    if (isNaN(priceVal) || priceVal <= 0) {
+      toast.error('السعر مطلوب');
+      setSaving(false);
+      return;
+    }
+    const stockVal = parseInt(form.stock as string);
+    if (isNaN(stockVal) || stockVal < 0) {
+      toast.error('المخزون مطلوب');
+      setSaving(false);
+      return;
+    }
     setSaving(true);
     try {
       const payload = {
         ...form,
-        price: parseFloat(form.price as string),
-        stock: parseInt(form.stock as string),
+        price: priceVal,
+        stock: stockVal,
       };
+      if (!payload.name || !payload.name.trim()) {
+        payload.name = payload.name_ar || '';
+      }
+      if (!payload.description || !payload.description.trim()) {
+        payload.description = payload.description_ar || '';
+      }
       if (isEdit) {
         await adminProductApi.update(product.id, payload);
       } else {
@@ -75,16 +103,6 @@ export default function ProductModal({ product, onClose, onSaved }: ProductModal
       <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="label">Name (EN) *</label>
-              <input
-                className="input"
-                value={form.name}
-                onChange={(e) => set('name')(e.target.value)}
-                required
-                placeholder="Product name"
-              />
-            </div>
-            <div>
               <label className="label">Name (AR)</label>
               <input
                 className="input"
@@ -94,8 +112,6 @@ export default function ProductModal({ product, onClose, onSaved }: ProductModal
                 placeholder="اسم المنتج"
               />
             </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="label">Category *</label>
               <select
@@ -111,16 +127,6 @@ export default function ProductModal({ product, onClose, onSaved }: ProductModal
               </select>
               {catError && <p className="text-micro text-status-rejected mt-1">Failed to load categories.</p>}
             </div>
-          </div>
-          <div>
-            <label className="label">{t('admin.descriptionEn')}</label>
-            <textarea
-              className="input"
-              rows={3}
-              value={form.description}
-              onChange={(e) => set('description')(e.target.value)}
-              placeholder="Product description"
-            />
           </div>
           <div>
             <label className="label">{t('admin.descriptionAr')}</label>
