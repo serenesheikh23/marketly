@@ -75,9 +75,20 @@ export default function CategoryModal({ category, onClose, onSaved }: CategoryMo
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!form.name_ar || !form.name_ar.trim()) {
+      toast.error('الاسم بالعربية مطلوب');
+      setSaving(false);
+      return;
+    }
     setSaving(true);
     try {
       const payload = { ...form, form_fields: formFields };
+      if (!payload.name || !payload.name.trim()) {
+        payload.name = payload.name_ar || '';
+      }
+      if (!payload.description || !payload.description.trim()) {
+        payload.description = payload.description_ar || '';
+      }
       if (isEdit) {
         await adminCategoryApi.update(category.id, payload);
       } else {
@@ -101,16 +112,6 @@ export default function CategoryModal({ category, onClose, onSaved }: CategoryMo
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="label">{t('admin.nameEn')} *</label>
-          <input
-            className="input"
-            value={form.name}
-            onChange={(e) => set('name')(e.target.value)}
-            required
-            placeholder="Category name"
-          />
-        </div>
-        <div>
           <label className="label">{t('admin.nameAr')}</label>
           <input
             className="input"
@@ -130,16 +131,6 @@ export default function CategoryModal({ category, onClose, onSaved }: CategoryMo
             <option value="auto">{t('admin.automatic')}</option>
             <option value="manual">{t('admin.manual')}</option>
           </select>
-        </div>
-        <div>
-          <label className="label">{t('admin.descriptionEn')}</label>
-          <textarea
-            className="input"
-            rows={2}
-            value={form.description}
-            onChange={(e) => set('description')(e.target.value)}
-            placeholder="Optional description"
-          />
         </div>
         <div>
           <label className="label">{t('admin.descriptionAr')}</label>
