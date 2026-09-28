@@ -20,8 +20,12 @@ function isFormatB(qtyValues: any): boolean {
 }
 
 function parseQtyValue(v: string | number): number {
-  const n: number = typeof v === 'string' ? parseInt(v, 10) : v;
+  const n: number = typeof v === 'number' ? v : parseFloat(String(v));
   return isNaN(n) ? 0 : n;
+}
+
+function formatTierValue(val: number): string {
+  return val % 1 === 0 ? val.toLocaleString() : val.toFixed(2);
 }
 
 export default function ProductPage() {
@@ -59,6 +63,12 @@ export default function ProductPage() {
     if (!slug) return;
     productApi.show(slug).then((res) => {
       const p = res.data.product;
+      console.log('QTY DEBUG', {
+        qty_values: p?.qty_values,
+        typeofQty: typeof p?.qty_values,
+        isArray: Array.isArray(p?.qty_values),
+        keys: p?.qty_values && typeof p?.qty_values === 'object' ? Object.keys(p.qty_values).slice(0,5) : null,
+      });
       setProduct(p);
       const params = Array.isArray(p?.params) ? p.params : [];
       setParamValues(new Array(params.length).fill(''));
@@ -307,26 +317,27 @@ export default function ProductPage() {
                         <input
                           id="qty-input"
                           type="number"
+                          step="any"
                           className={`input ${errors.quantity ? 'border-status-rejected' : ''}`}
                           min={minQty ?? 1}
                           max={maxQty ?? 1000000}
                           value={selectedQty ?? ''}
                           onChange={(e) => {
-                            const val = e.target.value === '' ? null : parseInt(e.target.value, 10);
+                            const val = e.target.value === '' ? null : parseFloat(e.target.value);
                             setSelectedQty(val);
                             setErrors((prev) => ({ ...prev, quantity: '' }));
                           }}
                           onBlur={(e) => {
-                            const val = e.target.value === '' ? null : parseInt(e.target.value, 10);
+                            const val = e.target.value === '' ? null : parseFloat(e.target.value);
                             if (val !== null && (val < (minQty ?? 1) || val > (maxQty ?? Infinity))) {
-                              setErrors((prev) => ({ ...prev, quantity: t('product.errorQtyRange', { min: minQty ?? 1, max: maxQty ?? 999999 }) }));
+                              setErrors((prev) => ({ ...prev, quantity: t('product.errorQtyRange', { min: formatTierValue(minQty ?? 1), max: formatTierValue(maxQty ?? 999999) }) }));
                             }
                           }}
                         />
                       </label>
                     </div>
                     <p className="text-micro text-gray-500 dark:text-ink-400">
-                      {t('product.qtyRangeHint', { min: minQty ?? 1, max: maxQty ?? 999999 })}
+                      {t('product.qtyRangeHint', { min: formatTierValue(minQty ?? 1), max: formatTierValue(maxQty ?? 999999) })}
                     </p>
                     {errors.quantity && (
                       <p className="text-micro text-status-rejected">{errors.quantity}</p>
@@ -345,15 +356,15 @@ export default function ProductPage() {
                             aria-checked={selectedQty === val}
                             className={`flex items-center justify-center min-w-[80px] px-4 py-2.5 rounded-lg border-2 text-body font-medium transition-colors ${
                               selectedQty === val
-                                ? 'border-green-400 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300'
-                                : 'border-gray-200 dark:border-ink-700 text-gray-700 dark:text-ink-300 hover:border-green-300 dark:hover:border-green-700'
+                                ? 'border-green-500 bg-green-50 dark:bg-green-500/20 text-green-900 dark:text-green-100'
+                                : 'border-gray-300 dark:border-ink-500 text-gray-900 dark:text-white hover:border-green-400 dark:hover:border-green-500'
                             }`}
                             onClick={() => {
                               setSelectedQty(val);
                               setErrors((prev) => ({ ...prev, quantity: '' }));
                             }}
                           >
-                            {val.toLocaleString()}
+                            {formatTierValue(val)}
                           </button>
                         ))}
                       </div>
@@ -367,15 +378,15 @@ export default function ProductPage() {
                             aria-checked={selectedQty === val}
                             className={`flex items-center justify-center px-4 py-2.5 rounded-lg border-2 text-body font-medium transition-colors ${
                               selectedQty === val
-                                ? 'border-green-400 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300'
-                                : 'border-gray-200 dark:border-ink-700 text-gray-700 dark:text-ink-300 hover:border-green-300 dark:hover:border-green-700'
+                                ? 'border-green-500 bg-green-50 dark:bg-green-500/20 text-green-900 dark:text-green-100'
+                                : 'border-gray-300 dark:border-ink-500 text-gray-900 dark:text-white hover:border-green-400 dark:hover:border-green-500'
                             }`}
                             onClick={() => {
                               setSelectedQty(val);
                               setErrors((prev) => ({ ...prev, quantity: '' }));
                             }}
                           >
-                            {val.toLocaleString()}
+                            {formatTierValue(val)}
                           </button>
                         ))}
                       </div>
