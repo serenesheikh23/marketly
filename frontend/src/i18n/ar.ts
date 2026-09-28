@@ -101,6 +101,7 @@ const ar: import('./en').Translations = {
   product: {
     productNotFound: 'المنتج غير موجود',
     backToHome: 'العودة للرئيسية',
+    back: 'رجوع',
     manualService: 'خدمة يدوية',
     autoDelivery: 'توصيل تلقائي',
     externalStore: 'متجر خارجي',
