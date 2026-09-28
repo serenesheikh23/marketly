@@ -134,6 +134,7 @@ export default function ProductPage() {
           price: Number(product.price),
           quantity: selectedQty!,
           payload: paramValues as any,
+          product_type: product.is_automation ? 'auto' : 'manual',
         }),
       );
       navigate('/cart');
@@ -175,6 +176,7 @@ export default function ProductPage() {
           ? Math.max(1, parseInt((payload[t('product.quantity')] ?? '1').trim(), 10) || 1)
           : selectedQty!,
         payload: isManual ? payload : undefined,
+        product_type: isManual ? 'manual' : (product.is_automation ? 'auto' : 'manual'),
       }),
     );
     navigate('/cart');
