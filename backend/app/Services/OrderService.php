@@ -251,10 +251,14 @@ class OrderService
             }
 
             $extraParams = [];
-            if (is_array($product->params)) {
-                foreach ($product->params as $param) {
-                    if (isset($item->payload[$param])) {
-                        $extraParams[$param] = $item->payload[$param];
+            if (is_array($product->params) && is_array($payload = $item->payload)) {
+                if (array_is_list($payload)) {
+                    foreach ($product->params as $i => $param) {
+                        $extraParams[$param] = $payload[$i];
+                    }
+                } else {
+                    foreach ($product->params as $param) {
+                        $extraParams[$param] = $payload[$param];
                     }
                 }
             }
