@@ -12,7 +12,10 @@ interface ProductModalProps {
   onSaved: () => void;
 }
 
+import { useI18n } from '@/i18n';
+
 export default function ProductModal({ product, onClose, onSaved }: ProductModalProps) {
+  const { t } = useI18n();
   const [categories, setCategories] = useState<any[]>([]);
   const [catError, setCatError] = useState(false);
   const [form, setForm] = useState({
@@ -110,7 +113,7 @@ export default function ProductModal({ product, onClose, onSaved }: ProductModal
             </div>
           </div>
           <div>
-            <label className="label">Description (EN)</label>
+            <label className="label">{t('admin.descriptionEn')}</label>
             <textarea
               className="input"
               rows={3}
@@ -120,7 +123,7 @@ export default function ProductModal({ product, onClose, onSaved }: ProductModal
             />
           </div>
           <div>
-            <label className="label">Description (AR)</label>
+            <label className="label">{t('admin.descriptionAr')}</label>
             <textarea
               className="input"
               rows={3}
