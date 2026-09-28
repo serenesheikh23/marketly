@@ -34,3 +34,8 @@ Schedule::command('oranos:verify-price-sync')
     ->weekly()
     ->withoutOverlapping()
     ->appendOutputTo($log);
+
+Schedule::command('orders:poll-oranos')
+    ->everyFiveMinutes()
+    ->withoutOverlapping()
+    ->appendOutputTo(storage_path('logs/oranos-orders.log'));
