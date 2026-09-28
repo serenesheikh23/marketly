@@ -10,6 +10,7 @@ enum TransactionType: string
     case Refund = 'refund';
     case VipUpgrade = 'vip_upgrade';
     case StoreEarning = 'store_earning';
+    case AdminAdjustment = 'admin_adjustment';
 
     public function label(): string
     {
@@ -20,6 +21,7 @@ enum TransactionType: string
             self::Refund => 'Refund',
             self::VipUpgrade => 'VIP Upgrade',
             self::StoreEarning => 'Store Earning',
+            self::AdminAdjustment => 'Admin Adjustment',
         };
     }
 }

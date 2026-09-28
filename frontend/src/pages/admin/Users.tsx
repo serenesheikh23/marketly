@@ -10,6 +10,10 @@ export default function AdminUsers() {
   const [users, setUsers] = useState<any[]>([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
+  const [balanceModal, setBalanceModal] = useState<{ user: any; type: 'add' | 'deduct' } | null>(null);
+  const [amount, setAmount] = useState('');
+  const [note, setNote] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
   const fetchUsers = () => {
     setLoading(true);
@@ -38,6 +42,40 @@ export default function AdminUsers() {
       fetchUsers();
     } catch (err: any) {
       toast.error(err.response?.data?.message ?? t('common.failed'));
+    }
+  };
+
+  const openBalanceModal = (user: any, type: 'add' | 'deduct') => {
+    setBalanceModal({ user, type });
+    setAmount('');
+    setNote('');
+  };
+
+  const closeBalanceModal = () => {
+    setBalanceModal(null);
+    setAmount('');
+    setNote('');
+  };
+
+  const handleBalanceSubmit = async () => {
+    if (!balanceModal || !amount) return;
+    const { user, type } = balanceModal;
+    const numAmount = parseFloat(amount);
+    if (isNaN(numAmount) || numAmount <= 0) {
+      toast.error(t('common.invalidAmount') ?? 'Invalid amount');
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const finalAmount = type === 'add' ? numAmount : -numAmount;
+      await adminUserApi.adjustBalance(user.id, { amount: finalAmount, note: note || undefined });
+      toast.success(type === 'add' ? t('admin.balanceAdded') : t('admin.balanceDeducted'));
+      fetchUsers();
+      closeBalanceModal();
+    } catch (err: any) {
+      toast.error(err.response?.data?.message ?? t('admin.balanceAdjustFailed'));
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -98,16 +136,30 @@ export default function AdminUsers() {
                       : <span className="badge-completed">{t('admin.active')}</span>}
                   </td>
                   <td>
-                    <button
-                      onClick={() => toggleBan(u)}
-                      className={`text-small font-medium ${
-                        u.banned_at
-                          ? 'text-green-400 hover:text-green-300'
-                          : 'text-status-rejected hover:text-status-rejected/80'
-                      }`}
-                    >
-                      {u.banned_at ? t('admin.unban') : t('admin.ban')}
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => openBalanceModal(u, 'add')}
+                        className="text-small font-medium text-green-400 hover:text-green-300"
+                      >
+                        {t('admin.addBalance')}
+                      </button>
+                      <button
+                        onClick={() => openBalanceModal(u, 'deduct')}
+                        className="text-small font-medium text-amber-400 hover:text-amber-300"
+                      >
+                        {t('admin.deductBalance')}
+                      </button>
+                      <button
+                        onClick={() => toggleBan(u)}
+                        className={`text-small font-medium ${
+                          u.banned_at
+                            ? 'text-green-400 hover:text-green-300'
+                            : 'text-status-rejected hover:text-status-rejected/80'
+                        }`}
+                      >
+                        {u.banned_at ? t('admin.unban') : t('admin.ban')}
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -118,6 +170,59 @@ export default function AdminUsers() {
           </table>
         </div>
       </div>
+
+      {balanceModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50" onClick={closeBalanceModal}>
+          <div className="bg-white dark:bg-ink-50 rounded-2xl w-full max-w-md p-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
+            <h3 className="text-h3 text-gray-900 dark:text-ink-900 mb-4">
+              {balanceModal.type === 'add' ? t('admin.addBalance') : t('admin.deductBalance')} — {balanceModal.user.name}
+            </h3>
+            <div className="space-y-4">
+              <div>
+                <label className="label">{t('admin.balanceAmount')}</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0.01"
+                  className="input"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  placeholder="0.00"
+                  autoFocus
+                />
+              </div>
+              <div>
+                <label className="label">{t('admin.balanceNote')}</label>
+                <textarea
+                  className="input min-h-[80px]"
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
+                  placeholder={t('admin.balanceNote')}
+                  rows={3}
+                />
+              </div>
+              <div className="flex justify-end gap-3 pt-4">
+                <button
+                  type="button"
+                  onClick={closeBalanceModal}
+                  className="btn-secondary"
+                  disabled={submitting}
+                >
+                  {t('admin.cancel')}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleBalanceSubmit}
+                  className={balanceModal.type === 'add' ? 'btn-accent' : 'bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg font-medium'}
+                  disabled={submitting}
+                >
+                  {submitting ? t('admin.confirm') : (balanceModal.type === 'add' ? t('admin.addBalance') : t('admin.deductBalance'))}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </PageTransition>
   );
 }
