@@ -94,6 +94,7 @@ const en = {
     for: 'for',
     ordersProcessed: 'Orders are processed instantly after payment confirmation.',
     demoNotice: 'Demo mode: payment is currently a mock — orders will not be charged until real payment keys are configured.',
+    insufficientBalance: 'Insufficient balance. Please deposit funds first.',
   },
 
   // Product page
