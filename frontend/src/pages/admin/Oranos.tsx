@@ -79,10 +79,10 @@ export default function Oranos() {
   const checkedAt  = new Date(data.checked_at).toLocaleString();
 
   const levelRows = [
-    { level: 'healthy',  range: '≥ $50',     label: s.levelHealthy,  desc: s.levelHealthyDesc },
-    { level: 'watch',    range: '$20 – $50', label: s.levelWatch,    desc: s.levelWatchDesc },
-    { level: 'low',      range: '$10 – $20', label: s.levelLow,      desc: s.levelLowDesc },
-    { level: 'critical', range: '< $10',     label: s.levelCritical, desc: s.levelCriticalDesc },
+    { level: 'healthy',  range: '≥ $50',      label: s.levelHealthy,  desc: s.levelHealthyDesc },
+    { level: 'watch',    range: '$30 – $50',  label: s.levelWatch,    desc: s.levelWatchDesc },
+    { level: 'low',      range: '$20 – $30',  label: s.levelLow,      desc: s.levelLowDesc },
+    { level: 'critical', range: '< $20',      label: s.levelCritical, desc: s.levelCriticalDesc },
   ];
 
   return (
