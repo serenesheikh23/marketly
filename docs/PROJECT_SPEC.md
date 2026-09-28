@@ -222,8 +222,76 @@ curl -X POST "https://your-domain.com/api/partner/orders" \
 ```
 
 ---
-
-## D8. Known Limitations
+ 
+## D8. New Features (Phases 7, 9, 3)
+ 
+### Back Button on Product & Category Pages (Phase 7)
+- **Files**: `frontend/src/pages/public/ProductPage.tsx`, `frontend/src/pages/public/CategoryPage.tsx`, `frontend/src/i18n/en.ts`, `frontend/src/i18n/ar.ts`
+- Added a "Back" button above the Breadcrumbs on product and category detail pages
+- Calls `navigate(-1)` for browser history navigation
+- Styled to match Breadcrumbs: `text-small`, muted color (`text-gray-600 dark:text-ink-500`), hover state (`hover:text-green-400 dark:hover:text-green-300`)
+- Uses inline SVG arrow glyph with RTL support (`rtl:rotate-180`)
+- i18n key: `product.back` (EN: "Back", AR: "رجوع")
+ 
+### Hide Zero-Product Categories (Phase 9)
+- **File**: `backend/app/Http/Controllers/Api/Category/CategoryController.php` (`index` method)
+- Filters out categories where active product count is 0 at the database query level
+- Uses `withCount` + `having('products_count', '>', 0)` on both root categories and their children
+- Admin endpoint (`/api/admin/categories`) is separate and unaffected
+- No PHP post-filtering — pure SQL-level filtering
+ 
+### Admin Balance Adjustment (Phase 3)
+- **Backend**:
+  - New endpoint: `POST /api/admin/users/{user}/balance`
+  - Body: `{ amount: number (positive or negative), note?: string }`
+  - Admin auth required (role: admin|moderator middleware)
+  - Wrapped in `DB::transaction`
+  - Locks user row with `lockForUpdate()` before reading balance
+  - Updates `users.balance` directly
+  - Inserts transaction record: `type='admin_adjustment'`, `amount` (signed), `note`, `reference='admin-{adminId}-{timestamp}'`, `status='approved'`, `method='admin'`
+  - Returns new balance in JSON
+  - Does NOT touch `refundFailedOrder`, wallet-deduct/credit paths, or transactions table schema
+  - **Files**: `backend/app/Http/Controllers/Api/Admin/UserController.php`, `backend/app/Enums/TransactionType.php` (added `AdminAdjustment` case), `backend/routes/api.php`
+ 
+- **Frontend**:
+  - Added "إضافة رصيد" (Add Balance) and "خصم رصيد" (Deduct Balance) buttons to admin Users table
+  - Modal with amount (number input) and note (optional textarea)
+  - On confirm: POST to endpoint, on success: close modal + refresh user list
+  - Error handling: shows server message in toast
+  - **Files**: `frontend/src/pages/admin/Users.tsx`, `frontend/src/api/client.ts` (`adminUserApi.adjustBalance`), `frontend/src/i18n/en.ts`, `frontend/src/i18n/ar.ts`
+ 
+### Quantity Tier Selector
+- **Format A (Object)**: `{ min: number, max: number }` — free-form quantity input with min/max validation
+- **Format B (Array of Values)**: `[number, number, ...]` — predefined tier buttons (radio group)
+- **Files**: `frontend/src/pages/public/ProductPage.tsx` (lines 14-53, 310-398)
+ 
+### Wallet Auto-Deduct for Auto Products
+- Automation products (`is_automation=true`) auto-deduct from wallet at checkout
+- No payment method picker shown for auto products
+- Manual products still show payment picker (Binance Pay, USDT, Cash Wallet)
+- **File**: `frontend/src/pages/public/ProductPage.tsx` (lines 109-141)
+ 
+### Oranos Integration: playerId Positional Fallback
+- Oranos order payload expects `playerId` at array index 0
+- `oranos_order_id` persisted on order for status polling
+- **File**: `backend/app/Services/OrderService.php::fulfillAutomationItems` (line ~240, PROTECTED — do not modify)
+ 
+### Orders Poll Oranos Command
+- Scheduled command: `orders:poll-oranos` runs every 5 minutes
+- Registered in `routes/console.php`
+- Polls Oranos for order status updates on Processing orders
+ 
+### Admin Reject on Wallet-Paid Orders Triggers Refund
+- When admin rejects an order that was paid via wallet balance
+- Triggers `OrderService::refundFailedOrder` to refund user balance
+- **File**: `backend/app/Services/OrderService.php::refundFailedOrder` (PROTECTED — do not modify)
+ 
+### Admin Balance Adjustment Endpoint
+- `POST /api/admin/users/{user}/balance` (documented above)
+ 
+---
+ 
+## D9. Known Limitations
 
 ### From Inventory (Orphaned / Missing / Uncategorized)
 
