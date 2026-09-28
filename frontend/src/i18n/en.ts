@@ -117,6 +117,9 @@ const en = {
     errorNotes: 'Notes is required',
     errorEnter: 'Please enter {label}',
     idLabel: 'Account ID',
+    errorQtyRange: 'Quantity must be between {min} and {max}',
+    errorInvalidTier: 'Selected quantity is invalid',
+    qtyRangeHint: 'From {min} to {max}',
   },
 
   // Account dashboard
