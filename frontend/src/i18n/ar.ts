@@ -117,6 +117,9 @@ const ar: import('./en').Translations = {
     errorNotes: 'الملاحظات مطلوبة',
     errorEnter: 'الرجاء إدخال {label}',
     idLabel: 'معرّف الحساب',
+    errorQtyRange: 'الكمية يجب أن تكون بين {min} و {max}',
+    errorInvalidTier: 'الكمية المختارة غير صالحة',
+    qtyRangeHint: 'من {min} إلى {max}',
   },
 
   // Account dashboard
