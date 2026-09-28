@@ -17,11 +17,9 @@ class CategoryController extends Controller
         $categories = Category::whereNull('parent_id')
             ->with(['children' => function ($q) {
                 $q->withCount(['products' => fn ($pq) => $pq->where('is_active', true)])
-                  ->having('products_count', '>', 0)
                   ->orderBy('sort_order');
             }])
             ->withCount(['products' => fn ($q) => $q->where('is_active', true)])
-            ->having('products_count', '>', 0)
             ->orderBy('sort_order')
             ->get()
             ->values();
