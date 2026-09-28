@@ -175,17 +175,33 @@ After the build, Nginx serves the Laravel API and the static frontend from `http
 ---
 
 ## Running Tests
-
+ 
 ```bash
 # Backend
 cd backend && php artisan test --testdox
-
+ 
 # Frontend
 cd frontend && npm test
 ```
-
+ 
 ---
-
+ 
+## Recent Features (Phases 7, 9, 3)
+ 
+- **Back Button on Product/Category Pages** — `ProductPage.tsx`, `CategoryPage.tsx`: history-based back button above breadcrumbs, RTL-aware, i18n-ready (`product.back`)
+- **Hide Zero-Product Categories** — `CategoryController.php::index()`: SQL-level `having('products_count', '>', 0)` filters empty categories from public API; admin API unchanged
+- **Admin Balance Adjustment** — `UserController.php::adjustBalance()` + `Users.tsx`:
+  - Endpoint: `POST /api/admin/users/{user}/balance` (body: `{amount, note?}`)
+  - Transactional, row-locked, creates `admin_adjustment` transaction record
+  - UI: "إضافة رصيد" / "خصم رصيد" buttons per user with modal
+- **Quantity Tier Selector** — `ProductPage.tsx`: supports `{min,max}` object format and `[values...]` array format
+- **Wallet Auto-Deduct for Auto Products** — auto products deduct from wallet at checkout; manual products still show payment picker
+- **Oranos playerId Positional Fallback** — `OrderService.php::fulfillAutomationItems()` (protected): payload array index 0
+- **`orders:poll-oranos` Command** — `routes/console.php`: scheduled every 5 minutes
+- **Admin Reject Refunds Wallet Orders** — `OrderService.php::refundFailedOrder()` (protected)
+ 
+---
+ 
 ## CI
 
 Every push and PR to `main` runs (see `.github/workflows/ci.yml`):
