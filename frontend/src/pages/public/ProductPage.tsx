@@ -295,7 +295,7 @@ export default function ProductPage() {
               </div>
             )}
 
-            {(isFormatAQty || isFormatBQty) && !isManual && !isAutomation && (
+            {(isFormatAQty || isFormatBQty) && !isManual && (
               <div className="space-y-3">
                 <p className="text-micro text-gray-600 dark:text-ink-500 uppercase tracking-wide">
                   {t('product.quantity')}
@@ -334,26 +334,52 @@ export default function ProductPage() {
                   </div>
                 )}
                 {isFormatBQty && (
-                  <div className="flex flex-wrap gap-2" role="radiogroup" aria-label={t('product.quantity')}>
-                    {tierValues.map((val: number) => (
-                      <button
-                        key={val}
-                        type="button"
-                        role="radio"
-                        aria-checked={selectedQty === val}
-                        className={`flex items-center justify-center min-w-[80px] px-4 py-2.5 rounded-lg border-2 text-body font-medium transition-colors ${
-                          selectedQty === val
-                            ? 'border-green-400 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300'
-                            : 'border-gray-200 dark:border-ink-700 text-gray-700 dark:text-ink-300 hover:border-green-300 dark:hover:border-green-700'
-                        }`}
-                        onClick={() => {
-                          setSelectedQty(val);
-                          setErrors((prev) => ({ ...prev, quantity: '' }));
-                        }}
-                      >
-                        {val.toLocaleString()}
-                      </button>
-                    ))}
+                  <div className="space-y-2">
+                    {tierValues.length <= 8 ? (
+                      <div className="flex flex-wrap gap-2" role="radiogroup" aria-label={t('product.quantity')}>
+                        {tierValues.map((val: number) => (
+                          <button
+                            key={val}
+                            type="button"
+                            role="radio"
+                            aria-checked={selectedQty === val}
+                            className={`flex items-center justify-center min-w-[80px] px-4 py-2.5 rounded-lg border-2 text-body font-medium transition-colors ${
+                              selectedQty === val
+                                ? 'border-green-400 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300'
+                                : 'border-gray-200 dark:border-ink-700 text-gray-700 dark:text-ink-300 hover:border-green-300 dark:hover:border-green-700'
+                            }`}
+                            onClick={() => {
+                              setSelectedQty(val);
+                              setErrors((prev) => ({ ...prev, quantity: '' }));
+                            }}
+                          >
+                            {val.toLocaleString()}
+                          </button>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-72 overflow-y-auto pr-2" role="radiogroup" aria-label={t('product.quantity')}>
+                        {tierValues.map((val: number) => (
+                          <button
+                            key={val}
+                            type="button"
+                            role="radio"
+                            aria-checked={selectedQty === val}
+                            className={`flex items-center justify-center px-4 py-2.5 rounded-lg border-2 text-body font-medium transition-colors ${
+                              selectedQty === val
+                                ? 'border-green-400 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300'
+                                : 'border-gray-200 dark:border-ink-700 text-gray-700 dark:text-ink-300 hover:border-green-300 dark:hover:border-green-700'
+                            }`}
+                            onClick={() => {
+                              setSelectedQty(val);
+                              setErrors((prev) => ({ ...prev, quantity: '' }));
+                            }}
+                          >
+                            {val.toLocaleString()}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
