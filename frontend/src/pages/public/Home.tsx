@@ -74,9 +74,15 @@ export default function Home() {
         };
         const isTop = (c: any) => ORANOS_TOP_CATEGORIES.includes(c.name ?? '') || ORANOS_TOP_CATEGORIES.includes(c.name_ar ?? '');
         const filtered = all
-          .filter((c: any) => rank(c) < 999 && !!c.oranos_category_id)
+          .filter((c: any) => !!c.oranos_category_id)
           .filter((c: any) => isTop(c) || (c.products_count ?? 0) > 0 || (c.children?.length ?? 0) > 0)
-          .sort((a: any, b: any) => rank(a) - rank(b));
+          .sort((a: any, b: any) => {
+            const ra = rank(a);
+            const rb = rank(b);
+            if (ra !== rb) return ra - rb;
+            return (b.products_count ?? 0) - (a.products_count ?? 0);
+          })
+          .slice(0, 18);
         setCategories(filtered);
       })
       .catch(console.error)
