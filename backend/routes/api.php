@@ -113,6 +113,7 @@ Route::middleware(['auth:sanctum', 'role:admin|moderator'])->prefix('admin')->gr
     Route::get('/users', [UserController::class, 'index']);
     Route::get('/users/{user}', [UserController::class, 'show']);
     Route::patch('/users/{user}', [UserController::class, 'update']);
+    Route::post('/users/{user}/balance', [UserController::class, 'adjustBalance']);
     Route::delete('/users/{user}', [UserController::class, 'destroy']);
 
     Route::get('/products', [AdminProductController::class, 'index']);
