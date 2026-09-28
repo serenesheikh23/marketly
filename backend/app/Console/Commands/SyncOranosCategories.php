@@ -34,6 +34,8 @@ class SyncOranosCategories extends Command
                 $oranosId = $categoryData['id'] ?? null;
                 $name = $categoryData['name'] ?? null;
                 $parentId = $categoryData['parent_id'] ?? null;
+                $categoryImg = $categoryData['image_url'] ?? $categoryData['image'] ?? null;
+                $categoryImgBase64 = $categoryData['image_base64'] ?? null;
 
                 if (! $name) {
                     continue;
