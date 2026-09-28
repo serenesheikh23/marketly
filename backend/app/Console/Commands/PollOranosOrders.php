@@ -53,6 +53,12 @@ class PollOranosOrders extends Command
                 $order->update(['status' => OrderStatus::Completed]);
                 $completed++;
                 $this->line("Order {$order->id} -> completed");
+            } elseif (in_array($status, ['reject', 'rejected', 'failed', 'cancel', 'cancelled', 'canceled'], true)) {
+                $svc = app(\App\Services\OrderService::class);
+                $ref = new \ReflectionMethod($svc, 'refundFailedOrder');
+                $ref->setAccessible(true);
+                $ref->invoke($svc, $order, 'Oranos rejected: ' . $status);
+                $this->line("Order {$order->id} -> rejected by Oranos, refunded");
             }
         }
 
