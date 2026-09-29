@@ -68,13 +68,14 @@ Reverb broadcasts, a Redux store with localStorage persistence, and a bilingual
 - **Catalog Browsing** — categories, products, debounced search (350 ms)
 - **Cart** — multi-quantity, `localStorage`-backed, survives reloads
 - **Crypto & Wallet Payments** — Binance Pay, USDT (BEP-20), internal Cash Wallet
-- **VIP System** — multi-tier upgrades, VIP-gated prices and discounts
+- **VIP System** — three tiers (VIP 1–3), upgrades via wallet, tier-gated prices/discounts/withdrawal limits
 - **Order Management** — auto-delivery for digital products, manual order queue for services
 - **Deposit & Withdrawal** flows with admin approval
 - **Dark / Light Mode** — `data-theme` toggle persisted in `localStorage`
 - **Responsive Design** — mobile, tablet, and desktop layouts
 - **Legal Pages** — Terms of Service, Privacy Policy, Refund Policy
 - **Dynamic Company Info** — footer name, contact, social links loaded from the API
+- **Company Info** — support email, phone, address fields in admin settings
 
 ### Admin / Moderator
 - **Admin Dashboard** — KPIs for users, revenue, pending items
@@ -83,8 +84,8 @@ Reverb broadcasts, a Redux store with localStorage persistence, and a bilingual
 - **Order Queues** — auto orders, manual orders, deposits, withdrawals
 - **Settings Store** — VIP limits, fees, payment gateway credentials, company info, legal content
 - **Real-time Health** — database, storage, Reverb, payment providers
-- **Fully Bilingual Admin Panel** — the entire Admin Dashboard, Categories, Products, Orders, and Settings interface is fully translated between English and Arabic (RTL), with locale-aware labels, placeholders, status text, and toasts.
-- **Dynamic Custom Form Fields Builder** — for Manual Service categories, admins can dynamically create custom input fields (text, select, textarea) with required flags and comma-separated options, allowing them to collect specific customer data (e.g., Platform, Profile Link, Document Description) on the order form. Each field supports fully bilingual EN/AR labels, automatically displayed based on the user's locale.
+- **Arabic-First Admin Modals** — Product and Category modals use Arabic-only labels/placeholders (EN strings removed); form field builder follows same pattern
+- **Dynamic Custom Form Fields Builder** — for Manual Service categories, admins create custom input fields (text, select, textarea) with required flags and comma-separated options; labels are Arabic-only
 - **Webhook-Ready Payment Architecture** — backend is equipped with Binance Pay and USDT webhook endpoints ready for real API key integration, with a safe "Demo Mode" active until production keys are provided, so the full purchase flow can be exercised end-to-end without live credentials.
 
 ---
@@ -154,6 +155,7 @@ All accounts use the password **`password`**.
 | `mod@demo.test` | Moderator | Operational queues (orders, manual services) |
 | `vip1@demo.test` | User | VIP Tier 1 pricing and discounts |
 | `vip2@demo.test` | User | VIP Tier 2 pricing and discounts |
+| `vip3@demo.test` | User | VIP Tier 3 pricing and discounts |
 | `user@demo.test` | User | Regular customer |
 
 ---
@@ -186,8 +188,19 @@ cd frontend && npm test
  
 ---
  
-## Recent Features (Phases 7, 9, 3)
- 
+## Recent Features (Phases 10, 7, 9, 3)
+
+### Phase 10 — Category Images, Arabic-Only Admin, VIP 3, UI Polish
+- **Home Page: 18 Oranos Root Categories** — Fixed sort order; child/product images copied to parent roots where missing (`php artisan tinker` one-liner)
+- **Category Images** — Oranos API returns only id+name; images sourced from child categories or product images and propagated to root categories
+- **Admin Modals Arabic-Only** — `ProductModal.tsx`, `CategoryModal.tsx`: all labels, placeholders, buttons, errors use `t('admin.<key>')` with Arabic fallbacks; EN strings removed
+- **VIP Tier 3 Added** — Backend enum + frontend + admin settings; withdrawal limits/fees/upgrade prices configurable for all three tiers
+- **Company Info Fields** — `support_email`, `phone`, `address` added to settings and footer
+- **Legal Pages Arabic-Only** — Backend `content_en` now `sometimes` (optional); frontend renders Arabic content
+- **Navbar** — "الرئيسية" link removed; logo links to home
+- **Footer** — "Code Craft" developer credit added with `/codecraft.svg`
+
+### Back Button on Product/Category Pages (Phase 7)
 - **Back Button on Product/Category Pages** — `ProductPage.tsx`, `CategoryPage.tsx`: history-based back button above breadcrumbs, RTL-aware, i18n-ready (`product.back`)
 - **Hide Zero-Product Categories** — `CategoryController.php::index()`: SQL-level `having('products_count', '>', 0)` filters empty categories from public API; admin API unchanged
 - **Admin Balance Adjustment** — `UserController.php::adjustBalance()` + `Users.tsx`:

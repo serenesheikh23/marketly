@@ -34,7 +34,7 @@ DB_PASSWORD=...
 # Oranos Integration
 ORANOS_API_URL=https://api.oranosmarket.com
 ORANOS_API_TOKEN=your_oranos_token
-ORANOS_MARKUP=1.25
+# ORANOS_MARKUP=1.25  # Optional: now persisted in settings table via Admin Settings; env var used as fallback
 
 # Binance Pay
 BINANCE_PAY_KEY=...
@@ -62,6 +62,9 @@ REVERB_APP_KEY=...
 REVERB_APP_SECRET=...
 REVERB_HOST=0.0.0.0
 REVERB_PORT=8080
+
+# Company Info (configured via Admin Settings → System)
+# SUPPORT_EMAIL=, PHONE=, ADDRESS=
 
 # Frontend URL (for CORS, webhooks, etc.)
 FRONTEND_URL=https://marketly-frontend-production.up.railway.app
@@ -136,6 +139,7 @@ This is a critical operational dependency — monitor `/admin/oranos` dashboard 
 - [ ] Scheduler running (`schedule:work` in start command)
 - [ ] Queue worker running (recommended separate service: `php artisan queue:work`)
 - [ ] SSL/TLS automatic via Railway (custom domains require DNS verification)
+- [ ] Oranos balance > $20 (check `/admin/oranos` or `php artisan tinker --execute='...'`)
 - [ ] Health check endpoint responding: `GET /api/admin/health`
 
 ## Rolling Back
@@ -151,6 +155,8 @@ Railway supports instant rollback:
 - **Metrics**: Railway dashboard → Metrics tab (CPU, Memory, Network)
 - **Health**: `GET /api/admin/health` returns `{ database, storage, reverb }` status
 - **Oranos Balance**: `GET /api/admin/oranos/balance` (admin only)
+- **Categories**: 561 total (18 root) — verify via `GET /api/categories`
+- **Products**: 2,400+ synced — verify via `GET /api/products?per_page=1`
 
 ## Troubleshooting
 
@@ -159,5 +165,7 @@ Railway supports instant rollback:
 | Migrations fail on deploy | Check `railway logs` for SQL errors; run manually via `railway ssh` |
 | Reverb connection fails | Verify `REVERB_*` vars on both backend and frontend; check firewall |
 | Oranos orders stuck "Processing" | Run `php artisan orders:poll-oranos` manually; check Oranos balance |
+| Home page shows no category images | Run category image propagation tinker script (see PROJECT_SPEC.md) |
+| Admin modals show English text | Ensure `ar.ts` and `en.ts` have all `admin.*` keys; clear frontend cache |
 | Frontend shows 404 on refresh | Ensure Nginx `try_files` config routes to `index.html` for SPA |
 | CORS errors | Verify `FRONTEND_URL` in backend `.env` matches production domain exactly |

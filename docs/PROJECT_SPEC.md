@@ -94,11 +94,17 @@ Marketly also enables entrepreneurs to launch their own branded storefronts that
 - **Store orders** — when purchased through a user's storefront, store owner earns markup difference
 
 ### VIP System
-- **Levels**: None → VIP1 → VIP2 (sequential)
-- **Withdrawal limits**: configurable per level (default VIP1: $1,000, VIP2: $2,000)
-- **Withdrawal fees**: configurable per level (default VIP1: 3%, VIP2: 1.5%, Regular: 5%)
-- **Upgrade prices**: configurable (default VIP1: $100, VIP2: $300)
+- **Levels**: None → VIP1 → VIP2 → VIP3 (sequential)
+- **Withdrawal limits**: configurable per level (default VIP1: $1,000, VIP2: $2,000, VIP3: $5,000)
+- **Withdrawal fees**: configurable per level (default VIP1: 3%, VIP2: 1.5%, VIP3: 0.5%, Regular: 5%)
+- **Upgrade prices**: configurable (default VIP1: $100, VIP2: $300, VIP3: $800)
 - All settings manageable in Admin Settings, persisted in `settings` table
+
+### Category System (Oranos Sync)
+- **561 total categories** in database (18 root categories from Oranos + children)
+- **2,400+ products** synced from Oranos
+- **Home page** displays exactly 18 Oranos root categories in fixed sort order
+- **Category images**: Oranos API returns only id+name; images copied from child categories or product images to parent roots where missing
 
 ### Partner API (External Stores)
 - **Onboarding**: user submits request (`/connect-store`) → admin approves → API key generated (64-char random)
@@ -109,9 +115,9 @@ Marketly also enables entrepreneurs to launch their own branded storefronts that
 
 ### Admin Panel
 - **Dashboard** — users, revenue, pending counts, VIP breakdown, recent orders
-- **Health check** — database, storage, Reverb connectivity
+- **Health check** — database, storage, Reverb connectivity; Oranos balance monitor
 - **Bulk operations** — settings bulk update, product/category bulk actions
-- **Oranos sync** — manual trigger for category/product sync, markup application, price verification
+- **Oranos sync** — 18 root categories + 2,400+ products synced; markup application; price verification; category image propagation
 - **Role-based access** — admin/moderator middleware on all `/api/admin/*` routes
 
 ---
@@ -126,6 +132,7 @@ Marketly also enables entrepreneurs to launch their own branded storefronts that
 | **Cloudinary** | Image upload/storage for products/categories | `CLOUDINARY_URL` |
 | **Mail (SMTP/Log)** | Order confirmations, contact form, notifications | `MAIL_MAILER`, `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_FROM_ADDRESS`, `MAIL_FROM_NAME` |
 | **Reverb (WebSockets)** | Real-time events (order updates, balance changes) | `REVERB_APP_ID`, `REVERB_APP_KEY`, `REVERB_APP_SECRET`, `REVERB_HOST`, `REVERB_PORT` |
+| **Code Craft** | Developer credit in footer | Static asset `/codecraft.svg` |
 | **Railway (Hosting)** | App + MySQL + Volumes + Cron | Railway project, services, environment variables |
 
 ---
@@ -161,7 +168,7 @@ Marketly also enables entrepreneurs to launch their own branded storefronts that
 
 ### Migrations
 - Run on deploy: `php artisan migrate --force`
-- **Critical**: 13 migrations currently pending (see Known Limitations)
+- **Status**: Verify current migration state before deploy; run `php artisan migrate:status`
 
 ### Environment Variables Required
 ```
@@ -222,7 +229,31 @@ curl -X POST "https://your-domain.com/api/partner/orders" \
 ```
 
 ---
- 
+
+## D7.5. Recent Platform Changes (Post-Spec)
+
+### Home Page & Categories
+- **18 Oranos root categories** displayed on home page in fixed `sort_order`
+- **Category images**: Parent categories without `image_url` inherit from first child category with image, or from first product in that category
+
+### Admin Panel — Arabic-First
+- **ProductModal** & **CategoryModal**: All visible strings use `t('admin.<key>')` with Arabic translations; English labels removed
+- **Form Field Builder** (manual categories): Labels, placeholders, options — Arabic only
+
+### VIP Tier 3
+- Backend enum `VipLevel::VIP3` added; frontend pricing/display; admin settings for limits/fees/upgrade price
+- Withdrawal limits/fees and upgrade prices now configurable for three tiers
+
+### Company Info & Legal
+- **Company Info fields**: `support_email`, `phone`, `address` added to settings table and footer
+- **Legal pages**: `content_en` column is now optional (`sometimes` validation); Arabic content required
+
+### Navbar & Footer
+- **Navbar**: "الرئيسية" (Home) link removed; site logo links to `/`
+- **Footer**: "Code Craft" developer credit with `/codecraft.svg` link
+
+---
+
 ## D8. New Features (Phases 7, 9, 3)
  
 ### Back Button on Product & Category Pages (Phase 7)
@@ -288,14 +319,24 @@ curl -X POST "https://your-domain.com/api/partner/orders" \
  
 ### Admin Balance Adjustment Endpoint
 - `POST /api/admin/users/{user}/balance` (documented above)
- 
+
+### Category Image Propagation (Phase 10)
+- **Root cause**: Oranos Categories API returns only `id` and `name` — no images
+- **Fix**: One-time tinker script copies `image_url` from first child category with image, or from first product in category, to root categories missing images
+- **Result**: 18 root categories now have images for home page display
+
+### Admin Modals Arabic-Only (Phase 10)
+- **Files**: `frontend/src/components/ProductModal.tsx`, `frontend/src/components/CategoryModal.tsx`
+- **Pattern**: All labels → `t('admin.nameAr')`, `t('admin.type')`, `t('admin.descriptionAr')`, `t('admin.icon')`, `t('admin.image')`, `t('admin.sortOrder')`, `t('admin.formFields')`, `t('admin.addField')`, `t('admin.fieldLabelEn')`, `t('admin.fieldLabelAr')`, `t('admin.fieldType')`, `t('admin.fieldRequired')`, `t('admin.fieldOptions')`, `t('admin.fieldOptionsHint')`, `t('admin.automatic')`, `t('admin.manual')`, `t('admin.saveChanges')`, `t('admin.createCategory')`, `t('common.delete')`, `t('common.cancel')`
+- **Translation keys**: Added to `admin:` block in both `en.ts` and `ar.ts` (reference `ProductModal.tsx` pattern)
+
 ---
- 
+
 ## D9. Known Limitations
 
 ### From Inventory (Orphaned / Missing / Uncategorized)
 
-1. **Database not fully migrated** — 13 migrations pending including core tables: `products`, `orders`, `order_items`, `transactions`, `sessions`, `personal_access_tokens`, `favorites`, `manual_order_fields`, `form_schema` on categories, `parent_id` on categories, `icon` on products, `rejection_reason` on transactions. **App will crash on these tables until migrated.**
+1. **Database not fully migrated** — Check `php artisan migrate:status` for current pending count. Core tables (`products`, `orders`, `order_items`, `transactions`, `sessions`, `personal_access_tokens`, `favorites`, `manual_order_fields`, `form_schema` on categories, `parent_id` on categories, `icon` on products, `rejection_reason` on transactions) must exist before production deploy.
 
 2. **Oranos stock not exposed** — Products show a ceiling of 999 (from seeder) but real Oranos stock is not synced to our `stock` column. Admin cannot see actual availability.
 
@@ -309,7 +350,7 @@ curl -X POST "https://your-domain.com/api/partner/orders" \
 
 8. **No Job/Listener/Observer layers** — Events broadcast directly via Reverb; no async job processing for heavy operations (e.g., Oranos sync).
 
-9. **CategoryModal component exists but unused** — Orphaned component.
+9. **CategoryModal now used** — Integrated in `frontend/src/pages/admin/Categories.tsx` for create/edit; no longer orphaned.
 
 10. **Frontend LanguageSwitcher test fails** — Pre-existing bug in test, not in component.
 
@@ -348,14 +389,16 @@ curl -X POST "https://your-domain.com/api/partner/orders" \
 | Models | 11 | 0 UNUSED |
 | Services | 6 + 3 gateways | 0 UNUSED |
 | Middleware | 2 | 0 DEAD |
-| Migrations | 27 | **13 PENDING (critical)** |
+| Migrations | 27 | Check `migrate:status` for current pending |
 | Events | 5 | All ACTIVE |
 | Frontend Pages | 36 | 0 ORPHANED/BROKEN |
-| Shared Components | 26 | 10 HIGH-IMPACT, 1 ORPHANED (CategoryModal) |
+| Shared Components | 26 | 10 HIGH-IMPACT (CategoryModal now used) |
 | API Endpoints | 63 | 0 MISSING/MISTYPED |
 | Env Variables | ~87 | 2 UNDOCUMENTED |
 | Webhooks | 3 | All verified |
 | Scheduled Tasks | 5 | All ACTIVE |
+| **Oranos Categories** | **561 total (18 root)** | Synced |
+| **Oranos Products** | **2,400+** | Synced |
 
 ---
 
