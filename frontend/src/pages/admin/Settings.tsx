@@ -28,14 +28,11 @@ const GROUPS: Record<string, { labelKey: string; keys: string[] }> = {
 };
 
 const COMPANY_FIELDS = [
-  { key: 'company_name',  labelKey: 'admin.companyName',    type: 'text' },
-  { key: 'support_email', labelKey: 'admin.supportEmail',   type: 'email' },
-  { key: 'phone',         labelKey: 'admin.phone',          type: 'text' },
-  { key: 'address',       labelKey: 'admin.address',        type: 'text' },
-  { key: 'facebook_url',  labelKey: 'admin.facebookUrl',    type: 'url' },
-  { key: 'instagram_url', labelKey: 'admin.instagramUrl',   type: 'url' },
-  { key: 'twitter_url',   labelKey: 'admin.twitterUrl',     type: 'url' },
-  { key: 'telegram_url',  labelKey: 'admin.telegramUrl',    type: 'url' },
+  { key: 'company_name',  labelKey: 'admin.companyName',   type: 'text' },
+  { key: 'facebook_url',  labelKey: 'admin.facebookUrl',   type: 'url' },
+  { key: 'instagram_url', labelKey: 'admin.instagramUrl',  type: 'url' },
+  { key: 'twitter_url',   labelKey: 'admin.twitterUrl',    type: 'url' },
+  { key: 'telegram_url',  labelKey: 'admin.telegramUrl',   type: 'url' },
 ] as const;
 
 const LEGAL_PAGES = [
