@@ -121,10 +121,22 @@ export default function CategoryPage() {
       <Breadcrumbs items={breadcrumbItems} />
 
       {category?.description_ar && (
-        <div className="max-w-3xl -mt-6">
-          <p className="text-body text-gray-600 dark:text-ink-500 whitespace-pre-line leading-relaxed">
-            {localized(category, 'description', 'description_ar', locale)}
-          </p>
+        <div className="max-w-3xl -mt-6 space-y-1 text-body text-gray-600 dark:text-ink-500 leading-relaxed">
+          {localized(category, 'description', 'description_ar', locale).split('\n').map((line: string, i: number) => {
+            const trimmed = line.trim();
+            const isUrl = /^(https?:\/\/\S+|www\.\S+|linkedin\.com\/\S+)$/i.test(trimmed);
+            if (isUrl) {
+              const href = /^https?:/i.test(trimmed) ? trimmed : `https://${trimmed}`;
+              return (
+                <div key={i}>
+                  <a href={href} target="_blank" rel="noopener noreferrer" className="text-green-500 hover:underline break-all">
+                    {trimmed}
+                  </a>
+                </div>
+              );
+            }
+            return trimmed ? <div key={i}>{line}</div> : <div key={i} className="h-2" />;
+          })}
         </div>
       )}
 
