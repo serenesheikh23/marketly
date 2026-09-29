@@ -133,9 +133,20 @@ export default function CategoryPage() {
             if (isUrl) {
               const href = /^https?:/i.test(trimmed) ? trimmed : `https://${trimmed}`;
               return (
-                <div key={i}>
+                <div key={i} dir="ltr" className="text-start">
                   <a href={href} target="_blank" rel="noopener noreferrer" className="text-green-500 hover:underline break-all">
                     {trimmed}
+                  </a>
+                </div>
+              );
+            }
+            const phoneMatch = trimmed.match(/^(هاتف|هاتف:|الهاتف|Tel|Phone)\s*:?\s*(.+)$/i);
+            if (phoneMatch) {
+              return (
+                <div key={i} className="flex items-center gap-2">
+                  <span className="text-gray-500 dark:text-ink-500">هاتف:</span>
+                  <a href={`tel:${phoneMatch[2].replace(/\s+/g, '')}`} dir="ltr" className="text-green-500 hover:underline tabular-nums">
+                    {phoneMatch[2].trim()}
                   </a>
                 </div>
               );
