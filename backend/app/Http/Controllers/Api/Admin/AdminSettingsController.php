@@ -70,13 +70,9 @@ class AdminSettingsController extends Controller
             'telegram_url' => ['nullable', 'string', 'max:255'],
         ]);
 
-        // CRITICAL: Remove empty/null fields so they don't crash the database
-        $data = array_filter($data, function ($value) {
-            return $value !== null && $value !== '';
-        });
-
+        // Save every validated field, including empty strings (clearing must work).
         foreach ($data as $key => $value) {
-            Setting::set($key, $value, Setting::GROUP_COMPANY);
+            Setting::set($key, $value ?? '', Setting::GROUP_COMPANY);
         }
 
         return response()->json(['message' => 'Company info updated.', 'settings' => $data]);
