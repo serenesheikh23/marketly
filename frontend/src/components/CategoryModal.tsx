@@ -185,7 +185,7 @@ export default function CategoryModal({ category, onClose, onSaved }: CategoryMo
 
             {formFields.length === 0 && (
               <p className="text-small text-gray-500 dark:text-ink-500 py-2">
-                {t('admin.noFormFieldsHint') ?? 'No form fields added yet. Click "Add Field" to create one.'}
+                {'لم تُضف أي حقول بعد. اضغط "إضافة حقل" لإنشاء واحد.'}
               </p>
             )}
 
@@ -196,19 +196,19 @@ export default function CategoryModal({ category, onClose, onSaved }: CategoryMo
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <div>
                       <label className="text-micro text-gray-600 dark:text-ink-600 mb-1 block">
-                        {t('admin.fieldLabelEn') ?? 'Label (EN)'}
+                        {'التسمية بالإنجليزية'}
                       </label>
                       <input
                         type="text"
                         className="input"
                         value={field.label}
                         onChange={(e) => updateField(index, { label: e.target.value })}
-                        placeholder="e.g. Profile Link"
+                        placeholder="مثال: رابط الملف"
                       />
                     </div>
                     <div>
                       <label className="text-micro text-gray-600 dark:text-ink-600 mb-1 block">
-                        {t('admin.fieldLabelAr') ?? 'Label (AR)'}
+                        {'التسمية بالعربية'}
                       </label>
                       <input
                         type="text"
@@ -232,9 +232,9 @@ export default function CategoryModal({ category, onClose, onSaved }: CategoryMo
                         value={field.type}
                         onChange={(e) => updateField(index, { type: e.target.value as FormField['type'] })}
                       >
-                        <option value="text">Text</option>
-                        <option value="select">Select</option>
-                        <option value="textarea">Textarea</option>
+                        <option value="text">نص</option>
+                        <option value="select">قائمة</option>
+                        <option value="textarea">نص طويل</option>
                       </select>
                     </div>
                     <div className="sm:col-span-2">
@@ -259,7 +259,7 @@ export default function CategoryModal({ category, onClose, onSaved }: CategoryMo
                         className="input"
                         value={field.options ?? ''}
                         onChange={(e) => updateField(index, { options: e.target.value })}
-                        placeholder="a, b, c"
+                        placeholder="أ، ب، ج"
                         disabled={field.type !== 'select'}
                       />
                     </div>
