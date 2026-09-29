@@ -23,14 +23,14 @@ const reveal = (i: number) => ({
 });
 
 function buildBreadcrumbs(category: any, allCategories: any[]): Array<{label: string, link?: string}> {
-  const chain = [];
+  const chain: Array<{label: string, link?: string}> = [];
   let current = category;
-  
+
   // Walk up the parent chain
   while (current) {
     chain.unshift({
       label: current.name_ar ?? current.name ?? 'Unknown',
-      link: current.parent_id ? `/category/${current.slug}` : undefined
+      link: `/category/${current.slug}`
     });
     if (current.parent_id) {
       current = allCategories.find((c: any) => c.id === current.parent_id);
@@ -38,7 +38,12 @@ function buildBreadcrumbs(category: any, allCategories: any[]): Array<{label: st
       current = null;
     }
   }
-  
+
+  // Last item is the current page — not clickable
+  if (chain.length > 0) {
+    delete chain[chain.length - 1].link;
+  }
+
   // Add home and categories as root
   return [
     { label: 'الرئيسية', link: '/' },
