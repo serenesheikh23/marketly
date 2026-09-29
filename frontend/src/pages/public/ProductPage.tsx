@@ -144,15 +144,12 @@ export default function ProductPage() {
     }
 
     if (isManual) {
-      const linkValue = (payload[t('product.linkUsername')] ?? '').trim();
-      if (!linkValue) {
-        newErrors[t('product.linkUsername')] = t('product.errorLink');
-      }
-      const qtyValue = (payload[t('product.quantity')] ?? '').trim();
-      const qtyNum = parseInt(qtyValue, 10);
-      if (!qtyValue || isNaN(qtyNum) || qtyNum < 1) {
-        newErrors[t('product.quantity')] = t('product.errorQuantity');
-      }
+      manualFields.forEach((label: string) => {
+        const val = (payload[label] ?? '').trim();
+        if (!val) {
+          newErrors[label] = t('common.required') ?? 'هذا الحقل مطلوب';
+        }
+      });
       setErrors(newErrors);
       if (Object.keys(newErrors).length > 0) return;
     } else {
