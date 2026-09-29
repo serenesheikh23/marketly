@@ -120,6 +120,14 @@ export default function CategoryPage() {
 
       <Breadcrumbs items={breadcrumbItems} />
 
+      {category?.description_ar && (
+        <div className="max-w-3xl -mt-6">
+          <p className="text-body text-gray-600 dark:text-ink-500 whitespace-pre-line leading-relaxed">
+            {localized(category, 'description', 'description_ar', locale)}
+          </p>
+        </div>
+      )}
+
       {/* Subcategories section */}
       {showChildren && (
         <section>
