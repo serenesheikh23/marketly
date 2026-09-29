@@ -29,6 +29,7 @@ const HOME_CATEGORY_NAMES = [
   'مزودات انترنت',
   'خدمات الدفع السورية',
   'الذكاء الاصطناعي',
+  'تطوير المواقع والتطبيقات',
 ];
 
 const CATEGORY_ICON: Record<string, string> = {
