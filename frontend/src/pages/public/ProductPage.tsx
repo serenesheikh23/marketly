@@ -100,11 +100,13 @@ export default function ProductPage() {
   const getDisplayLabel = (label: string) =>
     ['الايدي', 'id', 'الايدي'].includes(label?.toLowerCase()) ? t('product.idLabel') : label;
 
-  const manualFields = [
-    t('product.linkUsername'),
-    t('product.quantity'),
-    t('product.notesOptional'),
-  ];
+  const manualFields: string[] = (Array.isArray(product.params) && product.params.length > 0)
+    ? (product.params as string[])
+    : [
+        t('product.linkUsername'),
+        t('product.quantity'),
+        t('product.notesOptional'),
+      ];
 
   const handleAddToCart = () => {
     const newErrors: Record<string, string> = {};
