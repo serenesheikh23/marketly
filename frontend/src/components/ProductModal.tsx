@@ -87,7 +87,7 @@ export default function ProductModal({ product, onClose, onSaved }: ProductModal
       onSaved();
       onClose();
     } catch (err: any) {
-      toast.error(err.response?.data?.message ?? 'Failed to save product');
+      toast.error(err.response?.data?.message ?? 'فشل حفظ المنتج');
     } finally {
       setSaving(false);
     }
@@ -97,13 +97,13 @@ export default function ProductModal({ product, onClose, onSaved }: ProductModal
     <Modal
       isOpen={true}
       onClose={onClose}
-      title={isEdit ? 'Edit Product' : 'New Product'}
+      title={isEdit ? 'تعديل المنتج' : 'منتج جديد'}
       size="xl"
     >
       <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="label">Name (AR)</label>
+              <label className="label">اسم المنتج بالعربية</label>
               <input
                 className="input"
                 dir="rtl"
@@ -113,19 +113,19 @@ export default function ProductModal({ product, onClose, onSaved }: ProductModal
               />
             </div>
             <div>
-              <label className="label">Category *</label>
+              <label className="label">الفئة *</label>
               <select
                 className="input"
                 value={form.category_id}
                 onChange={(e) => set('category_id')(e.target.value)}
                 required
               >
-                <option value="">Select category…</option>
+                <option value="">اختر الفئة…</option>
                 {categories.map((c) => (
                   <option key={c.id} value={c.id}>{c.name}</option>
                 ))}
               </select>
-              {catError && <p className="text-micro text-status-rejected mt-1">Failed to load categories.</p>}
+              {catError && <p className="text-micro text-status-rejected mt-1">فشل تحميل الفئات.</p>}
             </div>
           </div>
           <div>
@@ -141,7 +141,7 @@ export default function ProductModal({ product, onClose, onSaved }: ProductModal
           </div>
           <div className="grid grid-cols-3 gap-4">
             <div>
-              <label className="label">Price (USD) *</label>
+              <label className="label">السعر (USD) *</label>
               <input
                 type="number"
                 step="0.01"
@@ -154,7 +154,7 @@ export default function ProductModal({ product, onClose, onSaved }: ProductModal
               />
             </div>
             <div>
-              <label className="label">Stock *</label>
+              <label className="label">المخزون *</label>
               <input
                 type="number"
                 min="0"
@@ -165,14 +165,14 @@ export default function ProductModal({ product, onClose, onSaved }: ProductModal
               />
             </div>
             <div>
-              <label className="label">Type</label>
+              <label className="label">النوع</label>
               <select
                 className="input"
                 value={form.type}
                 onChange={(e) => set('type')(e.target.value)}
               >
-                <option value="auto">Auto Delivery</option>
-                <option value="manual">Manual Service</option>
+                <option value="auto">توصيل تلقائي</option>
+                <option value="manual">خدمة يدوية</option>
               </select>
             </div>
           </div>
@@ -185,34 +185,34 @@ export default function ProductModal({ product, onClose, onSaved }: ProductModal
               onChange={(e) => set('is_active')(e.target.checked)}
             />
             <label htmlFor="is_active" className="text-sm text-gray-800 dark:text-ink-800">
-              Active (visible to customers)
+              مفعّل (ظاهر للعملاء)
             </label>
           </div>
           <div>
-            <label className="label">Product Image</label>
+            <label className="label">صورة المنتج</label>
             <ImageUploader
               value={form.image_base64}
               onChange={(v) => set('image_base64')(v)}
             />
           </div>
           <div>
-            <label className="label">Fallback Icon</label>
+            <label className="label">أيقونة بديلة</label>
             <p className="text-micro text-gray-600 dark:text-ink-500 mb-2">
-              Shown when the product has no image. Leave empty to auto-pick from the name.
+              تُعرض عندما لا توجد صورة للمنتج. اتركها فارغة للاختيار التلقائي من الاسم.
             </p>
             <IconPicker value={form.icon} onChange={(v) => set('icon')(v)} />
             {form.icon && (
               <p className="text-micro text-gray-600 dark:text-ink-500 mt-2">
-                Selected: <span className="font-mono">{form.icon}</span>
+                المختار: <span className="font-mono">{form.icon}</span>
               </p>
             )}
           </div>
           <div className="flex gap-3 pt-2">
             <Button type="submit" variant="accent" className="flex-1" loading={saving}>
-              {isEdit ? 'Save Changes' : 'Create Product'}
+              {isEdit ? 'حفظ التعديلات' : 'إنشاء المنتج'}
             </Button>
             <Button type="button" variant="secondary" onClick={onClose}>
-              Cancel
+              إلغاء
             </Button>
           </div>
         </form>
