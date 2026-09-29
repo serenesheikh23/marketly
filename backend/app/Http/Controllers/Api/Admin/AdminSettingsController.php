@@ -93,15 +93,15 @@ class AdminSettingsController extends Controller
         }
 
         $data = $request->validate([
-            'content_en' => ['present', 'nullable', 'string'],
-            'content_ar' => ['present', 'nullable', 'string'],
+            'content_en' => ['sometimes', 'nullable', 'string'],
+            'content_ar' => ['sometimes', 'nullable', 'string'],
         ]);
 
-        if (isset($data['content_en'])) {
-            Setting::set("{$keyPrefix}_en", $data['content_en'], Setting::GROUP_LEGAL);
+        if (array_key_exists('content_en', $data)) {
+            Setting::set("{$keyPrefix}_en", $data['content_en'] ?? '', Setting::GROUP_LEGAL);
         }
-        if (isset($data['content_ar'])) {
-            Setting::set("{$keyPrefix}_ar", $data['content_ar'], Setting::GROUP_LEGAL);
+        if (array_key_exists('content_ar', $data)) {
+            Setting::set("{$keyPrefix}_ar", $data['content_ar'] ?? '', Setting::GROUP_LEGAL);
         }
 
         return response()->json(['message' => 'Legal page updated.', 'page' => $page]);
