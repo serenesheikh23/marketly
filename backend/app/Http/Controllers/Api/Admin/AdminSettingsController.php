@@ -61,7 +61,7 @@ class AdminSettingsController extends Controller
     {
         $data = $request->validate([
             'company_name' => ['required', 'string', 'max:120'],
-            'support_email' => ['required', 'email', 'max:120'],
+            'support_email' => ['nullable', 'email', 'max:120'],
             'phone' => ['nullable', 'string', 'max:40'],
             'address' => ['nullable', 'string', 'max:255'],
             'facebook_url' => ['nullable', 'string', 'max:255'],
