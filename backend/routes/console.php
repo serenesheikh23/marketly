@@ -39,3 +39,18 @@ Schedule::command('orders:poll-oranos')
     ->everyFiveMinutes()
     ->withoutOverlapping()
     ->appendOutputTo(storage_path('logs/oranos-orders.log'));
+
+Schedule::command('oranos:import-category-images')
+    ->dailyAt('03:20')
+    ->withoutOverlapping()
+    ->appendOutputTo($log);
+
+Schedule::command('oranos:import-product-images')
+    ->dailyAt('03:50')
+    ->withoutOverlapping()
+    ->appendOutputTo($log);
+
+Schedule::command('oranos:sync-product-images')
+    ->dailyAt('04:20')
+    ->withoutOverlapping()
+    ->appendOutputTo($log);
