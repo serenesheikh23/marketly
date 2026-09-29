@@ -94,6 +94,7 @@ export default function ProductPage() {
   }
 
   const isManual = product.type === 'manual';
+  const isCodeCraft = [1146, 1147, 1148, 1149, 1150].includes(product.category_id);
   const isAutomation = product.is_automation === true;
   const automationParams: string[] = Array.isArray(product.params) ? product.params : [];
 
@@ -290,7 +291,7 @@ export default function ProductPage() {
               </div>
             )}
 
-            {isManual && (
+            {isManual && !isCodeCraft && (
               <div className="space-y-3">
                 <p className="text-micro text-gray-600 dark:text-ink-500 uppercase tracking-wide">
                   {t('product.serviceDetails')}
@@ -410,25 +411,52 @@ export default function ProductPage() {
             )}
 
 
-            <div className="flex items-center justify-between">
-              <span className="text-body text-gray-600 dark:text-ink-600">
-                {t('product.total')}:{' '}
-                <strong className="text-gray-900 dark:text-ink-900">
-                  {formatPrice(totalPrice)}
-                </strong>
-              </span>
-              {product.stock === 0 || product.oranos_available === false ? (
-                <span className="badge-rejected text-base px-4 py-2">{t('common.unavailable')}</span>
-              ) : (
-                <Button
-                  variant="accent"
-                  size="lg"
-                  onClick={handleAddToCart}
-                >
-                  {t('product.addToCart')}
-                </Button>
-              )}
-            </div>
+            {isCodeCraft ? (
+              <div className="border-t border-gray-200 dark:border-ink-200 pt-5 space-y-3">
+                <p className="text-h3 text-gray-900 dark:text-ink-900">عندك فكرة مشروع؟</p>
+                <p className="text-small text-gray-600 dark:text-ink-500">تواصل معنا مباشرة لمناقشة التفاصيل والتسعير:</p>
+                <div className="space-y-2 text-body pt-1">
+                  <div dir="ltr" className="text-start">
+                    <a href="https://linkedin.com/in/elias-afisa-54299a233" target="_blank" rel="noopener noreferrer" className="text-green-500 hover:underline break-all">
+                      linkedin.com/in/elias-afisa-54299a233
+                    </a>
+                  </div>
+                  <div dir="ltr" className="text-start">
+                    <a href="https://linkedin.com/in/serene-sheikhalard" target="_blank" rel="noopener noreferrer" className="text-green-500 hover:underline break-all">
+                      linkedin.com/in/serene-sheikhalard
+                    </a>
+                  </div>
+                  <div className="flex items-center gap-2 pt-1">
+                    <span className="text-gray-500 dark:text-ink-500">هاتف:</span>
+                    <a href="tel:+963933135837" dir="ltr" className="text-green-500 hover:underline tabular-nums">+963 933 135 837</a>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-500 dark:text-ink-500">هاتف:</span>
+                    <a href="tel:+963997112295" dir="ltr" className="text-green-500 hover:underline tabular-nums">+963 997 112 295</a>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center justify-between">
+                <span className="text-body text-gray-600 dark:text-ink-600">
+                  {t('product.total')}:{' '}
+                  <strong className="text-gray-900 dark:text-ink-900">
+                    {formatPrice(totalPrice)}
+                  </strong>
+                </span>
+                {product.stock === 0 || product.oranos_available === false ? (
+                  <span className="badge-rejected text-base px-4 py-2">{t('common.unavailable')}</span>
+                ) : (
+                  <Button
+                    variant="accent"
+                    size="lg"
+                    onClick={handleAddToCart}
+                  >
+                    {t('product.addToCart')}
+                  </Button>
+                )}
+              </div>
+            )}
           </div>
         </motion.div>
       </div>
