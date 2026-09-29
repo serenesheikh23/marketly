@@ -60,7 +60,6 @@ export default function Layout() {
           </Link>
 
           <nav className="hidden lg:flex items-center gap-1.5 flex-1 min-w-0 overflow-hidden">
-            <Link to="/" className="nav-link text-xs whitespace-nowrap">{t('nav.home')}</Link>
             <Link to="/categories" className="nav-link text-xs whitespace-nowrap">{t('nav.categories')}</Link>
             <Link to="/products" className="nav-link text-xs whitespace-nowrap">{t('nav.products')}</Link>
             <Link to="/connect-store" className="nav-link text-xs whitespace-nowrap">{t('nav.connectStore')}</Link>
@@ -214,7 +213,6 @@ export default function Layout() {
           <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={closeMenu} />
           <div className="lg:hidden z-50 bg-white dark:bg-ink-50 border-b border-gray-200 dark:border-ink-200 shadow-lg">
             <nav className="px-4 py-3 space-y-1">
-              <Link to="/" className="nav-link" onClick={closeMenu}>{t('nav.home')}</Link>
               <Link to="/categories" className="nav-link" onClick={closeMenu}>{t('nav.categories')}</Link>
               <Link to="/products" className="nav-link" onClick={closeMenu}>{t('nav.products')}</Link>
 
