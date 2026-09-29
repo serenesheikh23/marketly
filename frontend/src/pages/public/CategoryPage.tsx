@@ -29,7 +29,7 @@ function buildBreadcrumbs(category: any, allCategories: any[]): Array<{label: st
   // Walk up the parent chain
   while (current) {
     chain.unshift({
-      label: current.name ?? current.name_ar ?? 'Unknown',
+      label: current.name_ar ?? current.name ?? 'Unknown',
       link: current.parent_id ? `/category/${current.slug}` : undefined
     });
     if (current.parent_id) {
