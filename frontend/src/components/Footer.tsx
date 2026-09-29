@@ -120,8 +120,13 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-8 pt-6 border-t border-gray-200 dark:border-ink-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-micro text-gray-600 dark:text-ink-500">
+        <div className="mt-8 pt-6 border-t border-gray-200 dark:border-ink-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-micro text-gray-600 dark:text-ink-500">
           <span dir="ltr">{t('footer.copyright', { year: new Date().getFullYear() })}</span>
+          <div className="flex items-center gap-2">
+            <span>ØªÙ Ø§ÙØªØ·ÙÙØ± Ø¨ÙØ§Ø³Ø·Ø©</span>
+            <img src="/codecraft.svg" alt="Code Craft" className="h-5 w-auto" />
+            <span className="font-semibold text-gray-900 dark:text-ink-900" dir="ltr">Code Craft</span>
+          </div>
           <span>{t('footer.poweredBy')}</span>
         </div>
       </div>
