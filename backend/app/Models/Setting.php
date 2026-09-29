@@ -35,14 +35,11 @@ class Setting extends Model
 
     public static function set(string $key, mixed $value, string $group = 'general'): void
     {
-        // Fix: Don't save empty strings or null values (prevents server error)
-        if (is_null($value) || trim((string) $value) === '') {
-            return;
-        }
-
+        // Allow empty strings so admin can clear fields.
+        // Null is coerced to empty string; existing behaviour of skipping on truly absent values removed.
         static::updateOrCreate(
             ['key' => $key],
-            ['value' => $value, 'group' => $group]
+            ['value' => $value ?? '', 'group' => $group]
         );
     }
 
