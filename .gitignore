@@ -52,3 +52,5 @@ vite.config.d.ts
 .aider*
 *.bak
 *.orig
+.claude/
+.claude
